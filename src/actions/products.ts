@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { getProductById } from '@/data/product';
 import { UserRole } from '@prisma/client';
 import { ProductSchema } from '@/schemas';
-import cleanOrphanFiles from './files';
 
 export const getProducts = async (): Promise<ActionResponse> => {
   roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
@@ -18,7 +17,6 @@ export const getProducts = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    await cleanOrphanFiles();
     return { success: 'products-fetch-success', data: products };
   } catch (error) {
     return { error: 'products-fetch-error' };
