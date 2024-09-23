@@ -1,0 +1,206 @@
+'use server';
+import { db } from '@/lib/db';
+import { roleGuard } from '@/lib/auth';
+import { UserPack, UserRole } from '@prisma/client';
+import { ActionResponse } from '@/types';
+import { revalidatePath } from 'next/cache';
+import { UserSchema } from '@/schemas';
+import { z } from 'zod';
+import bcrypt from 'bcryptjs';
+import { getUserByEmail, getUserById, getUserByNumber } from '@/data/user';
+import { generateEmailVerificationToken } from '@/lib/tokens';
+import { sendEmailVerificationEmail } from '@/lib/mail';
+import { capitalizeWords } from '@/lib/utils';
+import { DEFAULT_PASSWORD } from '@/lib/constants';
+
+export const getSellers = async (): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    const sellers = await db.user.findMany({
+      where: {
+        role: UserRole.SELLER,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return { success: 'sellers-fetch-success', data: sellers };
+  } catch (error) {
+    return { error: 'sellers-fetch-error' };
+  }
+};
+
+export const getSuppliers = async (): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    const suppliers = await db.user.findMany({
+      where: {
+        role: UserRole.SUPPLIER,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return { success: 'suppliers-fetch-success', data: suppliers };
+  } catch (error) {
+    return { error: 'suppliers-fetch-error' };
+  }
+};
+
+export const getUser = async (id: string): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    const user = await getUserById(id);
+    if (!user) return { error: 'user-not-found-error' };
+    return { success: 'user-fetch-success', data: user };
+  } catch (error) {
+    return { error: 'user-fetch-error' };
+  }
+};
+
+export const addUser = async (values: z.infer<typeof UserSchema>): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    const existingNumber = await getUserByNumber(values.number);
+    const existingEmail = await getUserByEmail(values.email);
+
+    if (existingNumber || existingEmail) {
+      return { error: 'existing-user-error' };
+    }
+
+    let emailVerified;
+
+    if (values.emailVerified === true) {
+      emailVerified = new Date();
+    } else {
+      emailVerified = null;
+      const verificationToken = await generateEmailVerificationToken(values.email.trim());
+      await sendEmailVerificationEmail(values.fullName.trim(), verificationToken.email, verificationToken.token);
+      emailVerified = null;
+    }
+    const defaultPassword = DEFAULT_PASSWORD;
+    const hashedPassword = await bcrypt.hash(defaultPassword!, 10);
+
+    await db.user.create({
+      data: {
+        fullName: capitalizeWords(values.fullName),
+        address: values.address,
+        pack: UserPack[values.pack!],
+        role: values.role,
+        active: values.active,
+        rib: values.rib,
+        email: values.email,
+        number: values.number,
+        emailVerified: emailVerified,
+        paid: values.paid,
+        password: hashedPassword,
+      },
+    });
+
+    revalidatePath('/dashboard/admin/sellers');
+    revalidatePath('/dashboard/admin/suppliers');
+
+    return { success: 'user-save-success' };
+  } catch (error) {
+    return { error: 'user-save-error' };
+  }
+};
+
+export const editUser = async (id: string, values: z.infer<typeof UserSchema>): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    const existingUser = await getUserById(id);
+    if (!existingUser) {
+      return { error: 'user-not-found-error' };
+    }
+
+    if (values.number !== existingUser.number) {
+      const existingNumber = await getUserByNumber(values.number);
+      if (existingNumber) {
+        return { error: 'existing-user-error' };
+      }
+    }
+
+    if (values.email.trim() !== existingUser.email) {
+      const existingEmail = await getUserByEmail(values.email);
+      if (existingEmail) {
+        return { error: 'existing-user-error' };
+      }
+    }
+    let emailVerified;
+
+    if (values.emailVerified === true && existingUser.emailVerified === null) {
+      emailVerified = new Date();
+    }
+
+    if (
+      (values.emailVerified === true && existingUser.emailVerified !== null) ||
+      (values.emailVerified === false && existingUser.emailVerified === null)
+    ) {
+      emailVerified = existingUser.emailVerified;
+    }
+
+    if (values.emailVerified === false && existingUser.emailVerified !== null) {
+      const verificationToken = await generateEmailVerificationToken(values.email.trim());
+      await sendEmailVerificationEmail(values.fullName.trim(), verificationToken.email, verificationToken.token);
+      emailVerified = null;
+    }
+
+    await db.user.update({
+      where: { id: existingUser.id },
+      data: {
+        fullName: values.fullName,
+        address: values.address,
+        pack: values.pack,
+        role: values.role,
+        active: values.active,
+        rib: values.rib,
+        email: values.email,
+        number: values.number,
+        emailVerified: emailVerified,
+        paid: values.paid,
+      },
+    });
+
+    revalidatePath('/dashboard/admin/sellers');
+    revalidatePath('/dashboard/admin/suppliers');
+    return { success: 'user-save-success' };
+  } catch (error) {
+    return { error: 'user-save-error' };
+  }
+};
+
+export const deleteUser = async (id: string): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    await db.user.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    revalidatePath('/dashboard/admin/sellers');
+    revalidatePath('/dashboard/admin/suppliers');
+    return { success: 'user-delete-success' };
+  } catch (error) {
+    return { success: 'user-delete-error' };
+  }
+};
+
+export const bulkDeleteUsers = async (ids: string[]): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    await db.$transaction(async (transaction) => {
+      await transaction.user.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+    });
+
+    revalidatePath('/dashboard/admin/sellers');
+    revalidatePath('/dashboard/admin/suppliers');
+
+    return { error: 'users-delete-success' };
+  } catch (error) {
+    return { error: 'users-delete-error' };
+  }
+};
