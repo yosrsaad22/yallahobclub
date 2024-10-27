@@ -33,7 +33,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
   /* switch (values.pack) {
     case UserPack.DAMREJ:
  */
-  await db.user.create({
+  const newUser = await db.user.create({
     data: {
       fullName: capitalizeWords(values.fullName.trim()),
       email: values.email.trim(),
@@ -48,7 +48,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
 
   await sendEmailVerificationEmail(values.fullName, verificationToken.email, verificationToken.token);
 
-  await notifyAllAdmins(NotificationType.ADMIN_NEW_SELLER, values.fullName);
+  await notifyAllAdmins(NotificationType.ADMIN_NEW_SELLER, `/dashboard/admin/sellers/${newUser.id}`, values.fullName);
 
   revalidatePath('/dashboard/admin/sellers');
 

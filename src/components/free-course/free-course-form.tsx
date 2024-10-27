@@ -217,7 +217,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
               <h1 className=" text-gradient mb-2 mt-8 py-2 text-center text-2xl font-semibold tracking-tight md:p-0 md:text-center">
                 {t('form-title')}
               </h1>
-              <p className="mb-4 text-center text-sm text-muted-foreground">{t('form-text')}</p>
+              <p className="mb-4 text-center text-sm text-muted-foreground">{t('text')}</p>
             </div>
             <form className="w-full py-4" onSubmit={handleSubmit(onSubmit)}>
               <LabelInputContainer className="mb-4">

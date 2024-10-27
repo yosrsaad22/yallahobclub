@@ -11,6 +11,7 @@ export type ExtendedUser = DefaultSession['user'] & {
   boarded: boolean;
   paid: boolean;
   rib: string;
+  balance: number;
 };
 
 declare module 'next-auth' {

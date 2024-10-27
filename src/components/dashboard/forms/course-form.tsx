@@ -152,7 +152,7 @@ export function CourseForm({
       });
     } else {
       toast({
-        variant: 'success',
+        variant: 'destructive',
         title: tValidation('error-title'),
         description: tValidation(res.error),
       });

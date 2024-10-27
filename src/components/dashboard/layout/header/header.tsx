@@ -8,12 +8,15 @@ import NotificationDropdown from './notification';
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/hooks/use-sidebar';
 import { useState } from 'react';
-import { IconChevronsLeft } from '@tabler/icons-react';
+import { IconChevronsLeft, IconCoins, IconShoppingCart } from '@tabler/icons-react';
 import { LanguageToggle } from './language-toggle';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { roleOptions } from '@/lib/constants';
 
 export default function Header() {
   const { isMinimized, toggle } = useSidebar();
   const [status, setStatus] = useState(false);
+  const user = useCurrentUser();
 
   const handleToggle = () => {
     setStatus(true);
@@ -22,15 +25,15 @@ export default function Header() {
   };
 
   return (
-    <div className=" fixed left-0 right-0 top-0 z-20 w-full overflow-y-hidden  border-b bg-background">
-      <nav className="flex h-16 items-center justify-between overflow-hidden px-3">
+    <div className="flex h-16  items-center justify-between border-b bg-background">
+      <nav className="flex h-16 w-full items-center justify-between overflow-hidden px-3">
         <div className="flex items-center gap-x-3">
           <div className={cn('block lg:!hidden')}>
             <MobileSidebar />
           </div>
           <Button
             onClick={handleToggle}
-            className={cn('hidden md:flex', isMinimized ? 'rotate-180' : '')}
+            className={cn('hidden lg:flex', isMinimized ? 'rotate-180' : '')}
             variant={'outline'}
             size={'icon'}>
             <IconChevronsLeft className=" h-[1.4rem] w-[1.4rem]" />
@@ -49,6 +52,12 @@ export default function Header() {
         </div>
 
         <div className="relative flex items-center gap-x-3">
+          {(user?.role === roleOptions.SELLER || user?.role === roleOptions.SUPPLIER) && (
+            <div className="hidden flex-row gap-x-4 rounded-md border border-muted p-2 lg:flex">
+              <IconCoins />
+              <p className="font-semibold">{user?.balance} TND</p>
+            </div>
+          )}
           <LanguageToggle />
           <NotificationDropdown />
           <UserNav />

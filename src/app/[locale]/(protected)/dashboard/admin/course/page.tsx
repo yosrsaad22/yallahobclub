@@ -7,6 +7,16 @@ import { addChapter, deleteChapter, editChapter, getChapters, getCourse } from '
 import { Chapter as ChapterModel, Course as CourseModel } from '@prisma/client';
 import { CourseForm } from '@/components/dashboard/forms/course-form';
 
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'dashboard' });
+
+  return {
+    title: 'Ecomness - ' + t('pages.course'),
+    description: t('metadata.description'),
+    keywords: ['Dropshipping Tunisie', 'Formation Dropshipping', 'Platforme Dropshipping', 'E-commerce'],
+  };
+}
+
 export default async function AdminCourse() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.course'), link: '/dashboard/admin/course' }];
@@ -34,11 +44,11 @@ export default async function AdminCourse() {
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center space-x-2 text-3xl font-bold">
-          <IconBrandYoutube className="h-7 w-7" stroke={2.9} />
+          <IconBrandYoutube className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.course')}</h2>
         </div>
         <CourseForm

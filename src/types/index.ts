@@ -1,4 +1,4 @@
-import { roleOptions } from '@/lib/constants';
+import { colorOptions, roleOptions, sizeOptions } from '@/lib/constants';
 import { Lead, User } from '@prisma/client';
 
 export type ActionResponse = {
@@ -50,4 +50,25 @@ export type DataTableUser = Pick<
 export type DataTableHandlers = {
   onDelete: (id: string) => Promise<ActionResponse>;
   onBulkDelete: (ids: string[]) => Promise<ActionResponse>;
+  onRequestPickup: (ids: string[]) => Promise<ActionResponse>;
+};
+
+export type MediaType = {
+  key: string;
+  type: string;
+};
+
+export type OrderStatusType = {
+  UpdateCode: string;
+  Key: string;
+  Color: string;
+};
+
+export type OrderProduct = {
+  productId: string;
+  quantity: string;
+  detailPrice: string;
+  supplierProfit: number;
+  size?: string;
+  color?: string;
 };

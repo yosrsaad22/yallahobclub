@@ -4,14 +4,36 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MEDIA_HOSTNAME } from '@/lib/constants';
 import { ColumnDef, RowData } from '@tanstack/react-table';
 import { DataTableUser } from '@/types';
-import { IconCircleCheck, IconCircleX } from '@tabler/icons-react';
+import { IconCircleCheck, IconCircleX, IconUser } from '@tabler/icons-react';
 import { formatDate } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
+import { Badge } from '@/components/ui/badge';
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     columnName: string;
   }
 }
+
+const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText: string; falseText: string }) => {
+  const tFields = useTranslations('fields');
+  if (!value) {
+    return (
+      <div className="flex w-[100px] items-center justify-start">
+        <Badge className="text-md px-3 py-1 font-normal" variant={'destructive'}>
+          {tFields(falseText)}
+        </Badge>
+      </div>
+    );
+  }
+  return (
+    <div className="flex w-[100px] items-center justify-start">
+      <Badge className="text-md px-3 py-1 font-normal" variant={'success'}>
+        {tFields(trueText)}
+      </Badge>
+    </div>
+  );
+};
 
 export const SupplierColumns: ColumnDef<DataTableUser>[] = [
   {
@@ -25,9 +47,12 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
       const fullName = row.getValue<string>('fullName');
       return (
         <div className="w-[50px]">
-          <Avatar className="h-10 w-10">
-            <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${image}` ?? ''} alt={fullName[0] ?? ''} />
-            <AvatarFallback>{fullName[0]}</AvatarFallback>
+          <Avatar className="h-9 w-9">
+            <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${image}`} alt={fullName[0] ?? ''} />
+            <AvatarFallback>
+              {' '}
+              <IconUser className="h-5 w-5" />
+            </AvatarFallback>
           </Avatar>
         </div>
       );
@@ -69,18 +94,7 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
       columnName: 'Active',
     },
     cell: ({ row }) => {
-      if (!row.getValue('active')) {
-        return (
-          <div className="w-1/2">
-            <IconCircleX className="text-destructive" />
-          </div>
-        );
-      }
-      return (
-        <div className="w-1/2">
-          <IconCircleCheck className="text-success" />
-        </div>
-      );
+      return <BooleanCell value={row.getValue('active')} trueText="user-active" falseText="user-not-active" />;
     },
   },
   {
@@ -89,18 +103,7 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
       columnName: 'Paid',
     },
     cell: ({ row }) => {
-      if (!row.getValue('paid')) {
-        return (
-          <div className="w-1/2">
-            <IconCircleX className="text-destructive" />
-          </div>
-        );
-      }
-      return (
-        <div className="w-1/2">
-          <IconCircleCheck className="text-success" />
-        </div>
-      );
+      return <BooleanCell value={row.getValue('paid')} trueText="user-paid" falseText="user-not-paid" />;
     },
   },
 ];

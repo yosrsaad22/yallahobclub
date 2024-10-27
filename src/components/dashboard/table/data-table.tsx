@@ -31,9 +31,13 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   data: TData[];
   onDelete: DataTableHandlers['onDelete'] | undefined;
   onBulkDelete: DataTableHandlers['onBulkDelete'] | undefined;
+  onRequestPickup?: DataTableHandlers['onRequestPickup'] | undefined;
   redirectToDetails?: boolean;
   showActions?: boolean;
   showAddButton?: boolean;
+  showBulkDeleteButton?: boolean;
+  showCreatePickupButton?: boolean;
+  showSelect?: boolean;
 }
 
 export function DataTable<TData extends { id: string }, TValue>({
@@ -43,9 +47,13 @@ export function DataTable<TData extends { id: string }, TValue>({
   data,
   onDelete,
   onBulkDelete,
+  onRequestPickup = undefined,
   redirectToDetails = true,
   showActions = true,
   showAddButton = true,
+  showSelect = true,
+  showBulkDeleteButton = true,
+  showCreatePickupButton = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -64,16 +72,19 @@ export function DataTable<TData extends { id: string }, TValue>({
 
   const selectColumn: ColumnDef<any> = {
     id: 'select',
-    cell: ({ row }) => (
-      <div className="p-2">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="mr-2 h-5 w-5"
-        />
-      </div>
-    ),
+    cell: ({ row }) =>
+      showSelect ? (
+        <div className="p-2">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            className="mr-2 h-5 w-5"
+          />
+        </div>
+      ) : (
+        <div className="h-1 w-1"></div>
+      ),
     enableSorting: false,
     enableHiding: false,
   };
@@ -125,9 +136,12 @@ export function DataTable<TData extends { id: string }, TValue>({
       <DataTableToolbar
         prefix={translationPrefix}
         showAddButton={showAddButton}
+        showBulkDeleteButton={showBulkDeleteButton}
+        showCreatePickupButton={showCreatePickupButton}
         tag={tag}
         table={table}
         onBulkDelete={onBulkDelete}
+        onRequestPickup={onRequestPickup}
       />
       <div className="custom-scrollbar overflow-x-auto rounded-md border bg-background">
         <div className="inline-block min-w-full align-middle">
@@ -140,14 +154,18 @@ export function DataTable<TData extends { id: string }, TValue>({
                     return (
                       <TableHead key={header.id}>
                         {header.isPlaceholder ? null : header.id === 'select' ? (
-                          <div className="p-2">
-                            <Checkbox
-                              checked={table.getIsAllPageRowsSelected()}
-                              onCheckedChange={(value) => toggleAllRowsSelected(!!value)}
-                              aria-label="Select all rows"
-                              className="mr-2 h-5 w-5"
-                            />
-                          </div>
+                          showSelect ? (
+                            <div className="p-1">
+                              <Checkbox
+                                checked={table.getIsAllPageRowsSelected()}
+                                onCheckedChange={(value) => toggleAllRowsSelected(!!value)}
+                                aria-label="Select all rows"
+                                className="ml-1 h-5 w-5"
+                              />
+                            </div>
+                          ) : (
+                            <div className=""></div>
+                          )
                         ) : (
                           flexRender(
                             <DataTableColumnHeader column={header.column} title={translatedTitle} />,
@@ -186,7 +204,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell colSpan={columns.length} className="h-[150px] text-center">
                     {t('no-result')}
                   </TableCell>
                 </TableRow>

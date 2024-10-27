@@ -24,7 +24,7 @@ export default function ForgotPassword() {
             <h1 className="text-gradient mx-2 translate-y-[-1rem] animate-fade-in py-2 text-3xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:text-[3rem]">
               {t('form-title')}
             </h1>
-            <p className="text-md mx-auto mb-4 max-w-md text-muted-foreground">{t('form-text')}</p>
+            <p className="text-md mx-auto mb-4 max-w-md text-muted-foreground">{t('text')}</p>
           </div>
           <ForgotPasswordForm />
         </div>

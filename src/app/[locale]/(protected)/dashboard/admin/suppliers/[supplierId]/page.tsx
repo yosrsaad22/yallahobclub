@@ -11,6 +11,16 @@ interface SupplierDetailsProps {
   params: { supplierId: string };
 }
 
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'dashboard' });
+
+  return {
+    title: 'Ecomness - ' + t('pages.supplier-details'),
+    description: t('metadata.description'),
+    keywords: ['Dropshipping Tunisie', 'Formation Dropshipping', 'Platforme Dropshipping', 'E-commerce'],
+  };
+}
+
 export default async function SupplierDetails({ params }: SupplierDetailsProps) {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [
@@ -25,11 +35,11 @@ export default async function SupplierDetails({ params }: SupplierDetailsProps) 
   const supplierData: DataTableUser = res.error ? null : res.data;
 
   return (
-    <div className="h-full w-full">
+    <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-row items-center space-x-2 text-3xl font-bold">
-          <IconBuildingWarehouse className="h-7 w-7" stroke={2.9} />
+          <IconBuildingWarehouse className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.supplier-details')}</h2>
         </div>
         <EditUserForm userData={supplierData} />

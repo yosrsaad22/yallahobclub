@@ -11,6 +11,16 @@ import { currentUser } from '@/lib/auth';
 import { PackGate } from '@/components/auth/pack-gate';
 import { packOptions } from '@/lib/constants';
 
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'dashboard' });
+
+  return {
+    title: 'Ecomness - ' + t('pages.course'),
+    description: t('metadata.description'),
+    keywords: ['Dropshipping Tunisie', 'Formation Dropshipping', 'Platforme Dropshipping', 'E-commerce'],
+  };
+}
+
 export default async function SellerCourse() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.course'), link: '/dashboard/seller/course' }];
@@ -29,10 +39,10 @@ export default async function SellerCourse() {
 
   return (
     <PackGate allowedPack={packOptions.AJEJA || packOptions.MACHROU3}>
-      <div className="z-10 space-y-4 p-4 pt-6 md:p-6">
+      <div className="z-10 space-y-4 p-4 pt-6 md:p-6 ">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center space-x-2 text-3xl font-bold">
-          <IconBrandYoutube className="h-7 w-7" stroke={2.9} />
+          <IconBrandYoutube className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.course')}</h2>
         </div>
         <CoursePlayer course={courseData} chapters={chaptersData} userProgress={userProgressData} />

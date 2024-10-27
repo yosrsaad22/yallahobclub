@@ -49,6 +49,7 @@ export default {
         session.user.boarded = token.boarded as boolean;
         session.user.paid = token.paid as boolean;
         session.user.rib = token.rib as string;
+        session.user.balance = token.balance as number;
       }
 
       return session;
@@ -67,12 +68,14 @@ export default {
       token.boarded = existingUser.boarded;
       token.paid = existingUser.paid;
       token.rib = existingUser.rib;
+      token.balance = existingUser.balance;
+
       return token;
     },
   },
   session: {
     strategy: 'jwt',
-    maxAge: 6 * 60 * 60,
+    maxAge: 24 * 60 * 60,
   },
   adapter: PrismaAdapter(db),
 } satisfies NextAuthConfig;

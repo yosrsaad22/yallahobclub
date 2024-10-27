@@ -24,6 +24,7 @@ export const TextEditor = ({ disabled, onChange, value }: TextEditorProps) => {
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
               return `http://${url}`;
             }
+
             return url;
           };
 

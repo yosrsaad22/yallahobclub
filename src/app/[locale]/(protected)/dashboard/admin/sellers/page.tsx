@@ -7,6 +7,16 @@ import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { SellerColumns } from '@/components/dashboard/table/columns/sellers-columns';
 
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'dashboard' });
+
+  return {
+    title: 'Ecomness - ' + t('pages.sellers'),
+    description: t('metadata.description'),
+    keywords: ['Dropshipping Tunisie', 'Formation Dropshipping', 'Platforme Dropshipping', 'E-commerce'],
+  };
+}
+
 export default async function Sellers() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.sellers'), link: '/dashboard/admin/sellers' }];
@@ -26,11 +36,11 @@ export default async function Sellers() {
   };
 
   return (
-    <div className="h-full w-full">
+    <div className=" w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center space-x-2 text-3xl font-bold">
-          <IconUsers className="h-7 w-7" stroke={2.9} />
+          <IconUsers className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.sellers')}</h2>
         </div>
         <DataTable

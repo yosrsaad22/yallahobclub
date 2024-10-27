@@ -31,10 +31,14 @@ export default async function DashboardLayout({
       <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
       <SessionProvider session={session}>
         <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange={false} enableSystem={true}>
-          <Header />
-          <div className="flex h-screen">
-            <Sidebar className="bg-background" />
-            <main className="custom-scrollbar relative mt-16 w-full overflow-auto bg-page">{children}</main>
+          <div className="flex h-screen w-full flex-row ">
+            <Sidebar className=" flex-shrink-0 bg-gradient-to-b from-primary via-primary/90 to-primary" />
+            <div className="flex w-full flex-col">
+              <Header />
+              <main className="custom-scrollbar relative mt-0 h-full flex-1 flex-col overflow-auto bg-page">
+                {children}
+              </main>
+            </div>
           </div>
         </ThemeProvider>
       </SessionProvider>

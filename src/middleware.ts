@@ -25,7 +25,7 @@ function stripLocalePrefix(pathname: string, locales: readonly string[]): string
   return pathname.replace(localePattern, '');
 }
 
-const authMiddleware = auth(async (req) => {
+const authMiddleware = auth(async (req: any) => {
   const { nextUrl, auth } = req;
   const isLoggedIn = !!req.auth;
   const normalizedPathname = stripLocalePrefix(nextUrl.pathname, locales);

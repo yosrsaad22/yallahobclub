@@ -13,12 +13,13 @@ export default async function Seller() {
   const t = await getTranslations('dashboard');
 
   return (
-    <div className="h-full">
+    <div className="">
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-6">
-      <div className="flex items-center space-x-2 text-3xl font-bold">
-          <IconLayoutDashboard className="h-7 w-7" stroke={2.9} />
+        <div className="flex items-center space-x-2 text-3xl font-bold">
+          <IconLayoutDashboard className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.dashboard')}</h2>
-        </div>        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        </div>{' '}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card className="max-h-[9.6rem]">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>

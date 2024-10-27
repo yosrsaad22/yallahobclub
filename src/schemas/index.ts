@@ -233,10 +233,46 @@ export const ProductSchema = z.object({
   wholesalePrice: z.string().regex(/^\d{1,}(\.\d{1,})?$/),
   profitMargin: z.string().regex(/^\d{1,}(\.\d{1,})?$/),
   featured: z.boolean().optional(),
+  platformProfit: z.string().regex(/^\d{1,}(\.\d{1,})?$/),
   category: z.nativeEnum(productCategoryOptions),
   stock: z.string().regex(/^\d{1,}$/),
   supplierId: z.string(),
   colors: z.array(z.nativeEnum(colorOptions)).optional(),
   sizes: z.array(z.nativeEnum(sizeOptions)).optional(),
-  images: z.array(z.string()).min(1),
+  media: z
+    .array(
+      z.object({
+        key: z.string(),
+        type: z.string(),
+      }),
+    )
+    .min(1)
+    .refine((media) => media.some((item) => item.type.includes('image')), {
+      path: ['media'],
+    }),
+  published: z.boolean(),
+});
+
+export const OrderProductSchema = z.object({
+  quantity: z.string().regex(/^[1-9]\d*$/),
+  detailPrice: z.string().regex(/^(?!0(\.0{1,})?$)\d{1,}(\.\d{1,})?$/),
+  size: z.undefined().or(z.string().min(2)),
+  color: z.undefined().or(z.string().min(2)),
+  productId: z.string(),
+  supplierProfit: z.number(),
+});
+
+export const OrderSchema = z.object({
+  firstName: z.string().min(3),
+  lastName: z.string().min(3),
+  email: z.string().max(0).or(z.string().email()),
+  number: z.string().regex(/^\d{8}$/),
+  city: z.string(),
+  address: z.string().min(3),
+  tracking: z.undefined().or(z.string()),
+  total: z.number(),
+  sellerProfit: z.number(),
+  platformProfit: z.number(),
+  products: z.array(OrderProductSchema),
+  sellerId: z.string(),
 });

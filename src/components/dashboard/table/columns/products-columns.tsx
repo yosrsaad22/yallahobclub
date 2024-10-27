@@ -1,11 +1,13 @@
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MEDIA_HOSTNAME } from '@/lib/constants';
-import { IconCircleCheck, IconCircleX } from '@tabler/icons-react';
-import { ColumnDef, RowData } from '@tanstack/react-table';
+import { IconCircleCheck, IconCircleX, IconUser } from '@tabler/icons-react';
+import { ColumnDef } from '@tanstack/react-table';
 import { Product, User } from '@prisma/client';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { Badge } from '@/components/ui/badge';
+import { MediaType } from '@/types';
 
 const CategoryCell = ({ category }: { category: string }) => {
   const tFields = useTranslations('fields');
@@ -15,13 +17,12 @@ const CategoryCell = ({ category }: { category: string }) => {
 const SupplierCell = ({ user }: { user: User }) => {
   return (
     <div className="flex flex-row items-center gap-x-4">
-      <Avatar className="h-8 w-8">
-        <AvatarImage
-          className="object-cover"
-          src={`${MEDIA_HOSTNAME}${user.image}` ?? ''}
-          alt={user.fullName[0] ?? ''}
-        />
-        <AvatarFallback>{user.fullName[0]}</AvatarFallback>
+      <Avatar className="h-9 w-9">
+        <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${user.image}`} alt={user.fullName[0] ?? ''} />
+        <AvatarFallback>
+          {' '}
+          <IconUser className="h-5 w-5" />
+        </AvatarFallback>
       </Avatar>
       <p>{user.fullName}</p>
     </div>
@@ -30,36 +31,41 @@ const SupplierCell = ({ user }: { user: User }) => {
 
 const ImageCell = ({ image }: { image: string }) => {
   return (
-    <div className="flex h-[80px] w-[80px] items-center justify-center p-2">
-      <Image src={`${MEDIA_HOSTNAME}${image}` ?? ''} width={80} height={80} alt={'image'} />
+    <div className="flex h-[70px] w-[70px] items-center justify-center  p-2">
+      <Image className="rounded-sm" src={`${MEDIA_HOSTNAME}${image}`} width={200} height={200} alt={'image'} />
     </div>
   );
 };
 
-const FeaturedCell = ({ featured }: { featured: boolean }) => {
-  if (!featured) {
+const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText: string; falseText: string }) => {
+  const tFields = useTranslations('fields');
+  if (!value) {
     return (
-      <div className="flex w-1/2 items-center justify-center">
-        <IconCircleX className="text-destructive" />
+      <div className="flex w-[100px] items-center justify-center">
+        <Badge className="text-md px-3 py-1 font-normal" variant={'destructive'}>
+          {tFields(falseText)}
+        </Badge>
       </div>
     );
   }
   return (
-    <div className="flex w-1/2 items-center justify-center">
-      <IconCircleCheck className="text-success" />
+    <div className="flex w-[100px] items-center justify-center">
+      <Badge className="text-md px-3 py-1 font-normal" variant={'success'}>
+        {tFields(trueText)}
+      </Badge>
     </div>
   );
 };
 
-export const AdminProductColumns: ColumnDef<Product & { supplier: User }>[] = [
+export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supplier: User }>[] = [
   {
-    accessorKey: 'images',
+    accessorKey: 'media',
     meta: {
-      columnName: 'Images',
+      columnName: 'media',
     },
     enableSorting: false,
     cell: ({ row }) => {
-      const image = row.getValue<string[]>('images')[0];
+      const image = row.getValue<MediaType[]>('media')[0].key;
       return <ImageCell image={image} />;
     },
   },
@@ -67,6 +73,10 @@ export const AdminProductColumns: ColumnDef<Product & { supplier: User }>[] = [
     accessorKey: 'name',
     meta: {
       columnName: 'Name',
+    },
+    cell: ({ row }) => {
+      const name: string = row.getValue<string>('name');
+      return <div className="w-full max-w-[180px] truncate">{name}</div>;
     },
   },
   {
@@ -87,17 +97,40 @@ export const AdminProductColumns: ColumnDef<Product & { supplier: User }>[] = [
     },
     cell: ({ row }) => {
       const price = row.getValue<number>('wholesalePrice');
-      return <div className="w-1/2 text-center">{price} DT</div>;
+      return <div className="w-1/2 text-right">{price} DT</div>;
     },
   },
   {
-    accessorKey: 'featured',
+    accessorKey: 'platformProfit',
+    enableSorting: true,
     meta: {
-      columnName: 'Featured',
+      columnName: 'platform-profit',
     },
     cell: ({ row }) => {
-      const featured = row.getValue<boolean>('featured');
-      return <FeaturedCell featured={featured} />;
+      const platformProfit = row.getValue<number>('platformProfit');
+      return <div className="w-1/2 text-right">{platformProfit} DT</div>;
+    },
+  },
+  {
+    accessorKey: 'stock',
+    enableSorting: true,
+    meta: {
+      columnName: 'Stock',
+    },
+    cell: ({ row }) => {
+      const stock = row.getValue<number>('stock');
+      return <div className="w-1/2 text-right">{stock}</div>;
+    },
+  },
+
+  {
+    accessorKey: 'published',
+    meta: {
+      columnName: 'Published',
+    },
+    cell: ({ row }) => {
+      const published = row.getValue<boolean>('published');
+      return <BooleanCell value={published} trueText="product-approved" falseText="product-pending" />;
     },
   },
   {
@@ -114,15 +147,15 @@ export const AdminProductColumns: ColumnDef<Product & { supplier: User }>[] = [
 ];
 
 // Supplier Product Columns
-export const SupplierProductColumns: ColumnDef<Product & { supplier: User }>[] = [
+export const SupplierProductColumns: ColumnDef<Product & { media: MediaType[]; supplier: User }>[] = [
   {
-    accessorKey: 'images',
+    accessorKey: 'media',
     meta: {
-      columnName: 'Images',
+      columnName: 'media',
     },
     enableSorting: false,
     cell: ({ row }) => {
-      const image = row.getValue<string[]>('images')[0];
+      const image = row.getValue<MediaType[]>('media')[0].key;
       return <ImageCell image={image} />;
     },
   },
@@ -130,6 +163,10 @@ export const SupplierProductColumns: ColumnDef<Product & { supplier: User }>[] =
     accessorKey: 'name',
     meta: {
       columnName: 'Name',
+    },
+    cell: ({ row }) => {
+      const name: string = row.getValue<string>('name');
+      return <div className="w-full max-w-[180px] truncate">{name}</div>;
     },
   },
   {
@@ -142,6 +179,7 @@ export const SupplierProductColumns: ColumnDef<Product & { supplier: User }>[] =
       return <CategoryCell category={category} />;
     },
   },
+
   {
     accessorKey: 'wholesalePrice',
     enableSorting: true,
@@ -165,13 +203,13 @@ export const SupplierProductColumns: ColumnDef<Product & { supplier: User }>[] =
     },
   },
   {
-    accessorKey: 'featured',
+    accessorKey: 'published',
     meta: {
-      columnName: 'Featured',
+      columnName: 'Published',
     },
     cell: ({ row }) => {
-      const featured = row.getValue<boolean>('featured');
-      return <FeaturedCell featured={featured} />;
+      const published = row.getValue<boolean>('published');
+      return <BooleanCell value={published} trueText="product-approved" falseText="product-pending" />;
     },
   },
 ];

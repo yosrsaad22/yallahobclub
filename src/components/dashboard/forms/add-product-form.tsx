@@ -10,11 +10,19 @@ import { AvatarFallback, Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { IconCloudUpload, IconDeviceFloppy, IconLoader2, IconPackage, IconTrash, IconX } from '@tabler/icons-react';
+import {
+  IconCloudUpload,
+  IconDeviceFloppy,
+  IconLoader2,
+  IconPackage,
+  IconPlayerPlayFilled,
+  IconTrash,
+  IconUser,
+} from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
 import { colorOptions, MEDIA_HOSTNAME, productCategoryOptions, roleOptions, sizeOptions } from '@/lib/constants';
-import { ActionResponse, DataTableUser } from '@/types';
+import { ActionResponse, DataTableUser, MediaType } from '@/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useRouter } from '@/navigation';
@@ -26,6 +34,8 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { TextEditor } from '@/components/ui/text-editor';
 import { useCurrentUser } from '@/hooks/use-current-user';
+import ReactPlayer from 'react-player';
+import { UserCombobox } from '../comboboxes/user-combobox';
 
 interface AddProductFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -36,7 +46,7 @@ export function AddProductForm({}: AddProductFormProps) {
 
   const [isLoading, startTransition] = React.useTransition();
   const router = useRouter();
-  const t = useTranslations('dashboard.form-text');
+  const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
   const tColors = useTranslations('dashboard.colors');
@@ -52,10 +62,13 @@ export function AddProductForm({}: AddProductFormProps) {
   const [isDropped, setIsDropped] = React.useState(false);
   const [isUploading, setIsUploading] = React.useState(false);
 
-  const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
-  const [productImages, setProductImages] = React.useState<string[]>([]);
+  const [selectedMediaIndex, setSelectedMediaIndex] = React.useState(0);
+  const [productMedia, setProductMedia] = React.useState<MediaType[]>([]);
 
-  const [selectedImagesCount, setSelectedImagesCount] = React.useState(0);
+  const [selectedMediaCount, setSelectedMediaCount] = React.useState(0);
+  const [selectedSupplierId, setSelectedSupplierId] = React.useState<string>('');
+
+  const [suppliersLoading, setSuppliersLoading] = React.useState<boolean>(false);
 
   type schemaType = z.infer<typeof ProductSchema>;
 
@@ -65,7 +78,9 @@ export function AddProductForm({}: AddProductFormProps) {
     sizes: [],
     colors: [],
     profitMargin: '20',
+    platformProfit: role === roleOptions.ADMIN ? undefined : '0',
     supplierId: role === roleOptions.SUPPLIER ? userId : undefined,
+    published: false,
   };
 
   const {
@@ -130,14 +145,28 @@ export function AddProductForm({}: AddProductFormProps) {
   React.useEffect(() => {
     if (role === roleOptions.ADMIN) {
       const fetchSuppliers = async () => {
+        setSuppliersLoading(true);
         const response = await getSuppliers();
         if (response.success) {
           setSuppliers(response.data || []);
         }
+        setSuppliersLoading(false);
       };
       fetchSuppliers();
     }
-  }, [role]);
+  });
+
+  React.useEffect(() => {
+    if (productMedia.length > 0) {
+      const firstImageIndex = productMedia.findIndex((media) => media.type.startsWith('image/'));
+      if (firstImageIndex > 0) {
+        const reorderedMedia = [productMedia[firstImageIndex], ...productMedia.filter((_, i) => i !== firstImageIndex)];
+        setProductMedia(reorderedMedia);
+        setValue('media', reorderedMedia);
+        setSelectedMediaIndex(0);
+      }
+    }
+  }, [productMedia, setValue]);
 
   return (
     <div className="flex h-full w-full flex-col items-center gap-8 pt-2">
@@ -196,7 +225,7 @@ export function AddProductForm({}: AddProductFormProps) {
                   <span className="text-xs text-red-400">{tValidation('product-category-error')}</span>
                 )}
               </LabelInputContainer>
-              <LabelInputContainer>
+              <LabelInputContainer className="">
                 <Label htmlFor="description">{tFields('product-description')}</Label>
                 <TextEditor
                   value={getValues('description')}
@@ -237,6 +266,21 @@ export function AddProductForm({}: AddProductFormProps) {
               </LabelInputContainer>
               {role === roleOptions.ADMIN && (
                 <LabelInputContainer>
+                  <Label htmlFor="platformProfit">{tFields('product-platform-profit')}</Label>
+                  <Input
+                    {...register('platformProfit')}
+                    disabled={isLoading}
+                    id="platformProfit"
+                    placeholder={tFields('product-platform-profit')}
+                    type="text"
+                  />
+                  {errors.platformProfit && (
+                    <span className="text-xs text-red-400">{tValidation('product-platform-profit-error')}</span>
+                  )}
+                </LabelInputContainer>
+              )}
+              {role === roleOptions.ADMIN && (
+                <LabelInputContainer>
                   <Label htmlFor="profitMargin">{tFields('product-profit-margin')}</Label>
                   <Input
                     {...register('profitMargin')}
@@ -251,7 +295,11 @@ export function AddProductForm({}: AddProductFormProps) {
                 </LabelInputContainer>
               )}
               <LabelInputContainer>
-                <Label htmlFor="stock">{tFields('product-stock')}</Label>
+                <Label htmlFor="stock">
+                  {tFields('product-stock')}
+                  <span className="ml-2 text-xs text-gray-400">{t('stock-note')}</span>
+                </Label>
+
                 <Input
                   {...register('stock')}
                   disabled={isLoading}
@@ -279,39 +327,33 @@ export function AddProductForm({}: AddProductFormProps) {
               )}
               {role === roleOptions.ADMIN && (
                 <LabelInputContainer>
+                  <Label htmlFor="published">{tFields('product-published')}</Label>
+
+                  <div className="flex h-10 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    <div className="font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      {t('published-note')}
+                    </div>
+                    <Switch
+                      defaultChecked={false}
+                      onCheckedChange={(checked) => setValue('published', checked)}
+                      id="published"
+                    />
+                  </div>
+                </LabelInputContainer>
+              )}
+              {role === roleOptions.ADMIN && (
+                <LabelInputContainer>
                   <Label htmlFor="supplierId">{tFields('product-supplier')}</Label>
-                  <Select
-                    defaultValue={undefined}
-                    onValueChange={(value) => {
-                      setValue('supplierId', value);
-                    }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={tFields('product-supplier')} id="supplier" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {suppliers.length > 0 ? (
-                        <SelectGroup>
-                          {suppliers.map((supplier) => (
-                            <SelectItem key={supplier.id} value={supplier.id}>
-                              <div className="flex flex-row items-center gap-x-4">
-                                <Avatar className="h-6 w-6">
-                                  <AvatarImage
-                                    className="object-cover"
-                                    src={`${MEDIA_HOSTNAME}${supplier.image}` ?? ''}
-                                    alt={supplier?.fullName ?? ''}
-                                  />
-                                  <AvatarFallback className="text-md">{supplier?.fullName?.[0]}</AvatarFallback>
-                                </Avatar>
-                                {supplier.fullName}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      ) : (
-                        <p className="flex p-3  text-sm text-muted-foreground">{t('product-no-suppliers')}</p>
-                      )}
-                    </SelectContent>
-                  </Select>
+                  <UserCombobox
+                    users={suppliers}
+                    selectedUserId={selectedSupplierId}
+                    onSelectUser={(userId: string) => {
+                      setSelectedSupplierId(userId);
+                      setValue('supplierId', userId);
+                    }}
+                    placeholder={tFields('product-supplier-placeholder')}
+                    loading={suppliersLoading}
+                  />
                   {errors.supplierId && (
                     <span className="text-xs text-red-400">{tValidation('product-supplier-error')}</span>
                   )}
@@ -355,15 +397,15 @@ export function AddProductForm({}: AddProductFormProps) {
         <div className="flex flex-col rounded-lg border bg-background p-6 ">
           <h2 className="pb-2 text-lg font-semibold">{t('product-media')}</h2>
           <div className="pb-8 text-sm font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            {t('product-images-note')}
+            {t('product-media-note')}
           </div>
           <div className="flex w-full flex-col items-center justify-center  space-y-3">
-            {productImages.length < 5 && (
+            {productMedia.length < 7 && (
               <UploadDropzone
                 className={cn(
-                  'data-ut-button:h-11 h-full w-[15rem] rounded-md  border-muted-foreground/35 bg-background ut-button:rounded-md ut-button:border-none ut-button:bg-foreground ut-button:text-sm ut-button:font-semibold ut-button:text-background ut-button:ring-offset-background ut-button:focus-within:bg-foreground ut-button:hover:bg-foreground/80 ut-button:focus:bg-foreground ut-button:focus-visible:outline-none ut-button:focus-visible:ring-2 ut-button:focus-visible:ring-ring ut-button:focus-visible:ring-offset-2 ut-button:active:bg-foreground ut-uploading:pointer-events-none lg:w-full',
+                  'data-ut-button:h-11 h-full w-[15rem] rounded-md  border-gray-500/40  bg-background ut-button:rounded-md ut-button:border-none ut-button:bg-foreground ut-button:text-sm ut-button:font-semibold ut-button:text-background ut-button:ring-offset-background ut-button:focus-within:bg-foreground ut-button:hover:bg-foreground/80 ut-button:focus:bg-foreground ut-button:focus-visible:outline-none ut-button:focus-visible:ring-2 ut-button:focus-visible:ring-ring ut-button:focus-visible:ring-offset-2 ut-button:active:bg-foreground ut-uploading:pointer-events-none lg:w-full',
                 )}
-                endpoint={'productImages'}
+                endpoint={'productMedia'}
                 appearance={{
                   button:
                     'focus-within:ring-foreground ut-ready:bg-foreground ut-uploading:cursor-not-allowed after:bg-foreground',
@@ -381,9 +423,9 @@ export function AddProductForm({}: AddProductFormProps) {
                     if (!ready) return <IconLoader2 className="z-[5] h-5 w-5 animate-spin" />;
                     if (isDropped)
                       return (
-                        <div>
+                        <div className="">
                           {' '}
-                          {t('dropzone-start-upload-button')} {selectedImagesCount} image(s)
+                          {t('dropzone-start-upload-button')} ({selectedMediaCount})
                         </div>
                       );
                     return <div className="px-1">{t('dropzone-multi-upload-button')}</div>;
@@ -402,7 +444,7 @@ export function AddProductForm({}: AddProductFormProps) {
                   },
                 }}
                 onChange={(files) => {
-                  setSelectedImagesCount(files.length);
+                  setSelectedMediaCount(files.length);
                   setIsDropped(true);
                 }}
                 onUploadBegin={() => {
@@ -412,20 +454,33 @@ export function AddProductForm({}: AddProductFormProps) {
                   setIsDropped(false);
                   setIsUploading(false);
 
-                  if (productImages.length + res.length > 5) {
+                  const newMedia = res.map((file) => ({ key: file.key, type: file.type }));
+                  const newImages = newMedia.filter((file) => file.type.startsWith('image/'));
+                  const newVideos = newMedia.filter((file) => file.type.startsWith('video/'));
+
+                  const currentImages = productMedia.filter((media) => media.type.startsWith('image/'));
+                  const currentVideos = productMedia.filter((media) => media.type.startsWith('video/'));
+
+                  if (currentImages.length + newImages.length > 5) {
                     toast({
                       variant: 'destructive',
                       title: tValidation('error-title'),
-                      description: tValidation('images-max-error'),
+                      description: tValidation('media-max-images-error'),
+                    });
+                  } else if (currentVideos.length + newVideos.length > 2) {
+                    toast({
+                      variant: 'destructive',
+                      title: tValidation('error-title'),
+                      description: tValidation('media-max-videos-error'),
                     });
                   } else {
-                    setProductImages([...productImages, ...res.map((file) => file.key)]);
-                    setValue('images', [...productImages, ...res.map((file) => file.key)]);
+                    setProductMedia([...productMedia, ...res.map((file) => ({ key: file.key, type: file.type }))]);
+                    setValue('media', [...productMedia, ...res.map((file) => ({ key: file.key, type: file.type }))]);
 
                     toast({
                       variant: 'success',
                       title: tValidation('success-title'),
-                      description: tValidation('images-upload-success'),
+                      description: tValidation('media-upload-success'),
                     });
                   }
                 }}
@@ -435,35 +490,49 @@ export function AddProductForm({}: AddProductFormProps) {
                   toast({
                     variant: 'destructive',
                     title: tValidation('error-title'),
-                    description: tValidation('images-upload-error'),
+                    description: tValidation('media-upload-error'),
                   });
                 }}
               />
             )}
-            {productImages.length > 0 && (
-              <div className="flex w-full flex-row items-center justify-start gap-x-6 pt-2">
-                {productImages.map((image: string, index) => (
+            {productMedia.length > 0 && (
+              <div className="flex w-full flex-row flex-wrap items-center justify-start gap-x-2 pt-2">
+                {productMedia.map((media, index) => (
                   <div
                     key={index}
                     className={cn(
                       'relative cursor-pointer rounded-md border border-border p-2',
-                      selectedImageIndex === index ? 'border-[5px] border-primary' : '',
+                      selectedMediaIndex === index ? 'border-[5px] border-primary' : '',
                     )}
                     onClick={() => {
                       if (index !== 0) {
-                        const reorderedImages = [image, ...productImages.filter((_, i) => i !== index)];
-                        setProductImages(reorderedImages);
-                        setValue('images', reorderedImages);
+                        const reorderedMedia = [media, ...productMedia.filter((_, i) => i !== index)];
+                        setProductMedia(reorderedMedia);
+                        setValue('media', reorderedMedia);
                       }
-                      setSelectedImageIndex(0);
+                      setSelectedMediaIndex(0);
                     }}>
-                    <Image
-                      src={`${MEDIA_HOSTNAME}${image}`}
-                      alt={`Product Image ${index + 1}`}
-                      width={200}
-                      height={200}
-                      className={'h-[200px] w-[200px] rounded-md object-fill duration-700 ease-in-out'}
-                    />
+                    {media.type.startsWith('image/') ? (
+                      <Image
+                        src={`${MEDIA_HOSTNAME}${media.key}`}
+                        alt={`Product Image ${index + 1}`}
+                        width={200}
+                        height={200}
+                        className="h-[200px] w-[200px] rounded-md object-fill"
+                      />
+                    ) : (
+                      <div className="relative flex h-[200px] w-[300px] items-center justify-center">
+                        <ReactPlayer
+                          height="100%"
+                          width="100%"
+                          url={`${MEDIA_HOSTNAME}${media.key}`}
+                          controls={false}
+                          className="absolute"
+                        />
+                        <div className="absolute h-full w-full rounded-md bg-gray-600/50"></div>
+                        <IconPlayerPlayFilled className="absolute z-[1] h-10 w-10 text-white" />
+                      </div>
+                    )}
 
                     <Button
                       type="button"
@@ -472,10 +541,10 @@ export function AddProductForm({}: AddProductFormProps) {
                       className="absolute right-2 top-2"
                       onClick={(e) => {
                         e.stopPropagation(); // Prevents triggering the div click event
-                        const updatedImages = productImages.filter((_, i) => i !== index);
-                        setProductImages(updatedImages);
-                        setValue('images', updatedImages);
-                        if (index === 0) setSelectedImageIndex(0);
+                        const updatedmedia = productMedia.filter((m) => m.key !== media.key);
+                        setProductMedia(updatedmedia);
+                        setValue('media', updatedmedia);
+                        if (index === 0) setSelectedMediaIndex(0);
                       }}>
                       <IconTrash className="h-4 w-4" />
                     </Button>
@@ -484,7 +553,7 @@ export function AddProductForm({}: AddProductFormProps) {
               </div>
             )}
 
-            {errors.images && <span className="text-xs text-red-400">{tValidation('product-images-error')}</span>}
+            {errors.media && <span className="text-xs text-red-400">{tValidation('product-media-error')}</span>}
           </div>
         </div>
         <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-4">

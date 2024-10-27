@@ -83,13 +83,13 @@ export const ourFileRouter = {
       }
     }),
 
-  productImages: f({ image: { maxFileSize: '4MB', maxFileCount: 5 } })
+  productMedia: f({ video: { maxFileCount: 2 }, image: { maxFileSize: '4MB', maxFileCount: 5 } })
     .middleware(() => handleRole([UserRole.SUPPLIER, UserRole.ADMIN]))
     .onUploadComplete(async ({ metadata, file }) => {
       if (metadata.id) {
         try {
         } catch (error) {
-          return { error: 'image-upload-error' };
+          return { error: 'media-upload-error' };
         }
       }
     }),

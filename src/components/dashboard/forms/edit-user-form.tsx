@@ -10,7 +10,7 @@ import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { IconDeviceFloppy, IconLetterC, IconLoader2 } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconLetterC, IconLoader2, IconUser } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
 import { MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
@@ -32,7 +32,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
 
   const [isLoading, startTransition] = React.useTransition();
   const router = useRouter();
-  const t = useTranslations('dashboard.form-text');
+  const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
 
@@ -110,10 +110,13 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                 <Avatar className="h-32 w-32">
                   <AvatarImage
                     className="object-cover"
-                    src={`${MEDIA_HOSTNAME}${userData?.image}` ?? ''}
+                    src={`${MEDIA_HOSTNAME}${userData?.image}`}
                     alt={userData?.fullName ?? ''}
                   />
-                  <AvatarFallback className="text-4xl">{userData?.fullName?.[0]}</AvatarFallback>
+                  <AvatarFallback className="text-4xl">
+                    {' '}
+                    <IconUser className="h-14 w-14" />
+                  </AvatarFallback>
                 </Avatar>
                 <h1 className="text-2xl font-bold">{userData?.fullName}</h1>
               </div>

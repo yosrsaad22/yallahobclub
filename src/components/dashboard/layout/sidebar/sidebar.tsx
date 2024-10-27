@@ -9,6 +9,7 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { NavItem } from '@/types';
 import { UserRole } from '@prisma/client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { IconUser } from '@tabler/icons-react';
 
 type SidebarProps = {
   className?: string;
@@ -37,29 +38,32 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <nav
       className={cn(
-        `custom-scrollbar relative hidden h-full overflow-y-auto border-r pb-3 pt-10 ease-in-out md:flex md:flex-col`,
-        !isMinimized ? 'w-64' : 'w-[64px]',
+        `custom-scrollbar relative hidden h-full overflow-y-auto  border-r  ease-in-out lg:flex lg:flex-col`,
+        !isMinimized ? 'w-56' : 'w-[62px]',
         className,
       )}
       style={{ transition: 'width 0.2s' }}>
-      <div className="h-full space-y-4  py-4">
-        <div className="h-full px-3  py-2">
-          <div className="mt-6 h-full space-y-8">
+      <div className={cn('h-full space-y-4 py-2  text-white')}>
+        <div className="h-full px-3 ">
+          <div className={cn(' h-full space-y-6', isMinimized ? 'flex flex-col justify-start' : 'relative ')}>
             {!isMinimized && (
               <div className={'mb-5 flex flex-col items-center gap-3'}>
-                <Avatar className="h-16 w-16">
-                  <AvatarImage
-                    className="object-cover"
-                    src={`${MEDIA_HOSTNAME}${user?.image}` ?? ''}
-                    alt={user?.name ?? ''}
-                  />
-                  <AvatarFallback className="text-xl">
-                    {user!.name!.split(' ')[0][0] + user!.name!.split(' ')[1][0]}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="mt-8">
+                  <Avatar className="h-20 w-20 ">
+                    <AvatarImage
+                      className="object-cover"
+                      src={`${MEDIA_HOSTNAME}${user?.image}`}
+                      alt={user?.name ?? ''}
+                    />
+                    <AvatarFallback className="text-xl text-foreground">
+                      <IconUser className="h-9 w-9" />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+
                 <div className="flex flex-col items-center ">
                   <h1 className="text-lg font-bold">{user?.name}</h1>
-                  <p className="text-sm font-medium text-muted-foreground">{t(user?.role.toLocaleLowerCase())}</p>
+                  <p className="text-sm font-medium text-white">{t(user?.role.toLocaleLowerCase())}</p>
                 </div>
               </div>
             )}

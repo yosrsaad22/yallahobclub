@@ -39,13 +39,17 @@ export const LeadColumns: ColumnDef<DataTableLead>[] = [
       const rawValue = row.getValue('videoProgress');
       const value = typeof rawValue === 'number' ? rawValue : parseFloat(String(rawValue)) || 0;
       const roundedValue = value.toFixed(2);
-      return <div>{roundedValue} %</div>;
+      return <div className="-ml-3 w-1/2 text-right">{roundedValue} %</div>;
     },
   },
   {
     accessorKey: 'enrollNumber',
     meta: {
       columnName: 'enrollNumber',
+    },
+    cell: ({ row }) => {
+      const rawValue: string = row.getValue('enrollNumber');
+      return <div className="ml-3 w-1/2 text-center">{rawValue}</div>;
     },
   },
   {

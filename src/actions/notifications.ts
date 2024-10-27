@@ -3,15 +3,20 @@ import { db } from '@/lib/db';
 import { roleGuard } from '@/lib/auth';
 import { NotificationType, UserRole } from '@prisma/client';
 import { ActionResponse } from '@/types';
-import { getNotificationsByUserId } from '@/data/notification';
 
-export async function notifyUser(userId: string, type: NotificationType, subject?: string): Promise<ActionResponse> {
+export async function notifyUser(
+  userId: string,
+  type: NotificationType,
+  link: string,
+  subject?: string,
+): Promise<ActionResponse> {
   try {
     await db.notification.create({
       data: {
         userId,
         type,
         subject,
+        link,
       },
     });
     return { success: 'notification-send-success' };
@@ -20,7 +25,7 @@ export async function notifyUser(userId: string, type: NotificationType, subject
   }
 }
 
-export async function notifyAllAdmins(type: NotificationType, subject?: string): Promise<ActionResponse> {
+export async function notifyAllAdmins(type: NotificationType, link: string, subject?: string): Promise<ActionResponse> {
   try {
     const admins = await db.user.findMany({
       where: { role: UserRole.ADMIN },
@@ -33,6 +38,7 @@ export async function notifyAllAdmins(type: NotificationType, subject?: string):
       userId: admin.id,
       type,
       subject,
+      link,
     }));
 
     await db.notification.createMany({

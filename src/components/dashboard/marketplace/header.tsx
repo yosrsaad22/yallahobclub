@@ -1,49 +1,44 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { useCurrentRole } from '@/hooks/use-current-role';
-import { Link } from '@/navigation';
-import { IconBuildingStore, IconShoppingBag } from '@tabler/icons-react';
+import { Link, useRouter } from '@/navigation';
+import { IconBuildingStore } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
 export default function MarketplaceHeader() {
-  const t = useTranslations('dashboard.marketplace');
-  const role = useCurrentRole();
-
+  const tMarketplace = useTranslations('dashboard.marketplace');
+  const router = useRouter();
   return (
-    <div className="flex w-full flex-col gap-y-6 overflow-y-hidden ">
-      <nav className="flex h-16 items-center justify-between overflow-hidden  rounded-md border-b bg-primary px-3">
-        <div className="flex flex-row items-center space-x-2   text-white">
-          <IconBuildingStore className="h-7 w-7" />
-          <h2 className="text-3xl font-bold tracking-tight">Marketplace</h2>
-          <div className="text-normal text-md hidden flex-row items-end justify-end space-x-6 px-6 pt-1 md:flex">
+    <div className="flex animate-fade-in   flex-col gap-y-6 overflow-y-hidden ">
+      <nav className="flex h-16 items-center justify-between overflow-hidden rounded-md border border-b border-border bg-gradient-to-r from-primary via-primary/80 to-primary px-3">
+        <div className="flex flex-row items-center text-white">
+          <div
+            className="flex cursor-pointer flex-row   items-center space-x-2 text-white "
+            onClick={() => router.push('/dashboard/marketplace')}>
+            <IconBuildingStore className="h-7 w-7" />
+            <h2 className="text-2xl font-bold tracking-tight md:text-3xl">Marketplace</h2>
+          </div>
+
+          <div className="text-normal md:text-md flex flex-row items-end justify-center space-x-0 px-4 pt-1 text-sm md:space-x-6 md:px-6">
             <Link
-              className="text-white focus-visible:ring-0"
-              href={`/dashboard/${role?.toLowerCase()}/marketplace/featured`}
+              className=" hidden hover:underline focus-visible:ring-0 md:flex"
+              href={`/dashboard/marketplace`}
               passHref>
-              Featured
+              {tMarketplace('home')}
             </Link>
             <Link
-              className="text-white focus-visible:ring-0"
-              href={`/dashboard/${role?.toLowerCase()}/marketplace/all-products`}
+              className="hover:underline focus-visible:ring-0"
+              href={`/dashboard/marketplace/all-products`}
               passHref>
-              All Products
+              {tMarketplace('all-products')}
             </Link>
             <Link
-              href={`/dashboard/${role?.toLowerCase()}/marketplace/categories`}
-              className="text-white focus-visible:ring-0"
+              className=" hidden hover:underline focus-visible:ring-0 md:flex"
+              href={`/dashboard/marketplace/all-products?featured=true`}
               passHref>
-              Categories
+              {tMarketplace('featured')}
             </Link>
           </div>
-        </div>
-        <div className="relative flex items-center gap-x-3">
-          <Button
-            className="border-white bg-transparent hover:bg-white/20 focus-visible:ring-0"
-            variant={'outline'}
-            size={'icon'}>
-            <IconShoppingBag className="text-white " />
-          </Button>
         </div>
       </nav>
     </div>

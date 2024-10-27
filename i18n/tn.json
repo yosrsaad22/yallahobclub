@@ -351,7 +351,7 @@
     "title-gradient": "Formation gratuite sur le dropshipping",
     "text": "Dans cette mini-formation, vous apprendrez les fondamentaux du dropshipping et du commerce électronique, ainsi que les meilleures pratiques et stratégies pour commencer à gagner de l'argent en ligne.",
     "form-title": "Regarder la formation",
-    "form-text": "Entrez vos informations pour regarder la formation gratuite",
+    "text": "Entrez vos informations pour regarder la formation gratuite",
     "watch-button": "Commencer à regarder",
     "buy-button": "Obtenez la Formation Complète",
     "toast-title": "Merci pour votre inscription",
@@ -367,7 +367,7 @@
       "description": "Inscrivez-vous et créez votre compte"
     },
     "form-title": "Créer Votre Compte",
-    "form-text": "Entrez vos informations et choisissez un pack pour demander la création de votre compte",
+    "text": "Entrez vos informations et choisissez un pack pour demander la création de votre compte",
     "pricing-details": "Obtenez plus de détails sur nos tarifs et packs",
     "register-button": "Créer un Compte",
     "consent": "En vous inscrivant, vous acceptez notre",
@@ -381,7 +381,7 @@
       "description": "Connectez-vous à votre compte Ecomness"
     },
     "form-title": "Se Connecter À Votre Compte",
-    "form-text": "Entrez vos informations pour vous connecter à votre compte",
+    "text": "Entrez vos informations pour vous connecter à votre compte",
     "forgot-password": "Mot de passe oublié ?",
     "login-button": "Connexion",
     "register-link": "Vous n'avez pas de compte ?"
@@ -401,7 +401,7 @@
       "description": "Envoyez un E-mail de Réinitialisation de Mot de Passe pour Changer votre Mot de Passe"
     },
     "form-title": "Mot de Passe Oublié ?",
-    "form-text": "Entrez l'E-mail associé à votre compte pour recevoir un E-mail de réinitialisation de mot de passe",
+    "text": "Entrez l'E-mail associé à votre compte pour recevoir un E-mail de réinitialisation de mot de passe",
     "send-button": "Envoyer l'E-mail de Réinitialisation",
     "login-link": "Retour à la Connexion"
   },
@@ -411,7 +411,7 @@
       "description": "Réinitialisez votre Mot de Passe et Accédez à votre Compte"
     },
     "form-title": "Réinitialisez votre Mot de Passe",
-    "form-text": "Entrez votre nouveau mot de passe et confirmez-le pour le réinitialiser et accéder à votre compte",
+    "text": "Entrez votre nouveau mot de passe et confirmez-le pour le réinitialiser et accéder à votre compte",
     "reset-button": "Réinitialiser le Mot de Passe",
     "login-link": "Retour à la connexion"
   }

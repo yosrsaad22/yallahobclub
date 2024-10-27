@@ -43,9 +43,9 @@ export function MobileSidebar({ className }: SidebarProps) {
             <MenuIcon className="h-[1.4rem] w-[1.4rem]" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className=" !px-0">
-          <div className="space-y-4 py-4">
-            <div className="px-3 py-2">
+        <SheetContent side="left" className="bg-primary !px-0 text-white">
+          <div className="">
+            <div className="px-4">
               <h2 className="mb-8  text-lg font-semibold tracking-tight">Navigation</h2>
               <div className="space-y-1">
                 <DashboardNav items={translatedNavItems} isMobileNav={true} setOpen={setOpen} />

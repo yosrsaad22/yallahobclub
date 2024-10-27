@@ -26,12 +26,11 @@ interface AddUserFormProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
-  
   const role = useCurrentRole();
 
   const [isLoading, startTransition] = React.useTransition();
   const router = useRouter();
-  const t = useTranslations('dashboard.form-text');
+  const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
 

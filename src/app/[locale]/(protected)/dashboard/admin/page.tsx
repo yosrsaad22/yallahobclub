@@ -19,10 +19,10 @@ export default async function Admin() {
   const t = await getTranslations('dashboard');
 
   return (
-    <div className="h-full">
+    <div className="">
       <div className="flex-1 space-y-4 p-4 pt-6 lg:p-6">
         <div className="flex items-center space-x-2 text-3xl font-bold">
-          <IconLayoutDashboard className="h-7 w-7" stroke={2.9} />
+          <IconLayoutDashboard className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.dashboard')}</h2>
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">

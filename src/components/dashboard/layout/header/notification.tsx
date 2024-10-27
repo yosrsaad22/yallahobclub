@@ -14,8 +14,10 @@ import {
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { useNotifications } from '@/hooks/use-notifications';
 import { notificationIcons, notificationMessages } from '@/lib/constants';
+import { useRouter } from '@/navigation';
 import { Notification } from '@prisma/client';
 import { IconBell, IconLoader2 } from '@tabler/icons-react';
+import { Router } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
@@ -26,6 +28,7 @@ export default function NotificationDropdown({}: CompProps) {
   const user = useCurrentUser();
   const locale = useLocale();
   const { notifications = [], isLoading, isError, mutate } = useNotifications();
+  const router = useRouter();
 
   useEffect(() => {
     async function markRead() {
@@ -52,7 +55,7 @@ export default function NotificationDropdown({}: CompProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="md:96 custom-scrollbar mt-4 max-h-96 w-80 bg-background text-xl"
+        className=" custom-scrollbar mt-4 max-h-96 w-96 bg-background text-xl"
         align="end"
         forceMount>
         <DropdownMenuLabel className="py-2 font-normal">
@@ -69,10 +72,16 @@ export default function NotificationDropdown({}: CompProps) {
           notifications.map((notification: Notification) => {
             const IconComponent = notificationIcons[notification.type];
             return (
-              <DropdownMenuItem key={notification.id} className="min-h-14" onClick={() => setOpen(false)}>
+              <DropdownMenuItem
+                key={notification.id}
+                className="min-h-16  cursor-pointer border-b border-border"
+                onClick={() => {
+                  setOpen(false);
+                  router.push(notification.link ?? '/dashboard');
+                }}>
                 <div className="flex flex-row items-center justify-center space-x-4 px-2">
-                  <div className="rounded-full bg-primary p-2">
-                    <IconComponent className="h-6 w-6 text-white" />
+                  <div className="rounded-full border border-border bg-page p-2 text-primary">
+                    <IconComponent className="h-6 w-6 " />
                   </div>
                   <div className="flex flex-col space-y-1">
                     <p>

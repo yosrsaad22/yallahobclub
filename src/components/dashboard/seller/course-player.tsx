@@ -195,13 +195,13 @@ export function CoursePlayer({ course, chapters, userProgress }: CoursePlayerPro
           )}>
           <div className="flex flex-row items-center justify-between">
             <h1 className="text-xl font-medium">
-              {t('chapter')} {currentChapter.position}
+              {t('chapter')} {currentChapter ? currentChapter.position : 1}
             </h1>
             <Button
               onClick={handleChapterCompleted}
               size={'sm'}
               variant={'success'}
-              disabled={currentChapter?.completed}>
+              disabled={currentChapter ? currentChapter?.completed : false}>
               {isLoading ? (
                 <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />
               ) : (
@@ -264,7 +264,7 @@ export function CoursePlayer({ course, chapters, userProgress }: CoursePlayerPro
               size={'sm'}
               variant={'primary'}
               onClick={handlePreviousChapter}
-              disabled={currentChapter.id === newChapters[0].id}>
+              disabled={currentChapter ? currentChapter.id === newChapters[0].id : false}>
               <IconChevronsLeft className="mr-1 h-5 w-5" />
               {t('previous-button')}
             </Button>
@@ -272,7 +272,7 @@ export function CoursePlayer({ course, chapters, userProgress }: CoursePlayerPro
               size={'sm'}
               variant={'primary'}
               onClick={handleNextChapter}
-              disabled={currentChapter.id === newChapters[newChapters.length - 1].id}>
+              disabled={currentChapter ? currentChapter.id === newChapters[newChapters.length - 1].id : false}>
               {t('next-button')}
               <IconChevronsRight className="ml-1 h-5 w-5" />
             </Button>

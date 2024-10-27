@@ -6,7 +6,7 @@ const cleanOrphanFiles = async () => {
   const [products, chapters, users, courses] = await Promise.all([
     db.product.findMany({
       select: {
-        images: true,
+        media: true,
       },
     }),
     db.chapter.findMany({
@@ -29,7 +29,7 @@ const cleanOrphanFiles = async () => {
   const usedFiles = new Set<string>();
 
   products.forEach((product) => {
-    product.images.forEach((image) => usedFiles.add(image));
+    product.media.forEach((media) => usedFiles.add(media.key));
   });
 
   chapters.forEach((chapter) => {
@@ -47,15 +47,15 @@ const cleanOrphanFiles = async () => {
     usedFiles.add(videoKey);
   }
   const utapi = new UTApi();
-  console.log(usedFiles);
+
   const allFiles = (await utapi.listFiles()).files;
   const unusedFiles = allFiles.filter((file) => !usedFiles.has(file.key));
 
   if (unusedFiles.length > 0) {
     await utapi.deleteFiles(unusedFiles.map((file) => file.key));
-    return { success: `Deleted ${unusedFiles.length} unused files from storage.` };
+    console.log(`Deleted ${unusedFiles.length} unused files from storage.`);
   } else {
-    return { info: `No orphan files to delete found` };
+    console.log('No orphan files to delete found');
   }
 };
 

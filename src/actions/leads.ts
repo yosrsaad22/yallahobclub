@@ -27,7 +27,7 @@ export const enroll = async (values: z.infer<typeof EnrollSchema>): Promise<Acti
           enrollNumber: lead!.enrollNumber + 1,
         },
       });
-      await notifyAllAdmins(NotificationType.ADMIN_NEW_LEAD, values.fullName);
+      await notifyAllAdmins(NotificationType.ADMIN_NEW_LEAD, `/dashboard/admin/leads`, values.fullName);
       revalidatePath('/dashboard/admin/leads');
       return { success: 'enroll-success', data: lead?.id };
     } else {
@@ -40,7 +40,7 @@ export const enroll = async (values: z.infer<typeof EnrollSchema>): Promise<Acti
           videoProgress: 0,
         },
       });
-      await notifyAllAdmins(NotificationType.ADMIN_NEW_LEAD, values.fullName);
+      await notifyAllAdmins(NotificationType.ADMIN_NEW_LEAD, `/dashboard/admin/leads`, values.fullName);
       revalidatePath('/dashboard/admin/leads');
       return { success: 'enroll-success', data: lead.id };
     }

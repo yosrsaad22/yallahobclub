@@ -4,21 +4,31 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { IconCaretUpDown, IconCheck } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface ComboboxProps<T> {
   items: T[];
-  selectedItems?: T[];
+  selectedItems?: T[] | T; // Accept either an array or a single item
+  multiSelect?: boolean; // Add the multiSelect prop
   onSelect: (item: T) => void;
   placeholder: string;
   displayValue: (item: T) => string;
   itemKey: (item: T) => string;
 }
 
-export function Combobox<T>({ items, selectedItems, onSelect, placeholder, displayValue, itemKey }: ComboboxProps<T>) {
+export function Combobox<T>({
+  items,
+  selectedItems,
+  multiSelect = true, // Default to multi-select mode
+  onSelect,
+  placeholder,
+  displayValue,
+  itemKey,
+}: ComboboxProps<T>) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [buttonWidth, setButtonWidth] = useState(0);
-
+  const t = useTranslations('dashboard.tables');
   useEffect(() => {
     if (buttonRef.current) {
       const width = buttonRef.current.getBoundingClientRect().width;
@@ -39,6 +49,15 @@ export function Combobox<T>({ items, selectedItems, onSelect, placeholder, displ
     };
   }, []);
 
+  const isSelected = (item: T) => {
+    if (multiSelect) {
+      return (
+        Array.isArray(selectedItems) && selectedItems.some((selectedItem) => itemKey(selectedItem) === itemKey(item))
+      );
+    }
+    return selectedItems === item;
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -48,14 +67,24 @@ export function Combobox<T>({ items, selectedItems, onSelect, placeholder, displ
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between px-3 font-normal text-muted-foreground">
-          {placeholder}
+          {Array.isArray(selectedItems) ? (
+            placeholder
+          ) : (
+            <div>
+              {selectedItems ? (
+                <span className="text-foreground">{displayValue(selectedItems as T)}</span>
+              ) : (
+                placeholder
+              )}
+            </div>
+          )}
           <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent style={{ width: buttonWidth }} className={` p-0`}>
         <Command>
-          <CommandInput placeholder={`${placeholder.toLowerCase()}...`} className="h-9" />
-          <CommandEmpty>Aucun élément trouvé.</CommandEmpty>
+          <CommandInput placeholder={t('search')} className="h-9" />
+          <CommandEmpty>{t('no-result')}</CommandEmpty>
           <CommandGroup className="overflow-y-auto">
             <CommandList className="custom-scrollbar max-h-64 overflow-y-auto">
               {items.length !== 0 &&
@@ -69,16 +98,7 @@ export function Combobox<T>({ items, selectedItems, onSelect, placeholder, displ
                       setOpen(false);
                     }}>
                     {displayValue(item)}
-                    {selectedItems && (
-                      <IconCheck
-                        className={cn(
-                          'ml-auto h-4 w-4',
-                          selectedItems.some((selectedItem) => itemKey(selectedItem) === itemKey(item))
-                            ? 'opacity-100'
-                            : 'opacity-0',
-                        )}
-                      />
-                    )}
+                    {isSelected(item) && <IconCheck className="ml-auto h-4 w-4 opacity-100" />}
                   </CommandItem>
                 ))}
             </CommandList>

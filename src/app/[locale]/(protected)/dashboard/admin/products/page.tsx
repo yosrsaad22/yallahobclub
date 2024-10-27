@@ -7,6 +7,16 @@ import { getTranslations } from 'next-intl/server';
 import { AdminProductColumns } from '@/components/dashboard/table/columns/products-columns';
 import { bulkDeleteProducts, deleteProduct, getProducts } from '@/actions/products';
 
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'dashboard' });
+
+  return {
+    title: 'Ecomness - ' + t('pages.products'),
+    description: t('metadata.description'),
+    keywords: ['Dropshipping Tunisie', 'Formation Dropshipping', 'Platforme Dropshipping', 'E-commerce'],
+  };
+}
+
 export default async function Products() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.products'), link: '/dashboard/admin/products' }];
@@ -26,11 +36,11 @@ export default async function Products() {
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center space-x-2 text-3xl font-bold">
-          <IconBoxSeam className="h-7 w-7" stroke={2.9} />
+          <IconBoxSeam className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.products')}</h2>
         </div>
         <DataTable

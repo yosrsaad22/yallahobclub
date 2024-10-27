@@ -34,7 +34,7 @@ export const AddChapterDialog: React.FC<AddChapterDialogProps> = ({ onChapterAdd
   const [isLoading, startTransition] = useTransition();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isVideoUploaded, setIsVideoUploaded] = useState(false);
-  const t = useTranslations('dashboard.form-text');
+  const t = useTranslations('dashboard.text');
   const tCourse = useTranslations('dashboard.course');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
@@ -90,7 +90,7 @@ export const AddChapterDialog: React.FC<AddChapterDialogProps> = ({ onChapterAdd
               {!getValues('video') && (
                 <UploadDropzone
                   className={cn(
-                    'data-ut-button:h-11 h-full w-[15rem]  rounded-md bg-background ut-button:rounded-md ut-button:border-none ut-button:bg-foreground ut-button:text-sm ut-button:font-semibold ut-button:text-background ut-button:ring-offset-background ut-button:focus-within:bg-foreground ut-button:hover:bg-foreground/80 ut-button:focus:bg-foreground ut-button:focus-visible:outline-none ut-button:focus-visible:ring-2 ut-button:focus-visible:ring-ring ut-button:focus-visible:ring-offset-2 ut-button:active:bg-foreground ut-uploading:pointer-events-none lg:w-full',
+                    'data-ut-button:h-11 h-full w-[15rem] rounded-md  border-gray-500/40 bg-background ut-button:rounded-md ut-button:border-none ut-button:bg-foreground ut-button:text-sm ut-button:font-semibold ut-button:text-background ut-button:ring-offset-background ut-button:focus-within:bg-foreground ut-button:hover:bg-foreground/80 ut-button:focus:bg-foreground ut-button:focus-visible:outline-none ut-button:focus-visible:ring-2 ut-button:focus-visible:ring-ring ut-button:focus-visible:ring-offset-2 ut-button:active:bg-foreground ut-uploading:pointer-events-none lg:w-full',
                   )}
                   endpoint={'chapterVideo'}
                   appearance={{

@@ -91,14 +91,14 @@ export const HeroParallax = ({
 export const Header = () => {
   const t = useTranslations('home.cta');
   return (
-    <div className="left-0 right-0 top-0 z-[10] mx-auto flex w-full  max-w-7xl flex-col items-center justify-center px-4 py-20 text-center md:py-40">
-      <h2 className="text-gradient translate-y-[40%] px-8 py-[3rem] text-center text-4xl font-medium leading-snug [transition:transform_1000ms_cubic-bezier(0.3,_1.17,_0.55,_0.99)_0s] md:px-32 md:text-[3.5rem] [.is-visible_&]:translate-y-0">
+    <div className="left-0 right-0 top-0 z-[10] mx-auto flex w-full  max-w-7xl flex-col items-center justify-center px-4 py-24 text-center md:py-40">
+      <h2 className="text-gradient mb-2 translate-y-[40%] px-6 py-[3rem] text-center text-3xl font-medium leading-snug [transition:transform_1000ms_cubic-bezier(0.3,_1.17,_0.55,_0.99)_0s] md:px-32 md:text-[3.5rem] [.is-visible_&]:translate-y-0">
         {t('title1')} <br /> {t('title2')}
       </h2>
-      <p className="text-md mx-auto mb-4 mt-[5rem] px-8 text-center font-normal text-foreground/90 md:w-[80%] md:px-32 md:text-xl ">
+      <p className="text-md mx-auto mb-8 mt-[5rem] px-6 text-center font-normal text-foreground/90 md:w-[80%] md:px-32 md:text-xl ">
         {t('text')}
       </p>
-      <div className="mt-10">
+      <div className="mt-14">
         <GradientLinkButton
           innerClassName="bg-background hover:bg-gray-800 active:bg-gray-800"
           size={'lg'}

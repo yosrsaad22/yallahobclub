@@ -10,7 +10,7 @@ import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { IconCircleCheck, IconCircleCheckFilled, IconDeviceFloppy, IconLoader2 } from '@tabler/icons-react';
+import { IconCircleCheck, IconCircleCheckFilled, IconDeviceFloppy, IconLoader2, IconUser } from '@tabler/icons-react';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { userEditSettings } from '@/actions/settings';
 import { toast } from '@/components/ui/use-toast';
@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 interface UserSettingsFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function UserSettingsForm({ className }: UserSettingsFormProps) {
   const [isLoading, startTransition] = React.useTransition();
-  const t = useTranslations('dashboard.form-text');
+  const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
   const user = useCurrentUser();
@@ -76,11 +76,11 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
             <Avatar className="h-32 w-32">
               <AvatarImage
                 className="object-cover"
-                src={`${MEDIA_HOSTNAME}${user?.image}` ?? ''}
+                src={`${MEDIA_HOSTNAME}${user?.image}`}
                 alt={user?.name ?? ''}
               />
               <AvatarFallback className="text-4xl">
-                {user!.name!.split(' ')[0][0] + user!.name!.split(' ')[1][0]}
+                <IconUser className="h-14 w-14" />
               </AvatarFallback>
             </Avatar>
             <h1 className="text-2xl font-bold">{user?.name}</h1>
@@ -311,7 +311,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
             </div>
           </div>
         )}
-        <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-12 pt-4">
+        <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-4">
           <Button type="submit" size="default" disabled={isLoading}>
             {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
             {!isLoading && <IconDeviceFloppy className="mr-2 h-5 w-5 " />}

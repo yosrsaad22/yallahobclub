@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import { IconLoader2, IconMoon, IconSun } from '@tabler/icons-react';
+import { IconCoins, IconLoader2, IconMoon, IconSun, IconUser } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { useCurrentRole } from '@/hooks/use-current-role';
@@ -40,13 +40,9 @@ export function UserNav() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative  rounded-full">
               <Avatar className="h-9 w-9">
-                <AvatarImage
-                  className="object-cover"
-                  src={`${MEDIA_HOSTNAME}${user?.image}` ?? ''}
-                  alt={user.name ?? ''}
-                />
+                <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${user?.image}`} alt={user.name ?? ''} />
                 <AvatarFallback className="text-sm">
-                  {user.name!.split(' ')[0][0] + user.name!.split(' ')[1][0]}
+                  <IconUser className="h-5 w-5" />
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -59,7 +55,23 @@ export function UserNav() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup className="text-sm">
+            <DropdownMenuGroup className="text-sm ">
+              {(role === 'SELLER' || role === 'SUPPLIER') && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setOpen(false);
+                    router.replace(`/dashboard/${role?.toLowerCase()}/transactions`);
+                  }}>
+                  {t('user-nav.balance')}
+
+                  <DropdownMenuShortcut>
+                    <div className="flex flex-row items-center gap-x-1 font-semibold">
+                      <IconCoins className={cn('h-[1rem] w-[1rem]')} />
+                      <p>{user.balance} TND</p>
+                    </div>
+                  </DropdownMenuShortcut>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={() => {
                   setOpen(false);
