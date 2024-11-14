@@ -18,8 +18,7 @@ import bcrypt from 'bcryptjs';
 import { notifyAllAdmins } from './notifications';
 import { NotificationType, UserRole } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { capitalizeWords } from '@/lib/utils';
-import { roleGuard } from '@/lib/auth';
+import { capitalizeWords, generateCode } from '@/lib/utils';
 
 export const register = async (values: z.infer<typeof RegisterSchema>): Promise<ActionResponse> => {
   const hashedPassword = await bcrypt.hash(values.password, 10);
@@ -35,6 +34,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
  */
   const newUser = await db.user.create({
     data: {
+      code: 'ENSE-' + generateCode(),
       fullName: capitalizeWords(values.fullName.trim()),
       email: values.email.trim(),
       number: values.number,
@@ -80,15 +80,15 @@ export const login = async (values: z.infer<typeof LoginSchema>): Promise<Action
     return { data: existingUser.role };
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.cause?.err?.constructor) {
-        case BadCredentialsError:
-          return { error: error.cause?.err?.message };
-        case EmailNotVerifiedError:
+      switch (error.message) {
+        case 'bad-credentials-error':
+          return { error: 'bad-credentials-error' };
+        case 'email-not-verified-error':
           const verificationToken = await generateEmailVerificationToken(values.email);
           await sendEmailVerificationEmail(existingUser.fullName, verificationToken.email, verificationToken.token);
-          return { error: error.cause?.err?.message };
-        case UserNotActiveError:
-          return { error: error.cause?.err?.message };
+          return { error: 'email-not-verified-error' };
+        case 'user-not-active-error':
+          return { error: 'user-not-active-error' };
         default:
           return { error: 'unknown-error' };
       }

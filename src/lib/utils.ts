@@ -13,7 +13,7 @@ export function translateColumnHeader(prefix: string, columnKey: string, tFields
 export function formatDate(date: Date) {
   const d = new Date(date);
   const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0'); 
+  const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear();
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
@@ -23,4 +23,13 @@ export function formatDate(date: Date) {
 
 export function capitalizeWords(str: string) {
   return str.replace(/\b\w/g, (match) => match.toUpperCase());
+}
+
+export function generateCode(length: number = 8): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < length; i++) {
+    code += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return code;
 }

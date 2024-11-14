@@ -20,7 +20,7 @@ export function DataTableViewOptions<TData>({ prefix, table }: DataTableViewOpti
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="default" className="ml-auto hidden lg:flex">
+        <Button variant="outline" size="default" className="ml-auto hidden px-3 lg:flex">
           <IconAdjustmentsHorizontal className="mr-2 h-5 w-5" />
           {t('view')}
         </Button>

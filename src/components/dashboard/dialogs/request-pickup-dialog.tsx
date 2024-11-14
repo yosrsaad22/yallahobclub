@@ -32,6 +32,8 @@ export const RequestPickupDialog: React.FC<RequestPickupDialogProps> = ({
 
   return (
     <Dialog
+      showCloseButton={false}
+      enableInteractOutside={false}
       title={t('dialogs.pickup-title')}
       description={t('dialogs.pickup-text', { subject: orderNumber })}
       isOpen={isOpen}

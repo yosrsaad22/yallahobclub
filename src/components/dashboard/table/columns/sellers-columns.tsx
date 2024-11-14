@@ -59,6 +59,12 @@ export const SellerColumns: ColumnDef<DataTableUser>[] = [
     },
   },
   {
+    accessorKey: 'code',
+    meta: {
+      columnName: 'code',
+    },
+  },
+  {
     accessorKey: 'fullName',
     meta: {
       columnName: 'Fullname',
@@ -86,12 +92,17 @@ export const SellerColumns: ColumnDef<DataTableUser>[] = [
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'balance',
     meta: {
-      columnName: 'createdAt',
+      columnName: 'balance',
     },
     cell: ({ row }) => {
-      return <div className="flex ">{formatDate(row.getValue('createdAt'))}</div>;
+      const balance: number = row.getValue('balance');
+      return (
+        <div className="">
+          <p className={` font-semibold ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>{balance} TND</p>
+        </div>
+      );
     },
   },
   {

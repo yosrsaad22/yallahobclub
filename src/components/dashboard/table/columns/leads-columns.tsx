@@ -57,8 +57,6 @@ export const LeadColumns: ColumnDef<DataTableLead>[] = [
     meta: {
       columnName: 'createdAt',
     },
-    cell: ({ row }) => {
-      return <div className="flex ">{formatDate(row.getValue('createdAt'))}</div>;
-    },
+    accessorFn: (row: any) => formatDate(row.createdAt),
   },
 ];

@@ -13,13 +13,14 @@ import { Input } from '@/components/ui/input';
 import { IconDeviceFloppy, IconLoader2, IconUserPlus } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
-import { DEFAULT_PASSWORD, packOptions, roleOptions } from '@/lib/constants';
+import { cities, DEFAULT_PASSWORD, packOptions, roleOptions } from '@/lib/constants';
 import { ActionResponse } from '@/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useRouter } from '@/navigation';
 import { addUser } from '@/actions/users';
 import { useCurrentRole } from '@/hooks/use-current-role';
+import { Combobox } from '@/components/ui/combobox';
 
 interface AddUserFormProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultRole: roleOptions;
@@ -33,7 +34,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
   const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
-
+  const [city, setCity] = React.useState<string>();
   type schemaType = z.infer<typeof UserSchema>;
 
   let defaultValues;
@@ -72,7 +73,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
             title: tValidation('success-title'),
             description: tValidation(res.success),
           });
-          router.push(`/dashboard/${role?.toLowerCase()}/users`);
+          router.push(`/dashboard/${role?.toLowerCase()}/${data.role?.toLowerCase()}s`);
         } else {
           toast({
             variant: 'destructive',
@@ -135,6 +136,22 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                   type="tel"
                 />
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Combobox
+                  items={cities}
+                  selectedItems={city}
+                  onSelect={(selectedItem: string) => {
+                    setCity(selectedItem);
+                    setValue('city', selectedItem);
+                  }}
+                  placeholder={tFields('user-city-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => cities.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="address">{tFields('user-address')}</Label>

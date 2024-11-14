@@ -1,5 +1,5 @@
 import Breadcrumb from '@/components/ui/breadcrumb';
-import { IconTruckDelivery } from '@tabler/icons-react';
+import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import NotFound from '@/app/[locale]/[...not_found]/page';
@@ -51,7 +51,7 @@ export default async function OrderDetails({ params }: OrderDetailsProps) {
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-row items-center space-x-2 text-3xl font-bold">
-            <IconTruckDelivery className="h-7 w-7" />
+            <IconShoppingCart className="h-7 w-7" />
             <h2 className="tracking-tight">{t('pages.order-details')}</h2>
           </div>
         </div>

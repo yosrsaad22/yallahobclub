@@ -32,12 +32,16 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   onDelete: DataTableHandlers['onDelete'] | undefined;
   onBulkDelete: DataTableHandlers['onBulkDelete'] | undefined;
   onRequestPickup?: DataTableHandlers['onRequestPickup'] | undefined;
+  onPrintPickup?: DataTableHandlers['onPrintPickup'] | undefined;
+  onAddTransaction?: DataTableHandlers['onAddTransaction'] | undefined;
   redirectToDetails?: boolean;
   showActions?: boolean;
   showAddButton?: boolean;
   showBulkDeleteButton?: boolean;
   showCreatePickupButton?: boolean;
+  showPrintPickupButton?: boolean;
   showSelect?: boolean;
+  showAddTransactionButton?: boolean;
 }
 
 export function DataTable<TData extends { id: string }, TValue>({
@@ -48,12 +52,16 @@ export function DataTable<TData extends { id: string }, TValue>({
   onDelete,
   onBulkDelete,
   onRequestPickup = undefined,
+  onPrintPickup = undefined,
   redirectToDetails = true,
   showActions = true,
   showAddButton = true,
   showSelect = true,
+  showPrintPickupButton = false,
   showBulkDeleteButton = true,
   showCreatePickupButton = false,
+  showAddTransactionButton = false,
+  onAddTransaction = undefined,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -98,13 +106,14 @@ export function DataTable<TData extends { id: string }, TValue>({
 
     columns = [...columns, actionsColumn];
   }
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     rowCount: data.length,
-    initialState: { pagination: { pageSize: 5 } },
+    initialState: { pagination: { pageSize: 8 } },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -122,7 +131,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   React.useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
-      table.setPageSize(isMobile ? 8 : 5);
+      table.setPageSize(isMobile ? 8 : 8);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -138,10 +147,14 @@ export function DataTable<TData extends { id: string }, TValue>({
         showAddButton={showAddButton}
         showBulkDeleteButton={showBulkDeleteButton}
         showCreatePickupButton={showCreatePickupButton}
+        showPrintPickupButton={showPrintPickupButton}
+        showAddTransactionButton={showAddTransactionButton}
         tag={tag}
         table={table}
         onBulkDelete={onBulkDelete}
         onRequestPickup={onRequestPickup}
+        onPrintPickup={onPrintPickup}
+        onAddTransaction={onAddTransaction}
       />
       <div className="custom-scrollbar overflow-x-auto rounded-md border bg-background">
         <div className="inline-block min-w-full align-middle">
@@ -181,7 +194,10 @@ export function DataTable<TData extends { id: string }, TValue>({
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                  <TableRow
+                    className={cn(redirectToDetails ? 'cursor-pointer' : 'pointer-events-auto')}
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         onClick={() => {

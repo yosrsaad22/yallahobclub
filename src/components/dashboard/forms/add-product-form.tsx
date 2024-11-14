@@ -101,7 +101,6 @@ export function AddProductForm({}: AddProductFormProps) {
             title: tValidation('success-title'),
             description: tValidation(res.success),
           });
-
           router.push(`/dashboard/${role?.toLowerCase()}/products`);
         } else {
           toast({
@@ -154,7 +153,8 @@ export function AddProductForm({}: AddProductFormProps) {
       };
       fetchSuppliers();
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role]);
 
   React.useEffect(() => {
     if (productMedia.length > 0) {
@@ -266,7 +266,7 @@ export function AddProductForm({}: AddProductFormProps) {
               </LabelInputContainer>
               {role === roleOptions.ADMIN && (
                 <LabelInputContainer>
-                  <Label htmlFor="platformProfit">{tFields('product-platform-profit')}</Label>
+                  <Label htmlFor="platformProfit">{tFields('product-platform-profit')} (TND)</Label>
                   <Input
                     {...register('platformProfit')}
                     disabled={isLoading}

@@ -17,9 +17,10 @@ import { CompanyInfo } from '@prisma/client';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
 import { UploadButton } from '@/lib/uploadthing';
-import { MEDIA_HOSTNAME } from '@/lib/constants';
+import { cities, MEDIA_HOSTNAME } from '@/lib/constants';
 import { useSession } from 'next-auth/react';
 import { ActionResponse } from '@/types';
+import { Combobox } from '@/components/ui/combobox';
 
 interface AdminSettingsFormProps extends React.HTMLAttributes<HTMLDivElement> {
   companyInfo: CompanyInfo | null;
@@ -33,11 +34,13 @@ export function AdminSettingsForm({ className, companyInfo }: AdminSettingsFormP
   const session = useSession();
 
   type schemaType = z.infer<typeof AdminSettingsSchema>;
+  const [city, setCity] = React.useState<string>(user?.city ?? '');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<schemaType>({ resolver: zodResolver(AdminSettingsSchema) });
 
   const onSubmit: SubmitHandler<schemaType> = async (data, event) => {
@@ -166,6 +169,22 @@ export function AdminSettingsForm({ className, companyInfo }: AdminSettingsFormP
                   type="text"
                 />
                 {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Combobox
+                  items={cities}
+                  selectedItems={city}
+                  onSelect={(selectedItem: string) => {
+                    setCity(selectedItem);
+                    setValue('city', selectedItem);
+                  }}
+                  placeholder={tFields('user-city-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => cities.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
               </LabelInputContainer>
             </div>
           </div>

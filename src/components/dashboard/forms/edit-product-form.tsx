@@ -162,7 +162,8 @@ export function EditProductForm({ productData }: EditProductFormProps) {
       };
       fetchSuppliers();
     }
-  });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role]);
 
   const [isClient, setIsClient] = React.useState(false);
 
@@ -198,6 +199,18 @@ export function EditProductForm({ productData }: EditProductFormProps) {
           <div className="flex flex-col">
             <h2 className="pb-4 text-lg font-semibold">{t('product-information')}</h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {role === roleOptions.ADMIN && (
+                <LabelInputContainer>
+                  <Label htmlFor="code">{tFields('product-code')}</Label>
+                  <Input
+                    id="code"
+                    disabled
+                    defaultValue={productData?.code}
+                    placeholder={tFields('product-code')}
+                    type="text"
+                  />
+                </LabelInputContainer>
+              )}
               <LabelInputContainer>
                 <Label htmlFor="name">{tFields('product-name')}</Label>
                 <Input
@@ -280,7 +293,7 @@ export function EditProductForm({ productData }: EditProductFormProps) {
               </LabelInputContainer>
               {role === roleOptions.ADMIN && (
                 <LabelInputContainer>
-                  <Label htmlFor="platformProfit">{tFields('product-platform-profit')}</Label>
+                  <Label htmlFor="platformProfit">{tFields('product-platform-profit')} (TND)</Label>
                   <Input
                     {...register('platformProfit')}
                     disabled={isLoading}

@@ -20,7 +20,7 @@ import {
   IconPlayerPlayFilled,
   IconShirt,
   IconShoppingCartPlus,
-  IconTruckDelivery,
+  IconShoppingCart,
   IconTruckLoading,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
@@ -412,7 +412,7 @@ export default function ProductDetailsCard(product: ProductDetailsProps) {
 
         <div className="flex h-full w-full flex-col items-start justify-start space-y-4 rounded-md  border border-border bg-background p-4 text-lg text-foreground">
           <p className="flex items-center justify-start gap-x-2 text-xl font-semibold">
-            <IconTruckDelivery />
+            <IconShoppingCart />
             {tFields('product-delivery')}
           </p>
           <div className="h-full w-full rounded-md border border-border p-2">

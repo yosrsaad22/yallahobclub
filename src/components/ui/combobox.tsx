@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { IconCaretUpDown, IconCheck } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
+import { AceternityButton } from './aceternity-button';
 
 interface ComboboxProps<T> {
   items: T[];
@@ -14,16 +15,18 @@ interface ComboboxProps<T> {
   placeholder: string;
   displayValue: (item: T) => string;
   itemKey: (item: T) => string;
+  isDark?: boolean;
 }
 
 export function Combobox<T>({
   items,
   selectedItems,
-  multiSelect = true, // Default to multi-select mode
+  multiSelect = true,
   onSelect,
   placeholder,
   displayValue,
   itemKey,
+  isDark = false,
 }: ComboboxProps<T>) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -61,32 +64,53 @@ export function Combobox<T>({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          ref={buttonRef}
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between px-3 font-normal text-muted-foreground">
-          {Array.isArray(selectedItems) ? (
-            placeholder
-          ) : (
-            <div>
-              {selectedItems ? (
-                <span className="text-foreground">{displayValue(selectedItems as T)}</span>
-              ) : (
-                placeholder
-              )}
-            </div>
-          )}
-          <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        {isDark ? (
+          <AceternityButton
+            ref={buttonRef}
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between px-3 font-normal text-muted-foreground">
+            {Array.isArray(selectedItems) ? (
+              placeholder
+            ) : (
+              <div>
+                {selectedItems ? (
+                  <span className="text-foreground">{displayValue(selectedItems as T)}</span>
+                ) : (
+                  placeholder
+                )}
+              </div>
+            )}
+            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </AceternityButton>
+        ) : (
+          <Button
+            ref={buttonRef}
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between px-3 font-normal text-muted-foreground">
+            {Array.isArray(selectedItems) ? (
+              placeholder
+            ) : (
+              <div>
+                {selectedItems ? (
+                  <span className="text-foreground">{displayValue(selectedItems as T)}</span>
+                ) : (
+                  placeholder
+                )}
+              </div>
+            )}
+            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        )}
       </PopoverTrigger>
-      <PopoverContent style={{ width: buttonWidth }} className={` p-0`}>
+      <PopoverContent style={{ width: buttonWidth }} className={`${isDark ? 'bg-[#1f2937] text-[#9ca3af]' : ''} p-0`}>
         <Command>
-          <CommandInput placeholder={t('search')} className="h-9" />
+          <CommandInput placeholder={t('search')} className="h-9 " />
           <CommandEmpty>{t('no-result')}</CommandEmpty>
-          <CommandGroup className="overflow-y-auto">
-            <CommandList className="custom-scrollbar max-h-64 overflow-y-auto">
+          <CommandGroup className="overflow-y-auto ">
+            <CommandList className="custom-scrollbar max-h-64 overflow-y-auto ">
               {items.length !== 0 &&
                 items.map((item) => (
                   <CommandItem

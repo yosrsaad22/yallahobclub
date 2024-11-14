@@ -44,10 +44,12 @@ export default {
         session.user.image = token.image as string;
         session.user.number = token.number as string;
         session.user.address = token.address as string;
+        session.user.city = token.city as string;
         session.user.pack = token.pack as string;
         session.user.active = token.active as boolean;
         session.user.boarded = token.boarded as boolean;
         session.user.paid = token.paid as boolean;
+        session.user.code = token.code as string;
         session.user.rib = token.rib as string;
         session.user.balance = token.balance as number;
       }
@@ -63,10 +65,12 @@ export default {
       token.image = existingUser.image;
       token.number = existingUser.number;
       token.address = existingUser.address;
+      token.city = existingUser.city;
       token.pack = existingUser.pack;
       token.active = existingUser.active;
       token.boarded = existingUser.boarded;
       token.paid = existingUser.paid;
+      token.code = existingUser.code;
       token.rib = existingUser.rib;
       token.balance = existingUser.balance;
 

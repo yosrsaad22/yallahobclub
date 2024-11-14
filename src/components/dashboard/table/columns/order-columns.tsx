@@ -3,16 +3,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MEDIA_HOSTNAME, orderStatuses } from '@/lib/constants';
 import { IconUser } from '@tabler/icons-react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Order, User } from '@prisma/client';
+import { Order, SubOrder, User } from '@prisma/client';
 import { useTranslations } from 'next-intl';
 import { formatDate } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 const StatusCell = ({ status }: { status: string }) => {
   const tStatuses = useTranslations('dashboard.order-statuses');
-  const statusObj = orderStatuses.find((s) => s.Key === status) ?? orderStatuses.find((s) => s.Key === 'n-a');
+  const statusObj = orderStatuses.find((s) => s.Key === status) ?? orderStatuses.find((s) => s.Key === 'n-a-SH017');
 
   if (!statusObj) return null;
-  return <div className={`mr-3 inline-flex rounded-full px-3 py-1 ${statusObj.Color}`}>{tStatuses(statusObj.Key)}</div>;
+  return (
+    <div className={`mr-3 inline-flex w-auto  rounded-full px-3 py-1 ${statusObj.Color}`}>
+      <p className="mx-auto">{tStatuses(statusObj.Key)}</p>
+    </div>
+  );
 };
 
 const UserCell = ({ user }: { user: User }) => {
@@ -40,24 +45,42 @@ const UserCell = ({ user }: { user: User }) => {
   );
 };
 
-export const SellerOrderColumns: ColumnDef<Order>[] = [
+const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText: string; falseText: string }) => {
+  const tFields = useTranslations('fields');
+  if (!value) {
+    return (
+      <div className="flex w-[100px] items-center justify-start">
+        <Badge className="text-md px-3 py-1 font-normal" variant={'destructive'}>
+          {tFields(falseText)}
+        </Badge>
+      </div>
+    );
+  }
+  return (
+    <div className="flex w-[100px] items-center justify-start">
+      <Badge className="text-md px-3 py-1 font-normal" variant={'success'}>
+        {tFields(trueText)}
+      </Badge>
+    </div>
+  );
+};
+
+export const SellerOrderColumns: ColumnDef<Order & { subOrders: SubOrder[]; statuses: string[] }>[] = [
   {
     accessorKey: 'createdAt',
     meta: {
       columnName: 'CreatedAt',
     },
-    cell: ({ row }) => {
-      return <div className="flex w-full ">{formatDate(row.getValue('createdAt'))}</div>;
-    },
+    accessorFn: (row: any) => formatDate(row.createdAt),
   },
   {
-    accessorKey: 'deliveryId',
+    accessorKey: 'code',
     meta: {
-      columnName: 'deliveryId',
+      columnName: 'code',
     },
     cell: ({ row }) => {
-      const id: string = row.getValue<string>('deliveryId');
-      return <div className="w-full max-w-[180px] truncate">{id}</div>;
+      const code: string = row.getValue<string>('code');
+      return <div className="w-full max-w-[180px] truncate">{code}</div>;
     },
   },
   {
@@ -95,14 +118,45 @@ export const SellerOrderColumns: ColumnDef<Order>[] = [
     },
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'subOrders',
     enableSorting: true,
     meta: {
-      columnName: 'status',
+      columnName: 'subOrders',
+    },
+    accessorFn: (row: any) =>
+      Array.isArray(row.subOrders)
+        ? row.subOrders.map((subOrder: SubOrder) => subOrder.deliveryId + subOrder.code).join(', ')
+        : '',
+    cell: ({ row }) => {
+      const subOrders = row.original.subOrders.map((subOrder: SubOrder) =>
+        subOrder.deliveryId ? subOrder.code : 'N/A',
+      );
+      return (
+        <div className="flex flex-col flex-wrap gap-x-2">
+          {subOrders.map((subOrder: string, index: number) => (
+            <div key={index} className="flex flex-row gap-x-1">
+              <p>{subOrder}</p>
+            </div>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'statuses',
+    enableSorting: true,
+    meta: {
+      columnName: 'statuses',
     },
     cell: ({ row }) => {
-      const status = row.getValue<string>('status');
-      return <StatusCell status={status} />;
+      const statuses = row.original.statuses;
+      return (
+        <div className="flex w-fit flex-col gap-2">
+          {statuses.map((status, index) => (
+            <StatusCell key={index} status={status} />
+          ))}
+        </div>
+      );
     },
   },
   {
@@ -116,26 +170,34 @@ export const SellerOrderColumns: ColumnDef<Order>[] = [
       return <div>{total} TND</div>;
     },
   },
+  {
+    accessorKey: 'paid',
+    meta: {
+      columnName: 'Paid',
+    },
+    cell: ({ row }) => {
+      const value: boolean = row.getValue('paid');
+      return <BooleanCell value={value} trueText={'user-paid'} falseText={'user-not-paid'} />;
+    },
+  },
 ];
 
-export const SupplierOrderColumns: ColumnDef<Order>[] = [
+export const SupplierOrderColumns: ColumnDef<Order & { subOrders: SubOrder[]; statuses: string[] }>[] = [
   {
     accessorKey: 'createdAt',
     meta: {
       columnName: 'CreatedAt',
     },
-    cell: ({ row }) => {
-      return <div className="flex w-full ">{formatDate(row.getValue('createdAt'))}</div>;
-    },
+    accessorFn: (row: any) => formatDate(row.createdAt),
   },
   {
-    accessorKey: 'deliveryId',
+    accessorKey: 'code',
     meta: {
-      columnName: 'deliveryId',
+      columnName: 'code',
     },
     cell: ({ row }) => {
-      const id: string = row.getValue<string>('deliveryId');
-      return <div className="w-full max-w-[180px] truncate">{id}</div>;
+      const code: string = row.getValue<string>('code');
+      return <div className="w-full max-w-[180px] truncate">{code}</div>;
     },
   },
   {
@@ -173,36 +235,73 @@ export const SupplierOrderColumns: ColumnDef<Order>[] = [
     },
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'subOrders',
     enableSorting: true,
     meta: {
-      columnName: 'status',
+      columnName: 'subOrders',
+    },
+    accessorFn: (row: any) =>
+      Array.isArray(row.subOrders)
+        ? row.subOrders.map((subOrder: SubOrder) => subOrder.deliveryId + subOrder.code).join(', ')
+        : '',
+    cell: ({ row }) => {
+      const subOrders = row.original.subOrders.map((subOrder: SubOrder) =>
+        subOrder.deliveryId ? subOrder.code : 'N/A',
+      );
+      return (
+        <div className="flex flex-col flex-wrap gap-x-2">
+          {subOrders.map((subOrder: string, index: number) => (
+            <div key={index} className="flex flex-row gap-x-1">
+              <p>{subOrder}</p>
+            </div>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'statuses',
+    enableSorting: true,
+    meta: {
+      columnName: 'statuses',
     },
     cell: ({ row }) => {
-      const status = row.getValue<string>('status');
-      return <StatusCell status={status} />;
+      const statuses = row.original.statuses;
+      return (
+        <div className="flex w-fit flex-col gap-2">
+          {statuses.map((status, index) => (
+            <StatusCell key={index} status={status} />
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'paid',
+    meta: {
+      columnName: 'Paid',
+    },
+    cell: ({ row }) => {
+      const value: boolean = row.getValue('paid');
+      return <BooleanCell value={value} trueText={'user-paid'} falseText={'user-not-paid'} />;
     },
   },
 ];
 
-export const AdminOrderColumns: ColumnDef<Order & { seller: User; fullName: string }>[] = [
+export const AdminOrderColumns: ColumnDef<
+  Order & { subOrders: SubOrder[]; statuses: string[]; seller: User; fullName: string }
+>[] = [
   {
     accessorKey: 'createdAt',
     meta: {
       columnName: 'CreatedAt',
     },
-    cell: ({ row }) => {
-      return <div className="flex w-full ">{formatDate(row.getValue('createdAt'))}</div>;
-    },
+    accessorFn: (row: any) => formatDate(row.createdAt),
   },
   {
-    accessorKey: 'deliveryId',
+    accessorKey: 'code',
     meta: {
-      columnName: 'deliveryId',
-    },
-    cell: ({ row }) => {
-      const id: string = row.getValue<string>('deliveryId');
-      return <div className="w-full max-w-[180px] truncate">{id}</div>;
+      columnName: 'code',
     },
   },
   {
@@ -223,47 +322,72 @@ export const AdminOrderColumns: ColumnDef<Order & { seller: User; fullName: stri
     },
   },
   {
-    accessorKey: 'city',
-    meta: {
-      columnName: 'city',
-    },
-  },
-
-  {
-    accessorKey: 'status',
-    enableSorting: true,
-    meta: {
-      columnName: 'status',
-    },
-    cell: ({ row }) => {
-      const status = row.getValue<string>('status');
-      return <StatusCell status={status} />;
-    },
-  },
-  {
-    accessorKey: 'total',
-    enableSorting: true,
-    meta: {
-      columnName: 'total',
-    },
-    cell: ({ row }) => {
-      const total = row.getValue<string>('total');
-      return <div>{total} TND</div>;
-    },
-  },
-  {
     accessorKey: 'seller',
     enableSorting: true,
     meta: {
       columnName: 'seller',
     },
+    accessorFn: (row) => row.seller.fullName + ' ' + row.seller.email + ' ' + row.seller.number + ' ' + row.seller.code,
     cell: ({ row }) => {
-      const seller: User = row.getValue('seller');
+      const seller: User = row.original.seller;
+
       return (
         <div className="">
           <UserCell user={seller} />
         </div>
       );
+    },
+  },
+  {
+    accessorKey: 'subOrders',
+    enableSorting: true,
+    meta: {
+      columnName: 'subOrders',
+    },
+    accessorFn: (row: any) =>
+      Array.isArray(row.subOrders)
+        ? row.subOrders.map((subOrder: SubOrder) => subOrder.deliveryId + subOrder.code).join(', ')
+        : '',
+    cell: ({ row }) => {
+      const subOrders = row.original.subOrders.map((subOrder: SubOrder) =>
+        subOrder.deliveryId ? subOrder.code : 'N/A',
+      );
+      return (
+        <div className="flex flex-col flex-wrap gap-x-2">
+          {subOrders.map((subOrder: string, index: number) => (
+            <div key={index} className="flex flex-row gap-x-1">
+              <p>{subOrder}</p>
+            </div>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'statuses',
+    enableSorting: true,
+    meta: {
+      columnName: 'statuses',
+    },
+    cell: ({ row }) => {
+      const statuses = row.original.statuses;
+      return (
+        <div className="flex w-fit flex-col gap-2">
+          {statuses.map((status, index) => (
+            <StatusCell key={index} status={status} />
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'paid',
+    meta: {
+      columnName: 'Paid',
+    },
+    cell: ({ row }) => {
+      const value: boolean = row.getValue('paid');
+      return <BooleanCell value={value} trueText={'user-paid'} falseText={'user-not-paid'} />;
     },
   },
 ];

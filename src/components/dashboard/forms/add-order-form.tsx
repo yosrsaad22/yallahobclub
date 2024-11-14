@@ -15,8 +15,9 @@ import {
   IconExclamationCircle,
   IconLoader2,
   IconTrash,
-  IconTruckDelivery,
+  IconShoppingCart,
   IconUser,
+  IconInfoCircleFilled,
 } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
@@ -56,7 +57,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
   const [orderProducts, setOrderProducts] = React.useState<(Product & { media: MediaType[] })[]>([]);
   const [selectedOrderProducts, setSelectedOrderProducts] = React.useState<OrderProduct[]>([]);
   const [selectedSellerId, setSelectedSellerId] = React.useState<string>('');
-  const deliveryFee = 8;
+  const [deliveryFee, setDeliveryFee] = React.useState<number>(8);
   type schemaType = z.infer<typeof OrderSchema>;
 
   const defaultValues = {
@@ -178,7 +179,6 @@ export function AddOrderForm({}: AddOrderFormProps) {
       });
 
       data.products = updatedProducts;
-      console.log(data.products);
 
       addOrder(data).then((res: ActionResponse) => {
         if (res.success) {
@@ -210,10 +210,12 @@ export function AddOrderForm({}: AddOrderFormProps) {
     let totalSellerProfit = 0;
     let totalPlatformProfit = 0;
     let totalPrice = 0;
-
+    const suppliers = new Set<string>();
     selectedOrderProducts.forEach((selectedProduct) => {
       const product = orderProducts.find((p) => p.id === selectedProduct.productId);
       if (!product) return;
+
+      suppliers.add(product.supplierId!);
 
       // Ensure valid values for calculations
       const quantity = parseInt(selectedProduct.quantity) || 1;
@@ -230,11 +232,13 @@ export function AddOrderForm({}: AddOrderFormProps) {
       totalPrice += detailPrice * quantity;
     });
 
+    suppliers.size > 1 ? setDeliveryFee(7 * suppliers.size) : setDeliveryFee(8);
     // Add delivery fee to the total price
     totalPrice += deliveryFee;
 
     // Calculate platform profit as 10% of total seller profit
-    totalPlatformProfit = totalPlatformProfit + parseFloat((totalSellerProfit * 0.1).toFixed(1));
+    totalPlatformProfit =
+      totalPlatformProfit + parseFloat((totalSellerProfit * 0.1).toFixed(1)) + (suppliers.size > 1 ? 0 : 1);
 
     // Ensure no NaN or invalid values
     totalSellerProfit = totalSellerProfit > 0 ? totalSellerProfit * 0.9 : 0;
@@ -246,9 +250,6 @@ export function AddOrderForm({}: AddOrderFormProps) {
     setPlatformProfit(totalPlatformProfit);
     setTotal(totalPrice);
 
-    // Set values in the form
-    setValue('platformProfit', totalPlatformProfit);
-    setValue('sellerProfit', totalSellerProfit);
     setValue('total', totalPrice);
   }, [selectedOrderProducts, orderProducts, setValue]);
 
@@ -264,7 +265,8 @@ export function AddOrderForm({}: AddOrderFormProps) {
       };
       fetchSellers();
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     const fetchProducts = async () => {
@@ -278,7 +280,8 @@ export function AddOrderForm({}: AddOrderFormProps) {
     };
 
     fetchProducts();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSelectOrderProduct = (newProduct: OrderProduct) => {
     const product = orderProducts.find((p) => p.id === newProduct.productId); // Ensure you find the product by productId
@@ -311,7 +314,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
             <div className="flex flex-col items-center gap-4">
               <Avatar className="h-32 w-32">
                 <AvatarFallback>
-                  <IconTruckDelivery className="h-12 w-12" />
+                  <IconShoppingCart className="h-12 w-12" />
                 </AvatarFallback>
               </Avatar>
             </div>
@@ -434,7 +437,11 @@ export function AddOrderForm({}: AddOrderFormProps) {
         </div>
         <div className="flex w-full flex-col rounded-lg border bg-background p-6">
           <h2 className=" text-lg font-semibold">{t('order-information')}</h2>
-          <p className="pb-6 text-sm text-muted-foreground">{t('order-products-note')}</p>
+          <p className=" text-sm text-muted-foreground">{t('order-products-note')}</p>
+          <div className="my-6 flex w-full items-center space-x-4 rounded-md border border-border bg-background p-2">
+            <IconInfoCircleFilled className="h-9 w-9  text-primary" />
+            <h1 className="text-sm text-muted-foreground">{t('multi-order-note')} </h1>
+          </div>
           <LabelInputContainer>
             <Label htmlFor="my-products">
               {tFields('order-products')}
@@ -634,7 +641,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
                   })}
                   <div className="flex w-full items-center justify-between font-medium">
                     <p>{tFields('delivery-fee')}</p>
-                    <p>8 TND</p>
+                    <p>{deliveryFee} TND</p>
                   </div>
                   <div className="mb-1 mt-3 h-[1px] w-full rounded-md bg-border " />
                   <div className="flex w-full items-center justify-between font-semibold">

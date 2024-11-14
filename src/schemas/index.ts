@@ -18,6 +18,7 @@ export const RegisterSchema = z
     email: z.string().email(),
     number: z.string().regex(/^\d{8}$/),
     address: z.string().min(3),
+    city: z.string(),
     password: z.string().min(8),
     confirmPassword: z.string().min(8),
     pack: z.nativeEnum(packOptions),
@@ -56,6 +57,7 @@ export const AdminSettingsSchema = z
     email: z.string().email(),
     number: z.string().regex(/^\d{8}$/),
     address: z.string().min(3),
+    city: z.string(),
     currentPassword: z.string().optional(),
     newPassword: z.string().optional(),
     confirmPassword: z.string().optional(),
@@ -120,6 +122,7 @@ export const UserSettingsSchema = z
     number: z.string().regex(/^\d{8}$/),
     address: z.string().min(3),
     currentPassword: z.string().optional(),
+    city: z.string(),
     newPassword: z.string().optional(),
     confirmPassword: z.string().optional(),
     rib: z.string().optional(),
@@ -193,6 +196,7 @@ export const UserSchema = z
     number: z.string().regex(/^\d{8}$/),
     address: z.string().min(3),
     rib: z.string().optional(),
+    city: z.string(),
     pack: z.nativeEnum(packOptions).optional(),
     role: z.nativeEnum(roleOptions).optional(),
     emailVerified: z.boolean().optional(),
@@ -269,10 +273,17 @@ export const OrderSchema = z.object({
   number: z.string().regex(/^\d{8}$/),
   city: z.string(),
   address: z.string().min(3),
-  tracking: z.undefined().or(z.string()),
   total: z.number(),
-  sellerProfit: z.number(),
-  platformProfit: z.number(),
   products: z.array(OrderProductSchema),
   sellerId: z.string(),
+});
+
+export const TransactionSchema = z.object({
+  amount: z.string().regex(/^-?\d+(\.\d{1,})?$/),
+  userId: z.string(),
+});
+
+export const WithdrawRequestSchema = z.object({
+  amount: z.string().regex(/^(?!0(\.0{1,})?$)\d{1,}(\.\d{1,})?$/),
+  userId: z.string(),
 });

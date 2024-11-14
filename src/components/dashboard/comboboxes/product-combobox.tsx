@@ -106,7 +106,7 @@ export function ProductCombobox({ products, onSelectProduct, placeholder, loadin
                         <div className="flex flex-row items-center justify-center gap-4">
                           <div className="flex flex-col items-center justify-center gap-1 px-2">
                             <span className="text-sm">{tFields('product-stock')}</span>
-                            <span className="font-semibold">{product.stock} TND</span>
+                            <span className="font-semibold">{product.stock}</span>
                           </div>
                           <div className="flex flex-col items-center justify-center gap-1">
                             <span className="text-sm">{tFields('product-wholesale-price')}</span>

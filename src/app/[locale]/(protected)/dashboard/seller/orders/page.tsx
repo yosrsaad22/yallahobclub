@@ -1,7 +1,7 @@
 import { DataTable } from '@/components/dashboard/table/data-table';
 import Breadcrumb from '@/components/ui/breadcrumb';
 import { ActionResponse } from '@/types';
-import { IconTruckDelivery } from '@tabler/icons-react';
+import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { SellerOrderColumns } from '@/components/dashboard/table/columns/order-columns';
@@ -28,7 +28,7 @@ export default async function Orders() {
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center space-x-2 text-3xl font-bold">
-          <IconTruckDelivery className="h-7 w-7" />
+          <IconShoppingCart className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.orders')}</h2>
         </div>
         <DataTable

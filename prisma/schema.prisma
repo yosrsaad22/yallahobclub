@@ -56,11 +56,13 @@ enum UserPack {
 
 model User {
   id            String    @id @default(cuid())
+  code          String    @unique
   fullName      String
   email         String    @unique
   emailVerified DateTime? @map("email_verified")
   number        String    @unique
   address       String
+  city          String?
   image         String?
   pack          UserPack?
   password      String
@@ -75,9 +77,11 @@ model User {
   accounts      Account[]
   notifications Notification[]
 
-  products   Product[] @relation("SuppliedProducts")
-  myProducts Product[] @relation("SellingProducts")
-  soldOrders Order[]   @relation("SellerOrders")
+  products         Product[]         @relation("SuppliedProducts")
+  myProducts       Product[]         @relation("SellingProducts")
+  soldOrders       Order[]           @relation("SellerOrders")
+  transactions     Transaction[]
+  withdrawRequests WithdrawRequest[]
 
   @@map("users")
 }
@@ -125,6 +129,11 @@ enum NotificationType {
   SELLER_STOCK_CHANGED
   ORDER_STATUS_CHANGED
   ORDER_CANCELLED
+  NEW_PICKUP
+  NEW_TRANSACTION
+  NEW_WITHDRAW_REQUEST
+  WITHDRAW_REQUEST_APPROVED
+  WITHDRAW_REQUEST_DENIED
 }
 
 model Notification {
@@ -246,6 +255,7 @@ model Media {
 
 model Product {
   id             String              @id @default(cuid())
+  code           String              @unique
   name           String
   description    String
   delivery       String
@@ -271,6 +281,7 @@ model Product {
 
 model OrderProduct {
   id             String     @id @default(cuid())
+  code           String     @unique
   quantity       String
   detailPrice    Float
   size           SizeType?
@@ -278,29 +289,90 @@ model OrderProduct {
   supplierProfit Float
   product        Product?   @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId      String?
-  order          Order?     @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId        String?
+  subOrder       SubOrder?  @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
+  subOrderId     String?
+}
+
+model StatusHistory {
+  id                String   @id @default(cuid())
+  status            String
+  statusDescription String
+  createdAt         DateTime @default(now())
+
+  subOrder   SubOrder @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
+  subOrderId String
+
+  @@map("status_history")
 }
 
 model Order {
-  id             String         @id @default(cuid())
-  deliveryId     String?        @unique
-  status         String?        @default("record-created")
-  total          Float
-  sellerProfit   Float
-  platformProfit Float
-  firstName      String
-  lastName       String
-  fullName       String?
-  email          String?
-  number         String
-  city           String
-  address        String
-  products       OrderProduct[]
+  id        String   @id @default(cuid())
+  code      String   @unique
+  total     Float
+  firstName String
+  lastName  String
+  fullName  String?
+  email     String?
+  paid      Boolean? @default(false)
+  number    String
+  city      String
+  address   String
 
-  seller   User?   @relation("SellerOrders", fields: [sellerId], references: [id], onDelete: Cascade)
-  sellerId String?
+  seller       User?         @relation("SellerOrders", fields: [sellerId], references: [id], onDelete: Cascade)
+  sellerId     String?
+  subOrders    SubOrder[]
+  transactions Transaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model SubOrder {
+  id             String          @id @default(cuid())
+  code           String          @unique
+  deliveryId     String?         @unique
+  status         String?         @default("awaiting-packaging-EC00")
+  statusHistory  StatusHistory[]
+  products       OrderProduct[]
+  sellerProfit   Float?
+  platformProfit Float?
+  total          Float?
+  pickup         Pickup?         @relation(fields: [pickupId], references: [id], onDelete: Cascade)
+  pickupId       String?
+  order          Order?          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId        String?
+}
+
+model Pickup {
+  id         String     @id @default(cuid())
+  code       String     @unique
+  subOrders  SubOrder[]
+  pickupDate DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Transaction {
+  id   String @id @default(cuid())
+  code String @unique
+
+  amount    Float
+  type      String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId  String
+  orderId String?
+}
+
+model WithdrawRequest {
+  id        String   @id @default(cuid())
+  amount    Float
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
 }

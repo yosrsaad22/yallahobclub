@@ -7,7 +7,7 @@ import { Product } from '@prisma/client';
 import { getProductsBySeller, removeFromMyProducts } from '@/actions/products';
 import { useQuery } from '@tanstack/react-query';
 import { MediaType } from '@/types';
-import { IconInfoCircleFilled, IconLoader2, IconTruckDelivery } from '@tabler/icons-react';
+import { IconInfoCircleFilled, IconLoader2, IconShoppingCart } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { IconChevronLeft, IconChevronRight, IconSearch } from '@tabler/icons-react';
@@ -110,7 +110,7 @@ export function MyProducts({ className }: MyProductsFormProps) {
             />
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-muted-foreground" />
             <Button variant="primary" onClick={() => router.push('/dashboard/seller/orders/add')}>
-              <IconTruckDelivery className="mr-2" />
+              <IconShoppingCart className="mr-2" />
               Nouvelle Commande
             </Button>
           </div>

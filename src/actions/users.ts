@@ -10,8 +10,25 @@ import bcrypt from 'bcryptjs';
 import { getUserByEmail, getUserById, getUserByNumber } from '@/data/user';
 import { generateEmailVerificationToken } from '@/lib/tokens';
 import { sendEmailVerificationEmail } from '@/lib/mail';
-import { capitalizeWords } from '@/lib/utils';
-import { DEFAULT_PASSWORD } from '@/lib/constants';
+import { capitalizeWords, generateCode } from '@/lib/utils';
+import { DEFAULT_PASSWORD, roleOptions } from '@/lib/constants';
+
+export const getUsers = async (): Promise<ActionResponse> => {
+  roleGuard(UserRole.ADMIN);
+  try {
+    const users = await db.user.findMany({
+      where: {
+        role: {
+          not: UserRole.ADMIN,
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return { success: 'users-fetch-success', data: users };
+  } catch (error) {
+    return { error: 'users-fetch-error' };
+  }
+};
 
 export const getSellers = async (): Promise<ActionResponse> => {
   roleGuard(UserRole.ADMIN);
@@ -76,13 +93,15 @@ export const addUser = async (values: z.infer<typeof UserSchema>): Promise<Actio
     }
     const defaultPassword = DEFAULT_PASSWORD;
     const hashedPassword = await bcrypt.hash(defaultPassword!, 10);
-
+    const codePrefix = values.role === roleOptions.SELLER ? 'ENSE-' : 'ENSU-';
     await db.user.create({
       data: {
+        code: codePrefix + generateCode(),
         fullName: capitalizeWords(values.fullName),
         address: values.address,
         pack: UserPack[values.pack!],
         role: values.role,
+        city: values.city,
         active: values.active,
         rib: values.rib,
         email: values.email,
@@ -148,6 +167,7 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
         fullName: values.fullName,
         address: values.address,
         pack: values.pack,
+        city: values.city,
         role: values.role,
         active: values.active,
         rib: values.rib,

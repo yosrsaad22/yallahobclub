@@ -10,6 +10,7 @@ import { ProductSchema } from '@/schemas';
 import { getUserById } from '@/data/user';
 import { notifyAllAdmins, notifyUser } from './notifications';
 import cleanOrphanFiles from './files';
+import { generateCode } from '@/lib/utils';
 
 export const getProducts = async (): Promise<ActionResponse> => {
   roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
@@ -177,6 +178,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
 
     const newProduct = await db.product.create({
       data: {
+        code: 'ENP-' + generateCode(),
         name: values.name,
         description: values.description,
         wholesalePrice: parseFloat(values.wholesalePrice),
@@ -203,18 +205,17 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
       },
     });
 
-    notifyAllAdmins(
-      NotificationType.ADMIN_NEW_PRODUCT,
-      `/dashboard/admin/products/${newProduct.id}`,
-      supplier?.fullName,
-    );
-
     await cleanOrphanFiles();
 
     revalidatePath('/dashboard/admin/products');
     revalidatePath('/dashboard/supplier/products');
     revalidatePath('/dashboard/marketplace');
     if (user?.role === UserRole.SUPPLIER) {
+      notifyAllAdmins(
+        NotificationType.ADMIN_NEW_PRODUCT,
+        `/dashboard/admin/products/${newProduct.id}`,
+        supplier?.fullName,
+      );  
       return { success: 'supplier-product-add-success' };
     } else {
       return { success: 'product-add-success' };

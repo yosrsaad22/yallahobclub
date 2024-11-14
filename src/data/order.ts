@@ -5,13 +5,19 @@ export const userGetOrderById = async (id: string) => {
     const order = await db.order.findUnique({
       where: { id },
       include: {
-        products: {
+        subOrders: {
           include: {
-            product: {
+            pickup: true,
+            products: {
               include: {
-                media: true,
+                product: {
+                  include: {
+                    media: true,
+                  },
+                },
               },
             },
+            statusHistory: true,
           },
         },
       },
@@ -28,14 +34,20 @@ export const admingGetOrderById = async (id: string) => {
       where: { id },
       include: {
         seller: true,
-        products: {
+        subOrders: {
           include: {
-            product: {
+            pickup: true,
+            products: {
               include: {
-                media: true,
-                supplier: true,
+                product: {
+                  include: {
+                    media: true,
+                    supplier: true,
+                  },
+                },
               },
             },
+            statusHistory: true,
           },
         },
       },

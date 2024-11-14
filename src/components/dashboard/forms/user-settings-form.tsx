@@ -16,10 +16,11 @@ import { userEditSettings } from '@/actions/settings';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
 import { UploadButton } from '@/lib/uploadthing';
-import { MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
+import { cities, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
 import { useSession } from 'next-auth/react';
 import { ActionResponse } from '@/types';
 import { cn } from '@/lib/utils';
+import { Combobox } from '@/components/ui/combobox';
 
 interface UserSettingsFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function UserSettingsForm({ className }: UserSettingsFormProps) {
@@ -33,6 +34,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
   type schemaType = z.infer<typeof UserSettingsSchema>;
 
   const [selectedPack, setSelectedPack] = React.useState(user?.pack as packOptions);
+  const [city, setCity] = React.useState<string>(user?.city ?? '');
   const tPricing = useTranslations('home.pricing');
 
   const {
@@ -74,11 +76,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
         <div className="w-full rounded-lg p-6">
           <div className="flex flex-col items-center gap-4">
             <Avatar className="h-32 w-32">
-              <AvatarImage
-                className="object-cover"
-                src={`${MEDIA_HOSTNAME}${user?.image}`}
-                alt={user?.name ?? ''}
-              />
+              <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${user?.image}`} alt={user?.name ?? ''} />
               <AvatarFallback className="text-4xl">
                 <IconUser className="h-14 w-14" />
               </AvatarFallback>
@@ -172,6 +170,22 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
                   type="text"
                 />
                 {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Combobox
+                  items={cities}
+                  selectedItems={city}
+                  onSelect={(selectedItem: string) => {
+                    setCity(selectedItem);
+                    setValue('city', selectedItem);
+                  }}
+                  placeholder={tFields('user-city-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => cities.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="rib">{tFields('user-rib')}</Label>

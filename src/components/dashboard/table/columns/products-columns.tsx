@@ -16,7 +16,7 @@ const CategoryCell = ({ category }: { category: string }) => {
 
 const SupplierCell = ({ user }: { user: User }) => {
   return (
-    <div className="flex flex-row items-center gap-x-4">
+    <div className="flex flex-row items-center gap-x-3">
       <Avatar className="h-9 w-9">
         <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${user.image}`} alt={user.fullName[0] ?? ''} />
         <AvatarFallback>
@@ -70,13 +70,19 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     },
   },
   {
+    accessorKey: 'code',
+    meta: {
+      columnName: 'code',
+    },
+  },
+  {
     accessorKey: 'name',
     meta: {
       columnName: 'Name',
     },
     cell: ({ row }) => {
       const name: string = row.getValue<string>('name');
-      return <div className="w-full max-w-[180px] truncate">{name}</div>;
+      return <div className="mr-3 w-full max-w-[180px] truncate">{name}</div>;
     },
   },
   {
@@ -130,7 +136,7 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     },
     cell: ({ row }) => {
       const published = row.getValue<boolean>('published');
-      return <BooleanCell value={published} trueText="product-approved" falseText="product-pending" />;
+      return <BooleanCell value={published} trueText="product-approved" falseText="product-not-approved" />;
     },
   },
   {
@@ -146,7 +152,6 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
   },
 ];
 
-// Supplier Product Columns
 export const SupplierProductColumns: ColumnDef<Product & { media: MediaType[]; supplier: User }>[] = [
   {
     accessorKey: 'media',

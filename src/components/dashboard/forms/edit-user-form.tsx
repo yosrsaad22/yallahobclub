@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { IconDeviceFloppy, IconLetterC, IconLoader2, IconUser } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
-import { MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
+import { cities, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
 import { ActionResponse, DataTableUser } from '@/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -23,6 +23,7 @@ import { useRouter } from '@/navigation';
 import { formatDate } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { useCurrentRole } from '@/hooks/use-current-role';
+import { Combobox } from '@/components/ui/combobox';
 
 interface EditUserFormProps extends React.HTMLAttributes<HTMLDivElement> {
   userData: DataTableUser | null;
@@ -35,7 +36,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
   const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
-
+  const [city, setCity] = React.useState<string>(userData?.city ?? '');
   type schemaType = z.infer<typeof UserSchema>;
 
   const [emailVerified, setEmailVerified] = React.useState(userData?.emailVerified ? true : false);
@@ -88,7 +89,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
             title: tValidation('success-title'),
             description: tValidation(res.success),
           });
-          router.push(`/dashboard/${role?.toLowerCase()}/users`);
+          router.push(`/dashboard/${role?.toLowerCase()}/${data.role?.toLowerCase()}s`);
         } else {
           toast({
             variant: 'destructive',
@@ -142,6 +143,19 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {role === roleOptions.ADMIN && (
+                <LabelInputContainer>
+                  <Label htmlFor="code">{tFields('user-code')}</Label>
+                  <Input
+                    id="code"
+                    defaultValue={userData?.code ?? ''}
+                    placeholder={tFields('user-code')}
+                    type="text"
+                    disabled
+                  />
+                </LabelInputContainer>
+              )}
+
               <LabelInputContainer>
                 <Label htmlFor="name">{tFields('user-full-name')}</Label>
                 <Input
@@ -203,6 +217,22 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                 {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Combobox
+                  items={cities}
+                  selectedItems={city}
+                  onSelect={(selectedItem: string) => {
+                    setCity(selectedItem);
+                    setValue('city', selectedItem);
+                  }}
+                  placeholder={tFields('user-city-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => cities.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
                 <Label htmlFor="rib">{tFields('user-rib')}</Label>
                 <Input
                   {...register('rib')}
@@ -244,15 +274,27 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      {Object.values(roleOptions).map((option) => (
-                        <SelectItem key={option} value={option as (typeof roleOptions)[keyof typeof roleOptions]}>
-                          {tFields(`user-${option.toLowerCase()}`)}
-                        </SelectItem>
-                      ))}
+                      {Object.values(roleOptions)
+                        .filter((option) => option !== roleOptions.ADMIN)
+                        .map((option) => (
+                          <SelectItem key={option} value={option as (typeof roleOptions)[keyof typeof roleOptions]}>
+                            {tFields(`user-${option.toLowerCase()}`)}
+                          </SelectItem>
+                        ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
                 {errors.role && <span className="text-xs text-red-400">{tValidation('role-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="balance">{tFields('user-balance')}</Label>
+                <Input
+                  defaultValue={userData?.balance + ' TND'}
+                  disabled={true}
+                  id="balance"
+                  placeholder={tFields('user-balance')}
+                  type="text"
+                />
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="emailVerified">{tFields('user-email-verified')}</Label>

@@ -34,15 +34,18 @@ export type DataTableLead = Pick<
 export type DataTableUser = Pick<
   User,
   | 'id'
+  | 'code'
   | 'fullName'
   | 'email'
   | 'emailVerified'
   | 'number'
   | 'address'
+  | 'city'
   | 'active'
   | 'paid'
   | 'pack'
   | 'rib'
+  | 'balance'
   | 'createdAt'
   | 'image'
 > & { role: roleOptions };
@@ -51,6 +54,8 @@ export type DataTableHandlers = {
   onDelete: (id: string) => Promise<ActionResponse>;
   onBulkDelete: (ids: string[]) => Promise<ActionResponse>;
   onRequestPickup: (ids: string[]) => Promise<ActionResponse>;
+  onPrintPickup: (id: string) => Promise<ActionResponse>;
+  onAddTransaction: (userId: string, amount: string) => Promise<ActionResponse>;
 };
 
 export type MediaType = {
@@ -60,7 +65,9 @@ export type MediaType = {
 
 export type OrderStatusType = {
   UpdateCode: string;
+  ProblemCode?: string;
   Key: string;
+  Description: string;
   Color: string;
 };
 

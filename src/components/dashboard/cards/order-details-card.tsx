@@ -3,14 +3,16 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { colorHexMap, MEDIA_HOSTNAME, orderStatuses, roleOptions } from '@/lib/constants';
 import { ActionResponse, MediaType } from '@/types';
-import { Order, OrderProduct, Product, User } from '@prisma/client';
+import { Order, OrderProduct, Pickup, Product, StatusHistory, SubOrder, User } from '@prisma/client';
 import {
   IconCurrentLocation,
   IconFileInfo,
+  IconHistory,
   IconInfoCircleFilled,
   IconLoader2,
+  IconRefresh,
   IconTicket,
-  IconTruckOff,
+  IconShoppingCartOff,
   IconUser,
   IconUserSquare,
 } from '@tabler/icons-react';
@@ -22,11 +24,17 @@ import { useCurrentRole } from '@/hooks/use-current-role';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { useRouter } from '@/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
+import { StatusHistoryDialog } from '../dialogs/status-history-dialog';
 
 interface OrderDetailsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   order: Order & {
-    products: (OrderProduct & { product: Product & { media: MediaType[] } })[];
     seller?: User;
+    subOrders: (SubOrder & {
+      pickup: Pickup;
+      products: (OrderProduct & { product: Product & { supplier: User; media: MediaType[] } })[];
+      statusHistory: StatusHistory[];
+    })[];
   };
   onCancel?: (id: string) => Promise<ActionResponse>;
   onPrintLabel?: (id: string) => Promise<ActionResponse>;
@@ -42,20 +50,51 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
   const router = useRouter();
 
   const tStatuses = useTranslations('dashboard.order-statuses');
-  const statusObj = orderStatuses.find((s) => s.Key === order.status) ?? {
-    Key: 'n-a',
-    Color: 'text-white bg-gray-300',
-  };
 
-  const userOrderProducts =
-    role === roleOptions.SUPPLIER ? order.products.filter((p) => p.product.supplierId === user?.id) : order.products;
+  const subOrderStatuses = order.subOrders.map((subOrder) => subOrder.status);
+
+  const isOrderCancellable = subOrderStatuses.every((status) => status === 'awaiting-packaging-EC00');
+
+  const subOrders =
+    role === roleOptions.SUPPLIER
+      ? order.subOrders.filter((p) => p.products[0].product.supplierId === user?.id)
+      : order.subOrders;
+
+  const platformProfit = (() => {
+    switch (role) {
+      case roleOptions.SELLER:
+        return (order.subOrders.reduce((totalProfit, subOrder) => totalProfit + subOrder.sellerProfit!, 0) / 0.9) * 0.1;
+      case roleOptions.SUPPLIER:
+        return subOrders[0].products.reduce((total, orderProduct) => {
+          return total + (orderProduct.product.platformProfit ?? 0) * parseInt(orderProduct.quantity);
+        }, 0);
+      case roleOptions.ADMIN:
+        return order.subOrders.reduce((totalProfit, subOrder) => totalProfit + subOrder.platformProfit!, 0);
+
+      default:
+        return 0;
+    }
+  })();
+
+  const deliveryFee =
+    user?.role === roleOptions.SUPPLIER
+      ? order.subOrders.length > 1
+        ? 7
+        : 8
+      : order.subOrders.length > 1
+        ? order.subOrders.length * 7
+        : 8;
+
   const [isPrintLoading, startPrintTransition] = useTransition();
   const [isCancelLoading, startCancelTransition] = useTransition();
   const [isCancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [isHistoryDialogOpen, setHistoryDialogOpen] = useState(false);
+  const [isRefreshLoading, setRefreshLoading] = useState(false);
+  const [selectedSubOrder, setSelectedSubOrder] = useState(order.subOrders[0]);
 
   const handleCancelOrder = async () => {
     startCancelTransition(async () => {
-      if (order.status === 'record-created' && onCancel) {
+      if (isOrderCancellable && onCancel) {
         const res = await onCancel(order.id);
         setCancelDialogOpen(false);
         if (res.success) {
@@ -83,16 +122,17 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
     });
   };
 
-  const handlePrintLabel = async () => {
+  const handlePrintLabel = async (subOrderId: string) => {
     startPrintTransition(async () => {
       if (onPrintLabel) {
-        const res = await onPrintLabel(order.id);
+        const res = await onPrintLabel(subOrderId);
         if (res.success) {
           toast({
             variant: 'success',
             title: tValidation('success-title'),
             description: tValidation(res.success),
           });
+          window.open(res.data, '_blank');
         } else {
           toast({
             variant: 'destructive',
@@ -111,8 +151,16 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
         onClose={() => setCancelDialogOpen(false)}
         onConfirm={handleCancelOrder}
         isLoading={isCancelLoading}
-        deliveryId={order.deliveryId!}
+        deliveryId={order.code!}
       />
+
+      <StatusHistoryDialog
+        isOpen={isHistoryDialogOpen}
+        onClose={() => setHistoryDialogOpen(false)}
+        deliveryId={selectedSubOrder.deliveryId!}
+        statusHistory={selectedSubOrder.statusHistory}
+      />
+
       <div className="flex h-full w-full flex-col items-center gap-8 pt-2">
         <div className="flex w-full items-center space-x-4 rounded-md border border-border bg-background p-2">
           <IconInfoCircleFilled className="h-10 w-10  text-primary" />
@@ -137,176 +185,257 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                       }}
                       variant={'destructive'}
                       size={'sm'}
-                      disabled={order.status !== 'record-created'}>
-                      <IconTruckOff className="mr-0 h-5 w-5 md:mr-2 " />
+                      disabled={!isOrderCancellable}>
+                      <IconShoppingCartOff className="mr-0 h-5 w-5 md:mr-2 " />
                       <p className="hidden md:flex">{t('order-cancel')}</p>
                     </Button>
                   )}
-                  {(role === roleOptions.ADMIN || role === roleOptions.SUPPLIER) && (
-                    <Button
-                      className=" px-3"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        handlePrintLabel();
-                      }}
-                      variant={'primary'}
-                      size={'sm'}>
-                      {isPrintLoading ? (
-                        <IconLoader2 className="mr-0 h-5 w-5 animate-spin md:mr-2 " />
-                      ) : (
-                        <IconTicket className="mr-0 h-5 w-5 md:mr-2 " />
-                      )}
-                      <p className="hidden md:flex">{t('print-label')}</p>
-                    </Button>
-                  )}
                 </div>
-              </div>
-              <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
-                <p className="text-muted-foreground">{tFields('order-delivery-id')} :</p>
-                <p>#{order.deliveryId}</p>
               </div>
               {role === roleOptions.ADMIN && (
-                <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
-                  <p className="text-muted-foreground">{tFields('order-seller')} :</p>
-                  <div className="flex flex-row items-center gap-x-3">
-                    <Avatar className="h-9 w-9 border border-border">
-                      <AvatarImage
-                        className="object-cover"
-                        src={`${MEDIA_HOSTNAME}${order.seller?.image}`}
-                        alt={order.seller?.fullName ?? ''}
-                      />
-                      <AvatarFallback className="text-md">
-                        <IconUser className="h-5 w-5" />
-                      </AvatarFallback>
-                    </Avatar>
-                    {order.seller?.fullName}
+                <>
+                  <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                    <p className="text-muted-foreground">{tFields('order-code')} :</p>
+                    <p>{order.code}</p>
                   </div>
-                </div>
+
+                  <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                    <p className="text-muted-foreground">{tFields('order-seller')} :</p>
+                    <div className="flex flex-row items-center gap-x-3">
+                      <Avatar className="h-9 w-9 border border-border">
+                        <AvatarImage
+                          className="object-cover"
+                          src={`${MEDIA_HOSTNAME}${order.seller?.image}`}
+                          alt={order.seller?.fullName ?? ''}
+                        />
+                        <AvatarFallback className="text-md">
+                          <IconUser className="h-5 w-5" />
+                        </AvatarFallback>
+                      </Avatar>
+                      {order.seller?.fullName}
+                    </div>
+                  </div>
+                </>
               )}
-              {userOrderProducts.map((orderProduct, index) => (
-                <div key={index} className="flex flex-col items-center gap-4 md:flex-row md:gap-6 ">
-                  {/* Product Image */}
-                  <Image
-                    className="rounded-md object-contain"
-                    src={`${MEDIA_HOSTNAME}${orderProduct.product.media[0].key}`}
-                    alt={orderProduct.product.name}
-                    height={170}
-                    width={170}
-                  />
-                  <div className="flex h-full w-full items-center justify-between">
-                    <div className="items-between flex h-full w-full flex-col justify-between gap-4 py-2 text-sm ">
-                      <p className="flex max-w-full text-[1.1rem] font-medium md:max-w-[50%]">
-                        {orderProduct.product.name}
-                      </p>
-                      <div className="flex flex-col gap-2">
-                        <span className="font-medium text-muted-foreground">
-                          {tFields('product-quantity')} :{' '}
-                          <span className="text-foreground">{orderProduct.quantity}</span>
-                        </span>
-                        <span className="font-medium text-muted-foreground">
-                          {tFields('product-wholesale-price')} :{' '}
-                          <span className="text-foreground">{orderProduct.product.wholesalePrice} TND</span>
-                        </span>
-                        {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
-                          <span className="font-medium text-muted-foreground">
-                            {tFields('product-selling-price')} :{' '}
-                            <span className="text-foreground">{orderProduct.detailPrice} TND</span>
-                          </span>
+              <div className="my-4 flex flex-col gap-8">
+                {subOrders.map((subOrder, index) => (
+                  <div key={index} className="flex flex-col gap-4">
+                    <div className="mx-auto my-4 h-[0.8px] w-[60%] rounded-md bg-border " />
+
+                    <div className="w-ful flex flex-row justify-between">
+                      <div className="flex flex-col gap-4">
+                        <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                          <p className="text-lg font-medium text-foreground">
+                            {tFields('order-sub-order')} {index + 1} :
+                          </p>
+                        </div>
+                        <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                          <p className="text-muted-foreground">{tFields('order-code')} :</p>
+                          <p>{subOrder.code}</p>
+                        </div>
+                        <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                          <p className="text-muted-foreground">{tFields('order-delivery-id')} :</p>
+                          <p>{subOrder.deliveryId ?? 'N/A'}</p>
+                        </div>
+                        {(role === roleOptions.ADMIN || role === roleOptions.SUPPLIER) && (
+                          <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                            <p className="text-muted-foreground">{tFields('order-pickup')} :</p>
+                            <p>{subOrder.pickup ? subOrder.pickup.code : 'N/A'}</p>
+                          </div>
                         )}
-                        {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
-                          <span className="font-medium text-muted-foreground">
-                            {tFields('seller-profit-unit')} :{' '}
-                            <span className="text-foreground">
-                              {(orderProduct.detailPrice - orderProduct.product.wholesalePrice).toFixed(1)} TND
-                            </span>
-                          </span>
-                        )}
-                        {(role === roleOptions.SUPPLIER || role === roleOptions.ADMIN) && (
-                          <span className="font-medium text-muted-foreground">
-                            {tFields('supplier-profit-unit')} :{' '}
-                            <span className="text-foreground">
-                              {orderProduct.product.wholesalePrice.toFixed(1)} TND
-                            </span>
-                          </span>
-                        )}
-                        {orderProduct.color && (
-                          <span className="font-medium text-muted-foreground">
-                            {tFields('product-color')} :{' '}
-                            <span className="ml-1 inline-flex items-center align-middle">
-                              <div
-                                className="mr-1 h-4 w-4 rounded-full border border-border align-middle"
-                                style={{
-                                  backgroundColor: colorHexMap[orderProduct.color as keyof typeof colorHexMap],
-                                }}></div>
-                              <span className="align-middle text-foreground">{tColors(orderProduct.color)}</span>
-                            </span>
-                          </span>
-                        )}
-                        {orderProduct.size && (
-                          <span className="font-semibold text-muted-foreground">
-                            {tFields('product-size')} : <span className="text-foreground">{orderProduct.size}</span>
-                          </span>
+                        {role === roleOptions.ADMIN && (
+                          <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                            <p className="text-muted-foreground">{tFields('order-supplier')} :</p>
+                            <div className="flex flex-row items-center gap-x-3">
+                              <Avatar className="h-9 w-9 border border-border">
+                                <AvatarImage
+                                  className="object-cover"
+                                  src={`${MEDIA_HOSTNAME}${subOrder.products[0].product.supplier?.image}`}
+                                  alt={subOrder.products[0].product.supplier?.fullName ?? ''}
+                                />
+                                <AvatarFallback className="text-md">
+                                  <IconUser className="h-5 w-5" />
+                                </AvatarFallback>
+                              </Avatar>
+                              {subOrder.products[0].product.supplier?.fullName}
+                            </div>
+                          </div>
                         )}
                       </div>
+                      {(role === roleOptions.ADMIN || role === roleOptions.SUPPLIER) && (
+                        <Button
+                          className=" px-3"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            handlePrintLabel(subOrder.id);
+                          }}
+                          variant={'primary'}
+                          size={'sm'}>
+                          {isPrintLoading ? (
+                            <IconLoader2 className="mr-0 h-5 w-5 animate-spin md:mr-2 " />
+                          ) : (
+                            <IconTicket className="mr-0 h-5 w-5 md:mr-2 " />
+                          )}
+                          <p className="hidden md:flex">{t('print-label')}</p>
+                        </Button>
+                      )}
                     </div>
-                    <p className="text-md whitespace-nowrap pt-[0.6rem] font-medium md:pt-0">
-                      {orderProduct.detailPrice * parseFloat(orderProduct.quantity)} TND
-                    </p>
+                    {subOrder.products.map((orderProduct, index) => (
+                      <div key={index} className="flex flex-col items-center gap-4 md:flex-row md:gap-6 ">
+                        {/* Product Image */}
+                        <Image
+                          className="rounded-md object-contain"
+                          src={`${MEDIA_HOSTNAME}${orderProduct.product.media[0].key}`}
+                          alt={orderProduct.product.name}
+                          height={180}
+                          width={180}
+                        />
+                        <div className="flex h-full w-full items-center justify-between">
+                          <div className="items-between flex h-full w-full flex-col justify-between gap-4 py-2 text-sm ">
+                            <p className="flex max-w-full text-[1.1rem] font-medium md:max-w-[50%]">
+                              {orderProduct.product.name}
+                            </p>
+                            <div className="flex flex-col gap-2">
+                              {role === roleOptions.ADMIN && (
+                                <span className="font-medium text-muted-foreground">
+                                  {tFields('order-product-code')} :{' '}
+                                  <span className="text-foreground">{orderProduct.code}</span>
+                                </span>
+                              )}
+                              <span className="font-medium text-muted-foreground">
+                                {tFields('product-quantity')} :{' '}
+                                <span className="text-foreground">{orderProduct.quantity}</span>
+                              </span>
+                              <span className="font-medium text-muted-foreground">
+                                {tFields('product-wholesale-price')} :{' '}
+                                <span className="text-foreground">{orderProduct.product.wholesalePrice} TND</span>
+                              </span>
+                              {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
+                                <span className="font-medium text-muted-foreground">
+                                  {tFields('product-selling-price')} :{' '}
+                                  <span className="text-foreground">{orderProduct.detailPrice} TND</span>
+                                </span>
+                              )}
+                              {role === roleOptions.SELLER && (
+                                <span className="font-medium text-muted-foreground">
+                                  {tFields('seller-profit-unit')} :{' '}
+                                  <span className="text-foreground">
+                                    {(orderProduct.detailPrice - orderProduct.product.wholesalePrice).toFixed(1)} TND
+                                  </span>
+                                </span>
+                              )}
+                              {role === roleOptions.SUPPLIER && (
+                                <span className="font-medium text-muted-foreground">
+                                  {tFields('supplier-profit-unit')} :{' '}
+                                  <span className="text-foreground">
+                                    {orderProduct.product.wholesalePrice.toFixed(1)} TND
+                                  </span>
+                                </span>
+                              )}
+                              {orderProduct.color && (
+                                <span className="font-medium text-muted-foreground">
+                                  {tFields('product-color')} :{' '}
+                                  <span className="ml-1 inline-flex items-center align-middle">
+                                    <div
+                                      className="mr-1 h-4 w-4 rounded-full border border-border align-middle"
+                                      style={{
+                                        backgroundColor: colorHexMap[orderProduct.color as keyof typeof colorHexMap],
+                                      }}></div>
+                                    <span className="align-middle text-foreground">{tColors(orderProduct.color)}</span>
+                                  </span>
+                                </span>
+                              )}
+                              {orderProduct.size && (
+                                <span className="font-medium text-muted-foreground">
+                                  {tFields('product-size')} :{' '}
+                                  <span className="text-foreground">{orderProduct.size}</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <p className="text-md whitespace-nowrap pt-[0.6rem] font-medium md:pt-0">
+                            {orderProduct.detailPrice * parseFloat(orderProduct.quantity)} TND
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="flex flex-col gap-2 text-sm">
+                      {role !== roleOptions.SUPPLIER && (
+                        <div className="flex w-full items-center justify-between pt-3 font-medium">
+                          <p>{tFields('delivery-fee')}</p>
+                          <p>{deliveryFee / order.subOrders.length} TND</p>
+                        </div>
+                      )}
+                      {role !== roleOptions.SUPPLIER && (
+                        <div className="flex w-full items-center justify-between font-medium">
+                          <p>{tFields('order-sub-order-total')}</p>
+                          <p>{subOrder.total} TND</p>
+                        </div>
+                      )}
+                      {role === roleOptions.ADMIN && (
+                        <div className="flex w-full items-center justify-between font-medium">
+                          <p>{tFields('supplier-profit')}</p>
+                          <p className="text-primary">
+                            {subOrder.products
+                              .reduce((total, orderProduct) => {
+                                return total + (orderProduct.supplierProfit || 0);
+                              }, 0)
+                              .toFixed(1)}
+                            TND
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
               <div className="text-md flex flex-col items-center justify-center gap-2 ">
-                <div className="flex w-full items-center justify-between pt-3 font-medium">
-                  <p>{tFields('delivery-fee')}</p>
-                  <p>8 TND</p>
+                <div className="my-6 h-[1px] w-full rounded-md bg-border " />
+                <div className="flex w-full items-center justify-between pt-3 font-semibold">
+                  <p>{tFields('delivery-fee-total')}</p>
+                  <p>{deliveryFee} TND</p>
                 </div>
-                <div className="my-4 h-[1px] w-full rounded-md bg-border " />
                 {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
                   <div className="flex w-full items-center justify-between font-semibold">
                     <p>TOTAL</p>
                     <p>{order.total.toFixed(1)} TND</p>
                   </div>
                 )}
-                {role === roleOptions.SELLER && (
-                  <div className="flex w-full items-center justify-between font-semibold">
-                    <p>{tFields('platform-profit')} (10%)</p>
-                    <p>{(order.sellerProfit * 0.1).toFixed(1)} TND</p>
+                {role === roleOptions.SUPPLIER && (
+                  <div className="flex w-full items-center justify-between font-medium">
+                    <p>TOTAL</p>
+                    <p>{subOrders[0].total} TND</p>
                   </div>
                 )}
+                <div className="flex w-full items-center justify-between font-semibold">
+                  <p>{tFields('platform-profit')} (10%)</p>
+                  <p>
+                    {platformProfit.toFixed(1)}
+                    TND
+                  </p>
+                </div>
+
                 {role === roleOptions.SUPPLIER && (
                   <div className="flex w-full items-center justify-between font-semibold">
-                    <p>{tFields('platform-profit')} (10%)</p>
-                    <p>
-                      {userOrderProducts
+                    <p>{tFields('supplier-profit')}</p>
+                    <p className="text-primary">
+                      {subOrders[0].products
                         .reduce((total, orderProduct) => {
-                          return total + (orderProduct.product.platformProfit ?? 0) * parseInt(orderProduct.quantity);
+                          return total + (orderProduct.supplierProfit || 0);
                         }, 0)
                         .toFixed(1)}{' '}
                       TND
                     </p>
                   </div>
                 )}
-
-                {role === roleOptions.ADMIN && (
-                  <div className="flex w-full items-center justify-between font-semibold">
-                    <p>{tFields('platform-profit')}</p>
-                    <p>{order.platformProfit.toFixed(1)} TND</p>
-                  </div>
-                )}
-
                 {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
                   <div className="flex w-full items-center justify-between font-semibold">
                     <p>{tFields('seller-profit')}</p>
-                    <p className="text-primary">{order.sellerProfit.toFixed(1)} TND</p>
-                  </div>
-                )}
-                {(role === roleOptions.SUPPLIER || role === roleOptions.ADMIN) && (
-                  <div className="flex w-full items-center justify-between font-semibold">
-                    <p>{tFields('supplier-profit')}</p>
                     <p className="text-primary">
-                      {userOrderProducts
-                        .reduce((total, orderProduct) => {
-                          return total + (orderProduct.supplierProfit || 0);
+                      {order.subOrders
+                        .reduce((total, subOrder) => {
+                          return total + subOrder.sellerProfit!;
                         }, 0)
                         .toFixed(1)}
                       TND
@@ -323,13 +452,62 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                 <IconCurrentLocation /> {t('order-status')} {'  '}
               </h2>
               <p className="text-sm text-muted-foreground">{t('order-status-note')}</p>
-              <div
-                className={`duration-&lsqb;1100ms&rsqb; mx-auto inline-flex animate-pulse rounded-full px-3 py-1 text-sm ${statusObj.Color}`}>
-                {tStatuses(statusObj.Key)}
+              {subOrders.map((subOrder, index) => (
+                <div key={index} className="flex flex-col gap-4">
+                  <div className="flex w-full items-center justify-between gap-2 text-sm font-medium">
+                    <p className="text-md font-medium text-foreground">
+                      {tFields('order-sub-order')} {index + 1} :
+                    </p>
+                    <Button
+                      className="h-8"
+                      onClick={(event) => {
+                        setSelectedSubOrder(subOrder);
+                        setHistoryDialogOpen(true);
+                      }}
+                      variant={'outline'}
+                      size={'sm'}>
+                      <IconHistory className={cn('mr-2 h-4 w-4')} />
+                      {t('view-history')}
+                    </Button>
+                  </div>
+                  <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                    <p className="text-muted-foreground">{tFields('order-code')} :</p>
+                    <p>{subOrder.code}</p>
+                  </div>
+                  {(() => {
+                    const orderStatus = orderStatuses.find((s) => s.Key === subOrder.status) ?? {
+                      Key: 'n-a-SH017',
+                      Color: 'text-white bg-gray-300',
+                    };
+                    return (
+                      <div
+                        key={index}
+                        className={`duration-&lsqb;1100ms&rsqb; mx-auto inline-flex animate-pulse rounded-full px-3 py-1 text-sm ${orderStatus.Color}`}>
+                        {tStatuses(orderStatus.Key)}
+                      </div>
+                    );
+                  })()}
+                </div>
+              ))}
+
+              <div className="flex flex-row items-center justify-center gap-3">
+                <Button
+                  className="w-full"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setRefreshLoading(true);
+                    router.refresh();
+                    setTimeout(() => setRefreshLoading(false), 2000);
+                  }}
+                  disabled={isRefreshLoading ? true : false}
+                  size={'sm'}
+                  variant={'primary'}>
+                  <IconRefresh className={cn(isRefreshLoading ? 'animate-spin' : '', 'mr-2 h-5 w-5')} />
+                  {t('refresh')}
+                </Button>
               </div>
-              <Button size={'sm'}>{t('refresh')}</Button>
             </div>
-            <div className="flex h-full flex-col gap-6 rounded-md border border-border bg-background p-4 md:p-6">
+            <div className="flex h-min flex-col gap-6 rounded-md border border-border bg-background p-4 md:p-6">
               <h2 className="flex items-center gap-2 text-lg font-semibold">
                 <IconUserSquare /> {t('client-information')} {'  '}
               </h2>{' '}
