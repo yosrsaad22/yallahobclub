@@ -16,12 +16,13 @@ import {
 } from '@prisma/client';
 import { getUserById } from '@/data/user';
 import { OrderSchema } from '@/schemas';
-import { colorOptions, orderStatuses, roleOptions, sizeOptions } from '@/lib/constants';
+import { roleOptions } from '@/lib/constants';
 import { notifyAllAdmins, notifyUser } from './notifications';
 import { admingGetOrderById, userGetOrderById } from '@/data/order';
 import { generateCode } from '@/lib/utils';
 import { printLabelRequest, trackShipmentsRequest } from '@/lib/aramex';
 import { createTransaction } from './transactions';
+import { generateLabel } from './documents';
 
 export const sellerGetOrders = async (): Promise<ActionResponse> => {
   roleGuard(UserRole.SELLER);
@@ -142,6 +143,7 @@ export const getOrderById = async (id: string): Promise<ActionResponse> => {
     await trackOrder(order);
     return { success: 'order-fetch-success', data: order };
   } catch (error) {
+    console.log(error);
     return { error: 'order-fetch-error' };
   }
 };
@@ -156,7 +158,7 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
     }
 
     // Check if all subOrders have status 'awaiting-packaging-EC00'
-    const allSubOrdersAwaiting = order.subOrders.every((subOrder) => subOrder.status === 'awaiting-packaging-EC00');
+    const allSubOrdersAwaiting = order.subOrders.every((subOrder) => subOrder.status === 'EC00');
 
     if (!allSubOrdersAwaiting) {
       return { error: 'oorder-cancel-error' };
@@ -168,11 +170,10 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
       await db.subOrder.update({
         where: { id: subOrder.id },
         data: {
-          status: 'seller-cancelled-EC01',
+          status: 'EC01',
           statusHistory: {
             create: {
-              status: 'seller-cancelled-EC01',
-              statusDescription: 'seller-cancelled-description-EC01',
+              status: 'EC01',
               createdAt: new Date(),
             },
           },
@@ -230,7 +231,6 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
   // Ensure the user has the correct role
   roleGuard(UserRole.ADMIN || UserRole.SELLER);
   const user = await currentUser();
-
   try {
     // Fetch the seller details
     const seller = await getUserById(values.sellerId);
@@ -289,6 +289,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
           email: values.email,
           number: values.number,
           city: values.city,
+          state: values.state,
           address: values.address,
           seller: {
             connect: { id: values.sellerId },
@@ -302,7 +303,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
         // Fetch supplier details
         const supplier = await tx.user.findUnique({
           where: { id: supplierId },
-          select: { id: true, fullName: true, address: true, city: true, number: true, code: true },
+          select: { id: true, fullName: true, address: true, city: true, state: true, number: true, code: true },
         });
         if (!supplier) {
           throw new Error(`Supplier with ID ${supplierId} not found`);
@@ -315,13 +316,12 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
         const subOrder = await tx.subOrder.create({
           data: {
             code: subOrderCode,
-            status: 'awaiting-packaging-EC00',
+            status: 'EC00',
             deliveryId: null, // To be updated when pickup is created
             order: { connect: { id: order.id } },
             statusHistory: {
               create: {
-                status: 'awaiting-packaging-EC00',
-                statusDescription: 'awaiting-packaging-description-EC00',
+                status: 'EC00',
                 createdAt: new Date(),
               },
             },
@@ -333,7 +333,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
         let subOrderTotal = 0;
 
         // Calculate the delivery fee based on the number of unique suppliers
-        let deliveryFee = Object.keys(supplierGroups).length > 1 ? 7 : 8;
+        let deliveryFee = Object.keys(supplierGroups).length > 1 ? 7 * Object.keys(supplierGroups).length : 8;
 
         for (const item of products) {
           // **Seller's profit** (90% of the profit from selling the product)
@@ -350,9 +350,11 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
               (productsList.find((product: any) => product.id === item.productId)?.wholesalePrice ?? 0)) *
             parseInt(item.quantity, 10) *
             0.1;
+
           const platformProfitFromSupplier =
             parseInt(item.quantity) *
-            productsList.find((product: any) => product.id === item.productId)?.platformProfit; // from supplier
+            productsList.find((product: any) => product.id === item.productId)?.platformProfit;
+
           subOrderPlatformProfit +=
             platformProfitFromSeller + platformProfitFromSupplier + (Object.keys(supplierGroups).length > 1 ? 0 : 1);
 
@@ -447,25 +449,17 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
 };
 
 export const trackOrders = async (orders: any[]): Promise<void> => {
-  const url = process.env.ARAMEX_TRACKING_URL;
+  const url = process.env.MASSAR_URL;
   if (!url) {
-    throw new Error('ARAMEX_TRACKING_URL is not defined');
+    throw new Error('URL is not defined');
   }
 
   // Define statuses to exclude
-  const excludedStatuses = [
-    'delivered-SH005',
-    'collected-SH006',
-    'postal-delivery-SH007',
-    'seller-cancelled-EC01',
-    'returned-to-shipper-SH407',
-    'finished-EC02',
-    '',
-  ];
+  const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
 
   // Flatten orders to get active sub-orders
   const activeSubOrders = orders.flatMap((order) =>
-    order.subOrders.filter((subOrder: SubOrder) => !excludedStatuses.includes(subOrder.status!)),
+    order.subOrders.filter((subOrder: SubOrder) => subOrder.deliveryId && !excludedStatuses.includes(subOrder.status!)),
   );
 
   const deliveryIds: string[] = activeSubOrders.map((subOrder) => subOrder.deliveryId!);
@@ -475,102 +469,99 @@ export const trackOrders = async (orders: any[]): Promise<void> => {
     return;
   }
 
-  // Fetch tracking information
-  const response = await fetch(`${url}/TrackShipments`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(trackShipmentsRequest({ deliveryIds })),
-  });
+  // Fetch tracking information for each sub-order
+  for (const deliveryId of deliveryIds) {
+    const response = await fetch(`${url}/tracking/${deliveryId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
 
-  // Handle fetch errors
-  if (!response.ok) {
-    throw new Error(`Failed to track orders: ${response.statusText}`);
-  }
+    // Handle fetch errors
+    if (!response.ok) {
+      throw new Error(`Failed to track order: ${response.statusText}`);
+    }
 
-  // Process response data
-  const { TrackingResults = [] } = await response.json();
+    // Process response data
+    const data = await response.json();
 
-  for (const result of TrackingResults) {
-    const subOrder = activeSubOrders.find((o) => o.deliveryId === result.Key);
-    if (!subOrder) continue;
-
-    const latestStatusUpdate = result.Value[result.Value.length - 1];
-    const oldStatus = orderStatuses.find((status) => status.Key === subOrder.status);
-    const newStatus = orderStatuses.find((status) => status.UpdateCode === latestStatusUpdate.UpdateCode);
+    // Get the latest status update (first element of the `etats` array)
+    const oldStatus = activeSubOrders.find((subOrder) => subOrder.deliveryId === deliveryId)?.status;
+    const newStatus = data.colis.etat;
 
     // Update sub-order status if it has changed
-    if (newStatus && oldStatus && newStatus.Key !== oldStatus.Key) {
+    if (newStatus && oldStatus && newStatus !== oldStatus) {
       const statusHistoryEntry = {
-        status: newStatus.Key,
-        statusDescription: newStatus.Description,
+        status: newStatus,
         createdAt: new Date(),
       };
 
-      await db.subOrder.update({
-        where: { id: subOrder.id },
-        data: {
-          status: newStatus.Key,
-          statusHistory: {
-            create: statusHistoryEntry,
+      const subOrder = activeSubOrders.find((o) => o.deliveryId === deliveryId);
+      if (subOrder) {
+        await db.subOrder.update({
+          where: { id: subOrder.id },
+          data: {
+            status: newStatus,
+            statusHistory: {
+              create: statusHistoryEntry,
+            },
           },
-        },
-      });
+        });
 
-      // Notify the seller of the status change
-      const order = orders.find((o) => o.subOrders.some((so: SubOrder) => so.id === subOrder.id));
-      if (!order) continue;
+        // Notify the seller of the status change
+        const order = orders.find((o) => o.subOrders.some((so: SubOrder) => so.id === subOrder.id));
+        if (order) {
+          notifyUser(
+            order.sellerId!,
+            NotificationType.ORDER_STATUS_CHANGED,
+            `/dashboard/seller/orders/${order.id}`,
+            `#${order.code}`,
+          );
+        }
 
-      notifyUser(
-        order.sellerId!,
-        NotificationType.ORDER_STATUS_CHANGED,
-        `/dashboard/seller/orders/${order.id}`,
-        `#${order.code}`,
-      );
-
-      // Notify unique suppliers associated with the order
-      const uniqueSuppliers = new Set(
-        subOrder.products.map((item: OrderProduct & { product: Product }) => item.product?.supplierId),
-      );
-      for (const supplierId of uniqueSuppliers) {
-        notifyUser(
-          supplierId as string,
-          NotificationType.ORDER_STATUS_CHANGED,
-          `/dashboard/supplier/orders/${order.id}`,
-          `#${order.code}`,
+        // Notify unique suppliers associated with the order
+        const uniqueSuppliers = new Set(
+          subOrder.products.map((item: OrderProduct & { product: Product }) => item.product?.supplierId),
         );
-      }
+        for (const supplierId of uniqueSuppliers) {
+          notifyUser(
+            supplierId as string,
+            NotificationType.ORDER_STATUS_CHANGED,
+            `/dashboard/supplier/orders/${order.id}`,
+            `#${order.code}`,
+          );
+        }
 
-      // Notify all admins
-      notifyAllAdmins(NotificationType.ORDER_STATUS_CHANGED, `/dashboard/admin/orders/${order.id}`, `#${order.code}`);
+        // Notify all admins
+        notifyAllAdmins(NotificationType.ORDER_STATUS_CHANGED, `/dashboard/admin/orders/${order.id}`, `#${order.code}`);
+      }
     }
   }
 };
 
 export const trackOrder = async (subOrder: any): Promise<void> => {
-  const url = process.env.ARAMEX_TRACKING_URL;
+  const url = process.env.MASSAR_URL;
   if (!url) {
-    throw new Error('ARAMEX_TRACKING_URL is not defined');
+    throw new Error('URL is not defined');
   }
 
   // Define statuses to exclude
-  const excludedStatuses = ['delivered-SH005', 'seller-cancelled-EC01', 'finished-EC02', 'returned-to-shipper-SH407'];
+  const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
 
   // Check if the order status is excluded
-  if (excludedStatuses.includes(subOrder.status)) {
+  if (!subOrder.deliveryId || excludedStatuses.includes(subOrder.status)) {
     return; // No tracking needed for excluded statuses
   }
 
-  // Fetch tracking information
-  const response = await fetch(`${url}/TrackShipments`, {
-    method: 'POST',
+  // Fetch tracking information for a single order
+  const response = await fetch(`${url}/tracking/${subOrder.deliveryId}`, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
-    body: JSON.stringify(trackShipmentsRequest({ deliveryIds: [subOrder.deliveryId] })),
   });
 
   // Handle fetch errors
@@ -579,28 +570,23 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
   }
 
   // Process response data
-  const { TrackingResults = [] } = await response.json();
-  const result = TrackingResults[0];
-  if (!result) {
-    return; // No tracking result available
-  }
+  const data = await response.json();
 
-  const latestStatusUpdate = result.Value[result.Value.length - 1];
-  const oldStatus = orderStatuses.find((status) => status.Key === subOrder.status);
-  const newStatus = orderStatuses.find((status) => status.UpdateCode === latestStatusUpdate.UpdateCode);
+  // Get the latest status update (first element of the `etats` array)
+  const oldStatus = subOrder.status;
+  const newStatus = data.colis.etat;
 
-  // Update order status if it has changed
-  if (newStatus && oldStatus && newStatus.Key !== oldStatus.Key) {
+  // Update sub-order status if it has changed
+  if (newStatus && oldStatus && newStatus !== oldStatus) {
     const statusHistoryEntry = {
-      status: newStatus.Key,
-      statusDescription: newStatus.Description,
+      status: newStatus,
       createdAt: new Date(),
     };
 
     await db.subOrder.update({
       where: { id: subOrder.id },
       data: {
-        status: newStatus.Key,
+        status: newStatus,
         statusHistory: {
           create: statusHistoryEntry,
         },
@@ -635,33 +621,36 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
 export const printLabel = async (id: string): Promise<ActionResponse> => {
   roleGuard(UserRole.SUPPLIER || UserRole.ADMIN);
   try {
-    const subOrder = await db.subOrder.findUnique({ where: { id } });
-    if (subOrder?.status === 'seller-cancelled-EC01') {
+    const subOrder = await db.subOrder.findUnique({
+      where: { id },
+      include: {
+        products: {
+          include: {
+            product: {
+              include: {
+                supplier: true,
+              },
+            },
+          },
+        },
+        order: {
+          include: {
+            subOrders: true,
+            seller: true,
+          },
+        },
+      },
+    });
+    if (subOrder?.status === 'EC01') {
       return { error: 'print-label-order-cancelled-error' };
     }
     if (subOrder?.deliveryId === undefined || !subOrder?.deliveryId) {
       return { error: 'print-label-order-no-pickup-error' };
     }
 
-    const url = process.env.ARAMEX_SHIPPING_URL;
-    if (!url) {
-      throw new Error('URL is not defined');
-    }
+    const res = await generateLabel(subOrder);
 
-    const response = await fetch(url + '/PrintLabel', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(printLabelRequest({ deliveryId: subOrder?.deliveryId })),
-    });
-
-    const responseData = await response.json();
-    if (!response.ok) {
-      throw new Error('Failed to send pickup request to Aramex');
-    }
-    return { success: 'print-label-success', data: responseData.ShipmentLabel.LabelURL };
+    return { success: 'print-label-success', data: res.data };
   } catch (error) {
     return { error: 'print-label-error' };
   }
@@ -672,44 +661,101 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
   try {
     const orders = await db.order.findMany({
       where: { id: { in: ids } },
-      include: { subOrders: true },
+      include: {
+        subOrders: {
+          include: {
+            products: {
+              include: {
+                product: {
+                  include: {
+                    supplier: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!orders) {
       return { error: 'order-not-found-error' };
     } // Define statuses to exclude
-    const excludedStatuses = [
-      'delivered-SH005',
-      'collected-SH006',
-      'postal-delivery-SH007',
-      'seller-cancelled-EC01',
-      'returned-to-shipper-SH407',
-      'finished-EC02',
-      '',
-    ];
 
+    const excludedStatuses = ['21', '22', '23'];
     for (const order of orders) {
       for (const subOrder of order.subOrders) {
-        await db.subOrder.update({
-          where: { id: subOrder.id },
-          data: {
-            status: 'finished-EC02',
-            statusHistory: {
-              create: {
-                status: 'finished-EC02',
-                statusDescription: 'finished-description-EC02',
-                createdAt: new Date(),
+        if (!excludedStatuses.includes(subOrder.status!)) {
+          return { error: 'order-paid-invalid-error' };
+        }
+      }
+    }
+    for (const order of orders) {
+      // Livraison
+      for (const subOrder of order.subOrders) {
+        if (subOrder.status === '22') {
+          await createTransaction(order.sellerId!, 'order-transaction', -3);
+          await db.subOrder.update({
+            where: { id: subOrder.id },
+            data: {
+              status: 'EC02',
+              platformProfit: 2.5,
+              sellerProfit: -3,
+              products: {
+                updateMany: {
+                  where: { subOrderId: subOrder.id },
+                  data: { supplierProfit: 0 },
+                },
+              },
+              statusHistory: {
+                create: {
+                  status: 'EC02',
+                  createdAt: new Date(),
+                },
               },
             },
-          },
-        });
-        /* if(subOrder.status === 'returned-to-shipper-SH407') {
-    await createTransaction(order.sellerId!,'order-transaction' , -2);
-   }
-   else {
-    await createTransaction(order.sellerId!,'order-transaction', subOrder.);
-   }*/
+          });
+          const subOrderProducts = await db.orderProduct.findMany({
+            where: { subOrderId: subOrder.id },
+            include: { product: true },
+          });
+
+          for (const orderProduct of subOrderProducts) {
+            if (orderProduct.productId) {
+              const product = await db.product.findUnique({
+                where: { id: orderProduct.productId },
+              });
+
+              if (product) {
+                await db.product.update({
+                  where: { id: orderProduct.productId },
+                  data: { stock: product.stock + parseInt(orderProduct.quantity) },
+                });
+              }
+            }
+          }
+        } else if (subOrder.status === '23') {
+          await db.subOrder.update({
+            where: { id: subOrder.id },
+            data: {
+              status: 'EC02',
+              statusHistory: {
+                create: {
+                  status: 'EC02',
+                  createdAt: new Date(),
+                },
+              },
+            },
+          });
+          await createTransaction(order.sellerId!, 'order-transaction', subOrder.sellerProfit!);
+          subOrder.products.forEach((op) => {
+            if (op.product?.supplierId) {
+              createTransaction(op.product.supplierId, 'order-transaction', op.supplierProfit!);
+            }
+          });
+        }
       }
+
       revalidatePath(`/dashboard/seller/orders/${order.id}`);
     }
 

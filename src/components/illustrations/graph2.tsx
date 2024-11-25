@@ -6,7 +6,7 @@ export const GraphIllustration2 = () => (
     />
     <path
       d="M1 15.7179C13.1053 15.5 21.8261 -2.75008 40.2565 17.1959C59.8848 38.4381 71.5355 35.6887 79.6187 29.682C103.602 11.8598 102.361 33.8135 125.834 13.631C144.533 -2.44711 147.766 20.862 163.056 22.2337C173.677 23.1865 181.669 -1.65858 197.352 13.843C219.141 35.3806 229.947 2 241 2"
-      stroke="#FA9D2A"
+      stroke="hsl(340,75%,55%)"
       strokeWidth="3"
     />
     <defs>
@@ -17,7 +17,7 @@ export const GraphIllustration2 = () => (
         x2="121"
         y2="2.00003"
         gradientUnits="userSpaceOnUse">
-        <stop stopColor="#FA9D2A" stopOpacity="0" />
+        <stop stopColor="hsl(340,75%,55%)" stopOpacity="0" />
         <stop offset="1" stopColor="#FA9D2A" stopOpacity="0.2" />
       </linearGradient>
     </defs>

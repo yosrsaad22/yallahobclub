@@ -12,6 +12,7 @@ import {
   IconReceipt,
   IconReceipt2,
   IconRefresh,
+  IconTransactionDollar,
   IconTrash,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
@@ -23,6 +24,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useRouter } from '@/navigation';
 import { RequestPickupDialog } from '../dialogs/request-pickup-dialog';
 import { AddTransactionDialog } from '../dialogs/add-transaction-dialog';
+import { MarkAsPaidDialog } from '../dialogs/mark-as-paid-dialog';
 
 interface DataTableToolbarProps<TData> {
   tag: string;
@@ -31,12 +33,15 @@ interface DataTableToolbarProps<TData> {
   onBulkDelete: DataTableHandlers['onBulkDelete'] | undefined;
   onRequestPickup: DataTableHandlers['onRequestPickup'] | undefined;
   onPrintPickup: DataTableHandlers['onPrintPickup'] | undefined;
+  onMarkAsPaid: DataTableHandlers['onMarkAsPaid'] | undefined;
+
   onAddTransaction: DataTableHandlers['onAddTransaction'] | undefined;
   showAddTransactionButton?: boolean;
   showAddButton: boolean;
   showBulkDeleteButton?: boolean;
   showCreatePickupButton?: boolean;
   showPrintPickupButton?: boolean;
+  showMarkAsPaidButton?: boolean;
 }
 
 export function DataTableToolbar<TData extends { id: string }>({
@@ -47,9 +52,11 @@ export function DataTableToolbar<TData extends { id: string }>({
   onRequestPickup,
   onPrintPickup,
   onAddTransaction,
+  onMarkAsPaid,
   showAddButton = true,
   showBulkDeleteButton = true,
   showCreatePickupButton = false,
+  showMarkAsPaidButton = false,
   showPrintPickupButton = false,
   showAddTransactionButton = false,
 }: DataTableToolbarProps<TData>) {
@@ -58,10 +65,14 @@ export function DataTableToolbar<TData extends { id: string }>({
   const role = useCurrentRole();
   const [isDeleteLoading, startDeleteTransition] = React.useTransition();
   const [isPickupLoading, startPickupTransition] = React.useTransition();
+  const [isMarkAsPaidLoading, startMarkAsPaidTransition] = React.useTransition();
+
   const [isPrintPickupLoading, startPrintPickupTransition] = React.useTransition();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isPickupDialogOpen, setPickupDialogOpen] = useState(false);
+  const [isMarkAsPaidDialogOpen, setMarkAsPaidDialogOpen] = useState(false);
+
   const [isTransactionDialogOpen, setTransactionDialogOpen] = useState(false);
 
   const router = useRouter();
@@ -112,6 +123,7 @@ export function DataTableToolbar<TData extends { id: string }>({
               title: tValidation('success-title'),
               description: tValidation(res.success),
             });
+            router.refresh();
           } else {
             toast({
               variant: 'destructive',
@@ -180,6 +192,36 @@ export function DataTableToolbar<TData extends { id: string }>({
     });
   };
 
+  const onMarkAsPaidConfirm = async () => {
+    startMarkAsPaidTransition(() => {
+      const ids: string[] = [];
+      const selectedRows = table.getSelectedRowModel().rows;
+      selectedRows.forEach((row) => {
+        ids.push(row.original.id);
+      });
+      if (onMarkAsPaid) {
+        onMarkAsPaid(ids).then((res: ActionResponse) => {
+          setMarkAsPaidDialogOpen(false);
+          if (res.success) {
+            table.setRowSelection({});
+            toast({
+              variant: 'success',
+              title: tValidation('success-title'),
+              description: tValidation(res.success),
+            });
+            router.refresh();
+          } else {
+            toast({
+              variant: 'destructive',
+              title: tValidation('error-title'),
+              description: tValidation(res.error),
+            });
+          }
+        });
+      }
+    });
+  };
+
   const rows = table.getRowModel().rows.length;
   const allRowsSelected = table.getRowModel().rows.length === table.getSelectedRowModel().flatRows.length;
   const someRowsSelected = table.getIsSomeRowsSelected();
@@ -198,6 +240,13 @@ export function DataTableToolbar<TData extends { id: string }>({
         onClose={() => setPickupDialogOpen(false)}
         onConfirm={onPickupConfirm}
         isLoading={isPickupLoading}
+      />
+      <MarkAsPaidDialog
+        orderNumber={table.getSelectedRowModel().flatRows.length.toString()}
+        isOpen={isMarkAsPaidDialogOpen}
+        onClose={() => setMarkAsPaidDialogOpen(false)}
+        onConfirm={onMarkAsPaidConfirm}
+        isLoading={isMarkAsPaidLoading}
       />
       <AddTransactionDialog
         isOpen={isTransactionDialogOpen}
@@ -247,6 +296,29 @@ export function DataTableToolbar<TData extends { id: string }>({
               <IconChecklist className="mr-0 h-5 w-5 md:mr-2" />
               <p className="hidden md:flex">
                 {t('pickup')} ({table.getSelectedRowModel().flatRows.length})
+              </p>
+            </Button>
+          )}
+          {showMarkAsPaidButton && (
+            <Button
+              onClick={() => {
+                if ((allRowsSelected && rows > 0) || (someRowsSelected && rows > 0)) {
+                  setMarkAsPaidDialogOpen(true);
+                } else {
+                  toast({
+                    variant: 'primary',
+                    title: tValidation('info-title'),
+                    description: tValidation('mark-as-paid-no-orders'),
+                  });
+                }
+              }}
+              variant="success"
+              size="default"
+              disabled={isMarkAsPaidLoading}
+              className="ml-auto px-5  lg:flex">
+              <IconTransactionDollar className="mr-0 h-5 w-5 md:mr-2" />
+              <p className="hidden md:flex">
+                {t('mark-as-paid')} ({table.getSelectedRowModel().flatRows.length})
               </p>
             </Button>
           )}

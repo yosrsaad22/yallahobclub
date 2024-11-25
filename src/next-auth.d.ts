@@ -6,6 +6,7 @@ export type ExtendedUser = DefaultSession['user'] & {
   image: string;
   number: string;
   address: string;
+  state: string;
   city: string;
   pack: packOptions;
   active: boolean;
@@ -14,6 +15,7 @@ export type ExtendedUser = DefaultSession['user'] & {
   code: string;
   rib: string;
   balance: number;
+  storeName: string;
 };
 
 declare module 'next-auth' {

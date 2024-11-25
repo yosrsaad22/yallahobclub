@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { IconDeviceFloppy, IconLoader2, IconUserPlus } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
-import { cities, DEFAULT_PASSWORD, packOptions, roleOptions } from '@/lib/constants';
+import { states, DEFAULT_PASSWORD, packOptions, roleOptions } from '@/lib/constants';
 import { ActionResponse } from '@/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -34,7 +34,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
   const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
-  const [city, setCity] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
   type schemaType = z.infer<typeof UserSchema>;
 
   let defaultValues;
@@ -45,6 +45,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
       emailVerified: false,
       active: false,
       paid: false,
+      pickupId: '0',
     };
   } else {
     defaultValues = {
@@ -52,6 +53,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
       emailVerified: false,
       active: false,
       paid: false,
+      storeName: 'N/A',
     };
   }
 
@@ -138,20 +140,20 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
-                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Label htmlFor="state">{tFields('user-state')}</Label>
                 <Combobox
-                  items={cities}
-                  selectedItems={city}
+                  items={states}
+                  selectedItems={state}
                   onSelect={(selectedItem: string) => {
-                    setCity(selectedItem);
-                    setValue('city', selectedItem);
+                    setState(selectedItem);
+                    setValue('state', selectedItem);
                   }}
-                  placeholder={tFields('user-city-placeholder')}
+                  placeholder={tFields('user-state-placeholder')}
                   displayValue={(item: string) => item}
-                  itemKey={(item: string) => cities.indexOf(item).toString()}
+                  itemKey={(item: string) => states.indexOf(item).toString()}
                   multiSelect={false}
                 />
-                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
+                {errors.state && <span className="text-xs text-red-400">{tValidation('state-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="address">{tFields('user-address')}</Label>
@@ -216,6 +218,23 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                 </Select>
                 {errors.role && <span className="text-xs text-red-400">{tValidation('role-error')}</span>}
               </LabelInputContainer>
+              {getValues('role') === roleOptions.SUPPLIER && (
+                <LabelInputContainer>
+                  <Label htmlFor="pickupId">{tFields('user-pickup-id')}</Label>
+                  <Input {...register('pickupId')} id="pickupd" placeholder={tFields('user-pickup-id')} type="text" />
+                  {errors.pickupId && <span className="text-xs text-red-400">{tValidation('pickup-id-error')}</span>}
+                </LabelInputContainer>
+              )}
+              {getValues('role') === roleOptions.SELLER && (
+                <LabelInputContainer>
+                  <Label htmlFor="storeName">
+                    {tFields('user-store-name')}
+                    <span className="ml-2 text-xs text-gray-400">{t('user-store-name-note')}</span>
+                  </Label>
+                  <Input {...register('storeName')} id="pickupd" placeholder={tFields('user-store-name')} type="text" />
+                  {errors.storeName && <span className="text-xs text-red-400">{tValidation('store-name-error')}</span>}
+                </LabelInputContainer>
+              )}
               <LabelInputContainer>
                 <Label htmlFor="emailVerified">{tFields('user-email-verified')}</Label>
                 <div className="flex h-10 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">

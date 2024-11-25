@@ -5,7 +5,7 @@ import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { AdminOrderColumns, SellerOrderColumns } from '@/components/dashboard/table/columns/order-columns';
-import { adminGetOrders, sellerGetOrders } from '@/actions/orders';
+import { adminGetOrders, markOrdersAsPaid, sellerGetOrders } from '@/actions/orders';
 import { Order } from '@prisma/client';
 import { adminRequestPickup, requestPickup } from '@/actions/pickups';
 
@@ -36,6 +36,12 @@ export default async function Orders() {
     return res;
   };
 
+  const handleMarkAsPaid = async (ids: string[]) => {
+    'use server';
+    const res = await markOrdersAsPaid(ids);
+    return res;
+  };
+
   return (
     <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -50,11 +56,13 @@ export default async function Orders() {
           onDelete={undefined}
           onBulkDelete={undefined}
           onRequestPickup={handleRequestPickup}
+          onMarkAsPaid={handleMarkAsPaid}
           columns={AdminOrderColumns}
           data={ordersData}
           showActions={false}
           showBulkDeleteButton={false}
           showCreatePickupButton={true}
+          showMarkAsPaidButton={true}
         />
       </div>
     </div>

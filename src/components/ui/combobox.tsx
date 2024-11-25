@@ -105,8 +105,10 @@ export function Combobox<T>({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent style={{ width: buttonWidth }} className={`${isDark ? 'bg-[#1f2937] text-[#9ca3af]' : ''} p-0`}>
-        <Command>
+      <PopoverContent
+        style={{ width: buttonWidth }}
+        className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''} p-0`}>
+        <Command className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''}`}>
           <CommandInput placeholder={t('search')} className="h-9 " />
           <CommandEmpty>{t('no-result')}</CommandEmpty>
           <CommandGroup className="overflow-y-auto ">
@@ -116,7 +118,7 @@ export function Combobox<T>({
                   <CommandItem
                     key={itemKey(item)}
                     value={displayValue(item)}
-                    className="w-full"
+                    className={`${isDark ? 'text-white' : ''} w-full`}
                     onSelect={() => {
                       onSelect(item);
                       setOpen(false);

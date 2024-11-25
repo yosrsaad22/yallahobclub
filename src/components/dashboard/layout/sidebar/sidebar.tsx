@@ -39,7 +39,7 @@ export default function Sidebar({ className }: SidebarProps) {
     <nav
       className={cn(
         `custom-scrollbar relative hidden h-full overflow-y-auto  border-r  ease-in-out lg:flex lg:flex-col`,
-        !isMinimized ? 'w-56' : 'w-[62px]',
+        !isMinimized ? 'w-64' : 'w-[62px]',
         className,
       )}
       style={{ transition: 'width 0.2s' }}>
@@ -49,13 +49,13 @@ export default function Sidebar({ className }: SidebarProps) {
             {!isMinimized && (
               <div className={'mb-5 flex flex-col items-center gap-3'}>
                 <div className="mt-8">
-                  <Avatar className="h-20 w-20 ">
+                  <Avatar className="h-20 w-20 bg-[#27272a]">
                     <AvatarImage
                       className="object-cover"
                       src={`${MEDIA_HOSTNAME}${user?.image}`}
                       alt={user?.name ?? ''}
                     />
-                    <AvatarFallback className="text-xl text-foreground">
+                    <AvatarFallback className=" bg-[#27272a] text-xl text-gray-400">
                       <IconUser className="h-9 w-9" />
                     </AvatarFallback>
                   </Avatar>

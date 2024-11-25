@@ -61,7 +61,9 @@ export const StatusHistoryDialog: React.FC<StatusHistoryDialogProps> = ({
                 <p className="text-sm font-semibold ">{tStatusKey(history.status)}</p>
                 <p className=" text-xs text-muted-foreground">{formatDate(history.createdAt)}</p>
               </div>
-              <p className="flex flex-wrap text-sm font-normal">{tStatusDescription(history.statusDescription)}</p>
+              <p className="flex flex-wrap text-sm font-normal">
+                {tStatusDescription(history.status + '-description')}
+              </p>
             </div>
           ))}
       </div>

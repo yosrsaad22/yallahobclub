@@ -23,7 +23,11 @@ export const getProducts = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return { success: 'products-fetch-success', data: products };
+    const modifiedProducts = products.map((product) => ({
+      ...product,
+      supplierCode: product.supplier?.code,
+    }));
+    return { success: 'products-fetch-success', data: modifiedProducts };
   } catch (error) {
     return { error: 'products-fetch-error' };
   }
@@ -46,7 +50,12 @@ export const getProductsBySeller = async (): Promise<ActionResponse> => {
         },
       },
     });
-    return { success: 'products-fetch-success', data: user?.myProducts };
+    const modifiedProducts = user?.myProducts.map((product) => ({
+      ...product,
+      supplier: null,
+      supplierCode: product.supplier?.code,
+    }));
+    return { success: 'products-fetch-success', data: modifiedProducts };
   } catch (error) {
     return { error: 'products-fetch-error' };
   }
@@ -215,7 +224,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
         NotificationType.ADMIN_NEW_PRODUCT,
         `/dashboard/admin/products/${newProduct.id}`,
         supplier?.fullName,
-      );  
+      );
       return { success: 'supplier-product-add-success' };
     } else {
       return { success: 'product-add-success' };

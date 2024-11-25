@@ -15,6 +15,8 @@ import {
   IconShoppingCartOff,
   IconUser,
   IconUserSquare,
+  IconTruckDelivery,
+  IconExchange,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -53,7 +55,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
 
   const subOrderStatuses = order.subOrders.map((subOrder) => subOrder.status);
 
-  const isOrderCancellable = subOrderStatuses.every((status) => status === 'awaiting-packaging-EC00');
+  const isOrderCancellable = subOrderStatuses.every((status) => status === 'EC00');
 
   const subOrders =
     role === roleOptions.SUPPLIER
@@ -132,7 +134,11 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
             title: tValidation('success-title'),
             description: tValidation(res.success),
           });
-          window.open(res.data, '_blank');
+
+          const bytes = new Uint8Array(res.data);
+          const blob = new Blob([bytes], { type: 'application/pdf' });
+          const docUrl = URL.createObjectURL(blob);
+          window.open(docUrl, '_blank');
         } else {
           toast({
             variant: 'destructive',
@@ -198,7 +204,6 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                     <p className="text-muted-foreground">{tFields('order-code')} :</p>
                     <p>{order.code}</p>
                   </div>
-
                   <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
                     <p className="text-muted-foreground">{tFields('order-seller')} :</p>
                     <div className="flex flex-row items-center gap-x-3">
@@ -381,7 +386,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                               .reduce((total, orderProduct) => {
                                 return total + (orderProduct.supplierProfit || 0);
                               }, 0)
-                              .toFixed(1)}
+                              .toFixed(1)}{' '}
                             TND
                           </p>
                         </div>
@@ -410,10 +415,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                 )}
                 <div className="flex w-full items-center justify-between font-semibold">
                   <p>{tFields('platform-profit')} (10%)</p>
-                  <p>
-                    {platformProfit.toFixed(1)}
-                    TND
-                  </p>
+                  <p>{platformProfit.toFixed(1)} TND</p>
                 </div>
 
                 {role === roleOptions.SUPPLIER && (
@@ -437,7 +439,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                         .reduce((total, subOrder) => {
                           return total + subOrder.sellerProfit!;
                         }, 0)
-                        .toFixed(1)}
+                        .toFixed(1)}{' '}
                       TND
                     </p>
                   </div>
@@ -475,15 +477,15 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                     <p>{subOrder.code}</p>
                   </div>
                   {(() => {
-                    const orderStatus = orderStatuses.find((s) => s.Key === subOrder.status) ?? {
-                      Key: 'n-a-SH017',
+                    const orderStatus = orderStatuses.find((s) => s.UpdateCode === subOrder.status) ?? {
+                      UpdateCode: 'EC03',
                       Color: 'text-white bg-gray-300',
                     };
                     return (
                       <div
                         key={index}
                         className={`duration-&lsqb;1100ms&rsqb; mx-auto inline-flex animate-pulse rounded-full px-3 py-1 text-sm ${orderStatus.Color}`}>
-                        {tStatuses(orderStatus.Key)}
+                        {tStatuses(orderStatus.UpdateCode)}
                       </div>
                     );
                   })()}
@@ -531,6 +533,9 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                 </span>
                 <span className="font-medium text-muted-foreground">
                   {tFields('order-city')} : <span className="text-foreground">{order.city}</span>
+                </span>
+                <span className="font-medium text-muted-foreground">
+                  {tFields('order-state')} : <span className="text-foreground">{order.state}</span>
                 </span>
               </div>
             </div>

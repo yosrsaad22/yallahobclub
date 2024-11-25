@@ -29,6 +29,7 @@ const config = {
         page: 'hsl(var(--page))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        sidebar: 'hsl(var(--sidebar))',
         thumb: 'hsl(var(--thumb))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',

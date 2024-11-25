@@ -14,7 +14,7 @@ import {
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { useNotifications } from '@/hooks/use-notifications';
 import { notificationIcons, notificationMessages } from '@/lib/constants';
-import { useRouter } from '@/navigation';
+import { Link, useRouter } from '@/navigation';
 import { Notification } from '@prisma/client';
 import { IconBell, IconLoader2 } from '@tabler/icons-react';
 import { Router } from 'lucide-react';
@@ -59,8 +59,11 @@ export default function NotificationDropdown({}: CompProps) {
         align="end"
         forceMount>
         <DropdownMenuLabel className="py-2 font-normal">
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-row items-center justify-between ">
             <p className="text-md font-medium leading-none">{t('menu-title')}</p>
+            <Link href={'/dashboard/notifications'} className="text-md leading-none underline hover:text-primary">
+              {t('view-all')}
+            </Link>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

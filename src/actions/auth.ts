@@ -39,6 +39,8 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
       email: values.email.trim(),
       number: values.number,
       address: values.address.trim(),
+      state: values.state,
+      city: values.city,
       password: hashedPassword,
       pack: values.pack,
     },

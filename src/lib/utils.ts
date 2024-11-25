@@ -10,7 +10,7 @@ export function translateColumnHeader(prefix: string, columnKey: string, tFields
   return tFields(`${prefix}-${translatedKey}`);
 }
 
-export function formatDate(date: Date) {
+export function formatDate(date: Date, showTime = true): string {
   const d = new Date(date);
   const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -18,6 +18,9 @@ export function formatDate(date: Date) {
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
 
+  if (!showTime) {
+    return `${day}/${month}/${year}`;
+  }
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
 

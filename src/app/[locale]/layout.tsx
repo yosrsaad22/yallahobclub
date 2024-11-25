@@ -27,8 +27,8 @@ export default function RootLayout({
           <NextTopLoader
             showSpinner={false}
             template={`
-          <div class="bar" role="bar" style="background: linear-gradient(to right,#2ab8bc,#fc3e3b)">
-            <div class="peg" style="background: linear-gradient(to right,#2ab8bc,#fc3e3b)"></div></div>`}
+          <div class="bar" role="bar" style="background: linear-gradient(to right,#2ab8bc,#e23670)">
+            <div class="peg" style="background: linear-gradient(to right,#2ab8bc,#e23670)"></div></div>`}
           />
           {children}
           <Toaster />

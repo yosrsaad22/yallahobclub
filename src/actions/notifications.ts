@@ -3,6 +3,8 @@ import { db } from '@/lib/db';
 import { roleGuard } from '@/lib/auth';
 import { NotificationType, UserRole } from '@prisma/client';
 import { ActionResponse } from '@/types';
+import { getNotificationsByUserId } from '@/data/notification';
+import { revalidatePath } from 'next/cache';
 
 export async function notifyUser(
   userId: string,
@@ -62,3 +64,26 @@ export async function markNotificationsAsRead(userId: string) {
     return { success: 'notifications-read-error' };
   }
 }
+
+export const deleteNotificationById = async (notificationId: string): Promise<ActionResponse> => {
+  try {
+    await db.notification.delete({
+      where: {
+        id: notificationId,
+      },
+    });
+    // revalidatePath('/dashboard/notifications');
+    return { success: 'notification-delete-success' };
+  } catch {
+    return { error: 'notification-delete-error' };
+  }
+};
+
+export const getNotifications = async (id: string): Promise<ActionResponse> => {
+  try {
+    const notification = await getNotificationsByUserId(id);
+    return { success: 'notification-fetch-success', data: notification };
+  } catch {
+    return { error: 'notification-fetch-error' };
+  }
+};

@@ -16,7 +16,7 @@ import { userEditSettings } from '@/actions/settings';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
 import { UploadButton } from '@/lib/uploadthing';
-import { cities, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
+import { states, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
 import { useSession } from 'next-auth/react';
 import { ActionResponse } from '@/types';
 import { cn } from '@/lib/utils';
@@ -34,9 +34,9 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
   type schemaType = z.infer<typeof UserSettingsSchema>;
 
   const [selectedPack, setSelectedPack] = React.useState(user?.pack as packOptions);
-  const [city, setCity] = React.useState<string>(user?.city ?? '');
+  console.log(user?.state);
+  const [state, setCity] = React.useState<string>(user?.state!);
   const tPricing = useTranslations('home.pricing');
-
   const {
     register,
     handleSubmit,
@@ -160,6 +160,34 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
+                <Label htmlFor="state">{tFields('user-state')}</Label>
+                <Combobox
+                  items={states}
+                  selectedItems={state}
+                  onSelect={(selectedItem: string) => {
+                    setCity(selectedItem);
+                    setValue('state', selectedItem);
+                  }}
+                  placeholder={tFields('user-state-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => states.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.state && <span className="text-xs text-red-400">{tValidation('state-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Input
+                  {...register('city')}
+                  defaultValue={user?.city ?? ''}
+                  disabled={isLoading}
+                  id="city"
+                  placeholder={tFields('user-city')}
+                  type="text"
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('city-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
                 <Label htmlFor="address">{tFields('user-address')}</Label>
                 <Input
                   {...register('address')}
@@ -170,22 +198,6 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
                   type="text"
                 />
                 {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
-              </LabelInputContainer>
-              <LabelInputContainer>
-                <Label htmlFor="city">{tFields('user-city')}</Label>
-                <Combobox
-                  items={cities}
-                  selectedItems={city}
-                  onSelect={(selectedItem: string) => {
-                    setCity(selectedItem);
-                    setValue('city', selectedItem);
-                  }}
-                  placeholder={tFields('user-city-placeholder')}
-                  displayValue={(item: string) => item}
-                  itemKey={(item: string) => cities.indexOf(item).toString()}
-                  multiSelect={false}
-                />
-                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="rib">{tFields('user-rib')}</Label>
@@ -199,6 +211,22 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
                 />
                 {errors.rib && <span className="text-xs text-red-400">{tValidation('rib-error')}</span>}
               </LabelInputContainer>
+              {user?.role === roleOptions.SELLER && (
+                <LabelInputContainer>
+                  <Label htmlFor="storeName">
+                    {tFields('user-store-name')}
+                    <span className="ml-2 text-xs text-gray-400">{t('user-store-name-note')}</span>
+                  </Label>
+                  <Input
+                    {...register('storeName')}
+                    defaultValue={user?.storeName ?? undefined}
+                    id="pickupd"
+                    placeholder={tFields('user-store-name')}
+                    type="text"
+                  />
+                  {errors.storeName && <span className="text-xs text-red-400">{tValidation('store-name-error')}</span>}
+                </LabelInputContainer>
+              )}
             </div>
           </div>
         </div>
@@ -247,7 +275,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
             </div>
           </div>
         </div>
-        {user?.role === roleOptions.SELLER && (
+        {/*user?.role === roleOptions.SELLER && (
           <div className="w-full space-y-6 rounded-lg border  bg-background p-6">
             <div className="space-y-2">
               <h2 className="pb-4 text-lg font-semibold">{t('pack-information')}</h2>
@@ -324,7 +352,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
               </div>
             </div>
           </div>
-        )}
+        ) */}
         <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-4">
           <Button type="submit" size="default" disabled={isLoading}>
             {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}

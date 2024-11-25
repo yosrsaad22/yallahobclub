@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
-import { WithdrawRequest } from '@prisma/client';
+import { User, WithdrawRequest } from '@prisma/client';
 import { useRouter } from '@/navigation';
 import { cn, formatDate } from '@/lib/utils';
 import { ActionResponse, DataTableUser } from '@/types';
@@ -29,7 +29,7 @@ import { Input } from '@/components/ui/input';
 import { ConfirmWithdrawRequestActionDialog } from '../dialogs/confirm-withdraw-request-action-dialog';
 
 interface WithdrawRequestsProps {
-  requests: (WithdrawRequest & { user: DataTableUser })[];
+  requests: (WithdrawRequest & { user: User })[];
   onCreateWithdrawRequest?: (data: any) => Promise<ActionResponse>;
   onApproveWithdrawRequest?: (id: string) => Promise<ActionResponse>;
   onDeclineWithdrawRequest?: (id: string) => Promise<ActionResponse>;
@@ -181,18 +181,19 @@ export const WithdrawRequestsCard: React.FC<WithdrawRequestsProps> = ({
   };
 
   // UserCell Component
-  const UserCell = ({ user }: { user: DataTableUser }) => {
+  const UserCell = ({ user }: { user: User }) => {
     return (
-      <div className="flex flex-row items-center justify-center gap-x-3">
-        <Avatar className="h-9 w-9">
+      <div className="flex flex-row items-center gap-x-2">
+        <Avatar className="h-8 w-8">
           <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${user.image}`} alt={user.fullName[0] ?? ''} />
           <AvatarFallback>
-            <IconUser className="h-5 w-5" />
+            {' '}
+            <IconUser className="h-4 w-4" />
           </AvatarFallback>
         </Avatar>
         <div className="flex h-[2.5rem] max-w-[100px] items-center overflow-hidden">
           <p
-            className="overflow-hidden text-ellipsis break-words text-center text-sm"
+            className="overflow-hidden text-ellipsis break-words"
             style={{
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -220,7 +221,7 @@ export const WithdrawRequestsCard: React.FC<WithdrawRequestsProps> = ({
           isOpen={actionDialog.isOpen}
           onClose={() => setActionDialog(null)}
           onConfirm={actionDialog.actionType === 'approve' ? handleApprove : handleDecline}
-          isLoading={false}
+          isLoading={loadingActionId === actionDialog.requestId}
           actionType={actionDialog.actionType}
           amount={actionDialog.amount}
           userName={actionDialog.userName}

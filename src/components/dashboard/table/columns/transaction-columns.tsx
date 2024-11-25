@@ -14,12 +14,12 @@ const TypeCell = ({ type }: { type: string }) => {
 
 const UserCell = ({ user }: { user: User }) => {
   return (
-    <div className="flex flex-row items-center gap-x-3">
-      <Avatar className="h-9 w-9">
+    <div className="flex flex-row items-center gap-x-2">
+      <Avatar className="h-8 w-8">
         <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${user.image}`} alt={user.fullName[0] ?? ''} />
         <AvatarFallback>
           {' '}
-          <IconUser className="h-5 w-5" />
+          <IconUser className="h-4 w-4" />
         </AvatarFallback>
       </Avatar>
       <div className="flex h-[2.5rem] max-w-[100px] items-center overflow-hidden">

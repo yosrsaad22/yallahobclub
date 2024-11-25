@@ -63,6 +63,7 @@ model User {
   number        String    @unique
   address       String
   city          String?
+  state         String?
   image         String?
   pack          UserPack?
   password      String
@@ -70,9 +71,13 @@ model User {
   role          UserRole  @default(SELLER)
   active        Boolean?  @default(false)
   paid          Boolean   @default(false)
+  CIN1          String?
+  CIN2          String?
   boarded       Boolean   @default(false)
   balance       Float     @default(0)
   createdAt     DateTime  @default(now())
+  pickupId      String?
+  storeName     String?
 
   accounts      Account[]
   notifications Notification[]
@@ -294,10 +299,9 @@ model OrderProduct {
 }
 
 model StatusHistory {
-  id                String   @id @default(cuid())
-  status            String
-  statusDescription String
-  createdAt         DateTime @default(now())
+  id        String   @id @default(cuid())
+  status    String
+  createdAt DateTime @default(now())
 
   subOrder   SubOrder @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
   subOrderId String
@@ -306,16 +310,16 @@ model StatusHistory {
 }
 
 model Order {
-  id        String   @id @default(cuid())
-  code      String   @unique
+  id        String  @id @default(cuid())
+  code      String  @unique
   total     Float
   firstName String
   lastName  String
   fullName  String?
   email     String?
-  paid      Boolean? @default(false)
   number    String
   city      String
+  state     String?
   address   String
 
   seller       User?         @relation("SellerOrders", fields: [sellerId], references: [id], onDelete: Cascade)
@@ -331,7 +335,7 @@ model SubOrder {
   id             String          @id @default(cuid())
   code           String          @unique
   deliveryId     String?         @unique
-  status         String?         @default("awaiting-packaging-EC00")
+  status         String?         @default("EC00")
   statusHistory  StatusHistory[]
   products       OrderProduct[]
   sellerProfit   Float?

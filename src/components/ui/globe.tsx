@@ -25,7 +25,7 @@ export const Globe = ({ className }: { className?: string }) => {
           mapSamples: 16000,
           mapBrightness: 6,
           baseColor: resolvedTheme === 'dark' ? [0.1, 0.1, 0.1] : [0.92, 0.92, 0.92],
-          markerColor: [232 / 255, 51 / 255, 46 / 255],
+          markerColor: [226 / 255, 54 / 255, 112 / 255],
           glowColor: [42 / 255, 182 / 255, 187 / 255],
           markers: [
             { location: [-33.9249, 18.4241], size: 0.05 }, // Cape Town

@@ -17,7 +17,7 @@ import { CompanyInfo } from '@prisma/client';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
 import { UploadButton } from '@/lib/uploadthing';
-import { cities, MEDIA_HOSTNAME } from '@/lib/constants';
+import { states, MEDIA_HOSTNAME } from '@/lib/constants';
 import { useSession } from 'next-auth/react';
 import { ActionResponse } from '@/types';
 import { Combobox } from '@/components/ui/combobox';
@@ -34,7 +34,7 @@ export function AdminSettingsForm({ className, companyInfo }: AdminSettingsFormP
   const session = useSession();
 
   type schemaType = z.infer<typeof AdminSettingsSchema>;
-  const [city, setCity] = React.useState<string>(user?.city ?? '');
+  const [state, setCity] = React.useState<string>(user?.state ?? '');
 
   const {
     register,
@@ -159,6 +159,34 @@ export function AdminSettingsForm({ className, companyInfo }: AdminSettingsFormP
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Input
+                  {...register('city')}
+                  defaultValue={user?.city ?? ''}
+                  disabled={isLoading}
+                  id="city"
+                  placeholder={tFields('user-city')}
+                  type="text"
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('city-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="state">{tFields('user-state')}</Label>
+                <Combobox
+                  items={states}
+                  selectedItems={state}
+                  onSelect={(selectedItem: string) => {
+                    setCity(selectedItem);
+                    setValue('state', selectedItem);
+                  }}
+                  placeholder={tFields('user-state-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => states.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.state && <span className="text-xs text-red-400">{tValidation('user-state-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
                 <Label htmlFor="address">{tFields('user-address')}</Label>
                 <Input
                   {...register('address')}
@@ -169,22 +197,6 @@ export function AdminSettingsForm({ className, companyInfo }: AdminSettingsFormP
                   type="text"
                 />
                 {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
-              </LabelInputContainer>
-              <LabelInputContainer>
-                <Label htmlFor="city">{tFields('user-city')}</Label>
-                <Combobox
-                  items={cities}
-                  selectedItems={city}
-                  onSelect={(selectedItem: string) => {
-                    setCity(selectedItem);
-                    setValue('city', selectedItem);
-                  }}
-                  placeholder={tFields('user-city-placeholder')}
-                  displayValue={(item: string) => item}
-                  itemKey={(item: string) => cities.indexOf(item).toString()}
-                  multiSelect={false}
-                />
-                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
               </LabelInputContainer>
             </div>
           </div>

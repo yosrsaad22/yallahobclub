@@ -32,6 +32,7 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   onDelete: DataTableHandlers['onDelete'] | undefined;
   onBulkDelete: DataTableHandlers['onBulkDelete'] | undefined;
   onRequestPickup?: DataTableHandlers['onRequestPickup'] | undefined;
+  onMarkAsPaid?: DataTableHandlers['onMarkAsPaid'] | undefined;
   onPrintPickup?: DataTableHandlers['onPrintPickup'] | undefined;
   onAddTransaction?: DataTableHandlers['onAddTransaction'] | undefined;
   redirectToDetails?: boolean;
@@ -40,6 +41,7 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   showBulkDeleteButton?: boolean;
   showCreatePickupButton?: boolean;
   showPrintPickupButton?: boolean;
+  showMarkAsPaidButton?: boolean;
   showSelect?: boolean;
   showAddTransactionButton?: boolean;
 }
@@ -52,6 +54,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   onDelete,
   onBulkDelete,
   onRequestPickup = undefined,
+  onMarkAsPaid = undefined,
   onPrintPickup = undefined,
   redirectToDetails = true,
   showActions = true,
@@ -61,6 +64,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   showBulkDeleteButton = true,
   showCreatePickupButton = false,
   showAddTransactionButton = false,
+  showMarkAsPaidButton = false,
   onAddTransaction = undefined,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -149,12 +153,14 @@ export function DataTable<TData extends { id: string }, TValue>({
         showCreatePickupButton={showCreatePickupButton}
         showPrintPickupButton={showPrintPickupButton}
         showAddTransactionButton={showAddTransactionButton}
+        showMarkAsPaidButton={showMarkAsPaidButton}
         tag={tag}
         table={table}
         onBulkDelete={onBulkDelete}
         onRequestPickup={onRequestPickup}
         onPrintPickup={onPrintPickup}
         onAddTransaction={onAddTransaction}
+        onMarkAsPaid={onMarkAsPaid}
       />
       <div className="custom-scrollbar overflow-x-auto rounded-md border bg-background">
         <div className="inline-block min-w-full align-middle">

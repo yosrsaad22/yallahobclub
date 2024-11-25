@@ -44,6 +44,7 @@ export default {
         session.user.image = token.image as string;
         session.user.number = token.number as string;
         session.user.address = token.address as string;
+        session.user.state = token.state as string;
         session.user.city = token.city as string;
         session.user.pack = token.pack as string;
         session.user.active = token.active as boolean;
@@ -52,6 +53,7 @@ export default {
         session.user.code = token.code as string;
         session.user.rib = token.rib as string;
         session.user.balance = token.balance as number;
+        session.user.storeName = token.storeName as string;
       }
 
       return session;
@@ -65,6 +67,7 @@ export default {
       token.image = existingUser.image;
       token.number = existingUser.number;
       token.address = existingUser.address;
+      token.state = existingUser.state;
       token.city = existingUser.city;
       token.pack = existingUser.pack;
       token.active = existingUser.active;
@@ -73,6 +76,7 @@ export default {
       token.code = existingUser.code;
       token.rib = existingUser.rib;
       token.balance = existingUser.balance;
+      token.storName = existingUser.storeName;
 
       return token;
     },

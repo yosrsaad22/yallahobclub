@@ -54,6 +54,7 @@ export const getTransactionByUser = async (id: string): Promise<ActionResponse> 
   }
 };
 
+//unused
 export const addTransaction = async (values: z.infer<typeof TransactionSchema>): Promise<ActionResponse> => {
   roleGuard(UserRole.ADMIN);
   try {
@@ -100,7 +101,10 @@ export const createTransaction = async (userId: string, type: string, amount: nu
       },
     });
 
-    await db.user.update({ where: { id: userId }, data: { balance: (user?.balance ? user?.balance : 0) + amount } });
+    await db.user.update({
+      where: { id: userId },
+      data: { balance: Math.round(((user?.balance ? user?.balance : 0) + amount) * 10) / 10 },
+    });
 
     notifyUser(userId, NotificationType.NEW_TRANSACTION, `/dashboard/${user?.role.toLowerCase()}/transactions`);
     revalidatePath('/dashboard/admin/transactions');

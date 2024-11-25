@@ -21,7 +21,7 @@ import {
 } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
-import { MEDIA_HOSTNAME, roleOptions, cities, colorHexMap } from '@/lib/constants';
+import { MEDIA_HOSTNAME, roleOptions, colorHexMap, states } from '@/lib/constants';
 import { ActionResponse, DataTableUser, MediaType, OrderProduct } from '@/types';
 import { useRouter } from '@/navigation';
 import { getSellers } from '@/actions/users';
@@ -33,7 +33,12 @@ import { getProducts, getProductsBySeller } from '@/actions/products';
 import { ProductCombobox } from '../comboboxes/product-combobox';
 import { SizePickerCombobox } from '../comboboxes/size-combobox';
 import { ColorPickerCombobox } from '../comboboxes/color-combobox';
-import { Product } from '@prisma/client';
+import { Product as PrismaProduct } from '@prisma/client';
+
+interface Product extends PrismaProduct {
+  supplierCode: string;
+  media: MediaType[];
+}
 import { UserCombobox } from '../comboboxes/user-combobox';
 
 interface AddOrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -50,7 +55,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
   const tValidation = useTranslations('validation');
   const tColors = useTranslations('dashboard.colors');
 
-  const [city, setCity] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
   const [sellers, setSellers] = React.useState<DataTableUser[]>([]);
   const [productsLoading, setProductsLoading] = React.useState<boolean>(false);
   const [sellersLoading, setSellersLoading] = React.useState<boolean>(false);
@@ -62,7 +67,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
 
   const defaultValues = {
     sellerId: role === roleOptions.SELLER ? userId : undefined,
-    city: city,
+    state: state,
   };
 
   const {
@@ -202,7 +207,6 @@ export function AddOrderForm({}: AddOrderFormProps) {
 
   const [platformProfit, setPlatformProfit] = React.useState<number>(0);
   const [totalPlatformProfit, setTotalPlatformProfit] = React.useState<number>(0);
-
   const [sellerProfit, setSellerProfit] = React.useState<number>(0);
   const [total, setTotal] = React.useState<number>(0);
 
@@ -221,7 +225,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
       const quantity = parseInt(selectedProduct.quantity) || 1;
       const detailPrice = parseFloat(selectedProduct.detailPrice) || 0;
       const wholesalePrice = product.wholesalePrice || 0;
-      const platformProfit = product.platformProfit || 0;
+      const platformProfit = product.platformProfit!;
 
       // Calculate seller profit per product
       const sellerProfit = (detailPrice - wholesalePrice) * quantity;
@@ -234,7 +238,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
 
     suppliers.size > 1 ? setDeliveryFee(7 * suppliers.size) : setDeliveryFee(8);
     // Add delivery fee to the total price
-    totalPrice += deliveryFee;
+    totalPrice += suppliers.size > 1 ? 7 * suppliers.size : 8;
 
     // Calculate platform profit as 10% of total seller profit
     totalPlatformProfit =
@@ -252,6 +256,17 @@ export function AddOrderForm({}: AddOrderFormProps) {
 
     setValue('total', totalPrice);
   }, [selectedOrderProducts, orderProducts, setValue]);
+
+  React.useEffect(() => {
+    setSelectedOrderProducts((prevProducts) =>
+      prevProducts.map((product) => ({
+        ...product,
+        supplierProfit: 0,
+        platformProfit: 0,
+        detailPrice: '0',
+      })),
+    );
+  }, []);
 
   React.useEffect(() => {
     if (role === roleOptions.ADMIN) {
@@ -294,7 +309,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
       // Calculate the default detail price as wholesale price + profit margin percentage of the wholesale price
       detailPrice: (product.wholesalePrice + (product.wholesalePrice * product.profitMargin) / 100).toFixed(1),
       quantity: '1', // Ensure the productId is set
-      supplierProfit: newProduct.supplierProfit || 0, // Set supplierProfit to 0 if it's undefined
+      supplierProfit: newProduct.supplierProfit,
     };
 
     // Update the selected order products and form state
@@ -370,21 +385,35 @@ export function AddOrderForm({}: AddOrderFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('order-number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
+                <Label htmlFor="state">
+                  {tFields('order-state')}
+                  <span className="font-bold text-destructive"> *</span>
+                </Label>
+                <Combobox
+                  items={states}
+                  selectedItems={state}
+                  onSelect={(selectedItem: string) => {
+                    setState(selectedItem);
+                    setValue('state', selectedItem);
+                  }}
+                  placeholder={tFields('order-state-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => states.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.state && <span className="text-xs text-red-400">{tValidation('order-state-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
                 <Label htmlFor="city">
                   {tFields('order-city')}
                   <span className="font-bold text-destructive"> *</span>
                 </Label>
-                <Combobox
-                  items={cities}
-                  selectedItems={city}
-                  onSelect={(selectedItem: string) => {
-                    setCity(selectedItem);
-                    setValue('city', selectedItem);
-                  }}
-                  placeholder={tFields('order-city-placeholder')}
-                  displayValue={(item: string) => item}
-                  itemKey={(item: string) => cities.indexOf(item).toString()}
-                  multiSelect={false}
+                <Input
+                  {...register('city')}
+                  id="city"
+                  disabled={isLoading}
+                  placeholder={tFields('order-city')}
+                  type="text"
                 />
                 {errors.city && <span className="text-xs text-red-400">{tValidation('order-city-error')}</span>}
               </LabelInputContainer>
@@ -570,7 +599,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
                           id={`detailPrice-${index}`} // Set the same id here as in the label's for attribute
                           type="text" // Set input type to "text" to allow for comma input
                           className="h-11"
-                          value={product.detailPrice || ''} // No default, so user can clear the input
+                          value={product.detailPrice} // No default, so user can clear the input
                           {...register(`products.${index}.detailPrice`)} // Register the field with form handling
                           onChange={(e) => {
                             let newDetailPrice = e.target.value.replace(',', '.'); // Replace comma with dot

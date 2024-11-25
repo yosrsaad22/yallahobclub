@@ -18,7 +18,8 @@ export const RegisterSchema = z
     email: z.string().email(),
     number: z.string().regex(/^\d{8}$/),
     address: z.string().min(3),
-    city: z.string(),
+    city: z.string().min(3),
+    state: z.string(),
     password: z.string().min(8),
     confirmPassword: z.string().min(8),
     pack: z.nativeEnum(packOptions),
@@ -58,6 +59,7 @@ export const AdminSettingsSchema = z
     number: z.string().regex(/^\d{8}$/),
     address: z.string().min(3),
     city: z.string(),
+    state: z.string(),
     currentPassword: z.string().optional(),
     newPassword: z.string().optional(),
     confirmPassword: z.string().optional(),
@@ -123,10 +125,12 @@ export const UserSettingsSchema = z
     address: z.string().min(3),
     currentPassword: z.string().optional(),
     city: z.string(),
+    state: z.string(),
     newPassword: z.string().optional(),
     confirmPassword: z.string().optional(),
     rib: z.string().optional(),
     pack: z.nativeEnum(packOptions).optional(),
+    storeName: z.string(),
   })
   .refine(
     (data) => {
@@ -197,11 +201,14 @@ export const UserSchema = z
     address: z.string().min(3),
     rib: z.string().optional(),
     city: z.string(),
+    state: z.string(),
     pack: z.nativeEnum(packOptions).optional(),
     role: z.nativeEnum(roleOptions).optional(),
     emailVerified: z.boolean().optional(),
     active: z.boolean().optional(),
     paid: z.boolean().optional(),
+    pickupId: z.string().min(1),
+    storeName: z.string().min(2),
   })
   .refine(
     (data) => {
@@ -259,7 +266,7 @@ export const ProductSchema = z.object({
 
 export const OrderProductSchema = z.object({
   quantity: z.string().regex(/^[1-9]\d*$/),
-  detailPrice: z.string().regex(/^(?!0(\.0{1,})?$)\d{1,}(\.\d{1,})?$/),
+  detailPrice: z.string().regex(/^\d{1,}(\.\d{1,})?$|^0(\.0{1,})?$/),
   size: z.undefined().or(z.string().min(2)),
   color: z.undefined().or(z.string().min(2)),
   productId: z.string(),
@@ -271,7 +278,8 @@ export const OrderSchema = z.object({
   lastName: z.string().min(3),
   email: z.string().max(0).or(z.string().email()),
   number: z.string().regex(/^\d{8}$/),
-  city: z.string(),
+  city: z.string().min(3),
+  state: z.string(),
   address: z.string().min(3),
   total: z.number(),
   products: z.array(OrderProductSchema),

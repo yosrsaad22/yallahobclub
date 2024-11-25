@@ -83,7 +83,7 @@ const GradientButton: React.FC<GradientButtonProps> = ({
 }) => {
   return (
     <Button size={size} className={`relative overflow-hidden rounded-${rounded} p-[2.5px]`} {...props}>
-      <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#2ab6bb_10%,#fc3e3b_50%,#2ab6bb_100%)]" />
+      <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#2ab6bb_10%,#e23670_50%,#2ab6bb_100%)]" />
       <span
         className={cn(
           buttonVariants({ size }),
@@ -116,7 +116,7 @@ const GradientLinkButton: React.FC<GradientLinkButtonProps> = ({
       variant={'none'}
       className={`relative items-center overflow-hidden rounded-${rounded} p-[2.5px]`}
       {...props}>
-      <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#2ab6bb_10%,#fc3e3b_50%,#2ab6bb_100%)]" />
+      <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#2ab6bb_10%,#e23670_50%,#2ab6bb_100%)]" />
       <span
         className={cn(
           buttonVariants({ size }),

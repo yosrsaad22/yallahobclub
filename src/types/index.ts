@@ -41,6 +41,7 @@ export type DataTableUser = Pick<
   | 'number'
   | 'address'
   | 'city'
+  | 'state'
   | 'active'
   | 'paid'
   | 'pack'
@@ -48,6 +49,8 @@ export type DataTableUser = Pick<
   | 'balance'
   | 'createdAt'
   | 'image'
+  | 'pickupId'
+  | 'storeName'
 > & { role: roleOptions };
 
 export type DataTableHandlers = {
@@ -56,6 +59,7 @@ export type DataTableHandlers = {
   onRequestPickup: (ids: string[]) => Promise<ActionResponse>;
   onPrintPickup: (id: string) => Promise<ActionResponse>;
   onAddTransaction: (userId: string, amount: string) => Promise<ActionResponse>;
+  onMarkAsPaid: (ids: string[]) => Promise<ActionResponse>;
 };
 
 export type MediaType = {
@@ -78,4 +82,78 @@ export type OrderProduct = {
   supplierProfit: number;
   size?: string;
   color?: string;
+};
+
+export type DateRange = {
+  from: Date | null;
+  to: Date | null;
+};
+
+export type DailyProfitAndSubOrders = {
+  date: string;
+  subOrders: number;
+  profit: number;
+};
+
+export type MonthlyProfitAndSubOrders = {
+  month: string; // e.g., 'Jan'
+  profit: number;
+  subOrders: number;
+};
+
+export type TopFiveItem = {
+  id: string;
+  name: string;
+  media: string;
+  totalQuantity: number;
+};
+
+export type AdminStats = {
+  leads: number;
+  subOrders: number;
+  platformProfit: number;
+  transactions: number;
+  sellers: number;
+  suppliers: number;
+  products: number;
+  sellersProfit: number;
+  pickups: number;
+  completedSubOrders: number;
+  pendingSubOrders: number;
+  returnedSubOrders: number;
+  paidSubOrders: number;
+  monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
+  dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
+  topFiveProducts: TopFiveItem[];
+  topFiveSellers: TopFiveItem[];
+};
+
+export type SellerStats = {
+  subOrders: number;
+  transactions: number;
+  products: number;
+  sellersProfit: number;
+  pickups: number;
+  completedSubOrders: number;
+  pendingSubOrders: number;
+  returnedSubOrders: number;
+  paidSubOrders: number;
+  monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
+  dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
+  topFiveProducts: TopFiveItem[];
+};
+
+export type SupplierStats = {
+  subOrders: number;
+  transactions: number;
+  products: number;
+  sellersProfit: number;
+  pickups: number;
+  completedSubOrders: number;
+  pendingSubOrders: number;
+  returnedSubOrders: number;
+  paidSubOrders: number;
+  monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
+  dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
+  topFiveProducts: TopFiveItem[];
 };

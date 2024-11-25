@@ -93,7 +93,9 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
       const balance: number = row.getValue('balance');
       return (
         <div className="">
-          <p className={` font-semibold ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>{balance} TND</p>
+          <p className={` font-semibold ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>
+            {balance.toFixed(1)} TND
+          </p>
         </div>
       );
     },

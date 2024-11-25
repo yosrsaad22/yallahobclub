@@ -32,9 +32,11 @@ const authMiddleware = auth(async (req: any) => {
   const isPublicRoute = publicRoutes.includes(normalizedPathname);
   const isAuthRoute = authRoutes.includes(normalizedPathname);
   const isMarketplaceRoute = req.nextUrl.pathname.includes('/dashboard/marketplace');
+  const isNotificationsRoute = req.nextUrl.pathname.includes('/dashboard/notifications');
+
   const role = auth?.user?.role;
 
-  if (!isAuthRoute && !isPublicRoute && !isMarketplaceRoute && isLoggedIn) {
+  if (!isAuthRoute && !isPublicRoute && !isMarketplaceRoute && !isNotificationsRoute && isLoggedIn) {
     switch (role) {
       case UserRole.ADMIN:
         if (!normalizedPathname.startsWith('/dashboard/admin')) {

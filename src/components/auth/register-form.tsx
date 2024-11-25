@@ -16,7 +16,7 @@ import { FormError } from '@/components/ui/form-error';
 import { FormSuccess } from '@/components/ui/form-success';
 import { register as signup } from '@/actions/auth';
 import { GradientButton } from '../ui/button';
-import { cities, packOptions } from '@/lib/constants';
+import { states, packOptions } from '@/lib/constants';
 import { ActionResponse } from '@/types';
 import { Combobox } from '../ui/combobox';
 
@@ -31,7 +31,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
   const tPricing = useTranslations('home.pricing');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
-  const [city, setCity] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
 
   type schemaType = z.infer<typeof RegisterSchema>;
 
@@ -99,36 +99,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
               />
               {errors.email && <span className="text-xs text-red-400">{tValidation('email-error')}</span>}
             </LabelInputContainer>
-          </div>
-          <div className="flex w-full flex-col items-center  lg:items-start">
-            <LabelInputContainer className="mb-4 max-w-[25rem]">
-              <Label htmlFor="address">{tFields('user-address')}</Label>
-              <Input
-                {...register('address')}
-                id="age"
-                disabled={isLoading}
-                placeholder={tFields('user-address')}
-                type="string"
-              />
-              {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
-            </LabelInputContainer>
-            <LabelInputContainer className="mb-4 max-w-[25rem]">
-              <Label htmlFor="address">{tFields('user-city')}</Label>
-              <Combobox
-                isDark
-                items={cities}
-                selectedItems={city}
-                onSelect={(selectedItem: string) => {
-                  setCity(selectedItem);
-                  setValue('city', selectedItem);
-                }}
-                placeholder={tFields('user-city-placeholder')}
-                displayValue={(item: string) => item}
-                itemKey={(item: string) => cities.indexOf(item).toString()}
-                multiSelect={false}
-              />
-              {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
-            </LabelInputContainer>
             <LabelInputContainer className="mb-4 max-w-[25rem]">
               <Label htmlFor="password">{tFields('user-password')}</Label>
               <Input
@@ -141,22 +111,61 @@ export function RegisterForm({ className }: RegisterFormProps) {
               {errors.password && <span className="text-xs text-red-400">{tValidation('password-error')}</span>}
             </LabelInputContainer>
           </div>
-        </div>
+          <div className="flex w-full flex-col items-center  lg:items-start">
+            <LabelInputContainer className="mb-4 max-w-[25rem]">
+              <Label htmlFor="state">{tFields('user-state')}</Label>
+              <Combobox
+                isDark
+                items={states}
+                selectedItems={state}
+                onSelect={(selectedItem: string) => {
+                  setState(selectedItem);
+                  setValue('state', selectedItem);
+                }}
+                placeholder={tFields('user-state-placeholder')}
+                displayValue={(item: string) => item}
+                itemKey={(item: string) => states.indexOf(item).toString()}
+                multiSelect={false}
+              />
+              {errors.state && <span className="text-xs text-red-400">{tValidation('user-state-error')}</span>}
+            </LabelInputContainer>
+            <LabelInputContainer className="mb-4 max-w-[25rem]">
+              <Label htmlFor="city">{tFields('user-city')}</Label>
+              <Input
+                {...register('city')}
+                id="age"
+                disabled={isLoading}
+                placeholder={tFields('user-city')}
+                type="string"
+              />
+              {errors.city && <span className="text-xs text-red-400">{tValidation('city-error')}</span>}
+            </LabelInputContainer>
+            <LabelInputContainer className="mb-4 max-w-[25rem]">
+              <Label htmlFor="address">{tFields('user-address')}</Label>
+              <Input
+                {...register('address')}
+                id="age"
+                disabled={isLoading}
+                placeholder={tFields('user-address')}
+                type="string"
+              />
+              {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
+            </LabelInputContainer>
 
-        <div className="flex w-full flex-col items-center">
-          <LabelInputContainer className="mb-4 max-w-[25rem]">
-            <Label htmlFor="confirmPassword">{tFields('user-confirm-password')}</Label>
-            <Input
-              {...register('confirmPassword')}
-              id="confirmPassword"
-              disabled={isLoading}
-              placeholder={tFields('user-confirm-password')}
-              type="password"
-            />
-            {errors.confirmPassword && (
-              <span className="text-xs text-red-400">{tValidation('confirm-password-error')}</span>
-            )}
-          </LabelInputContainer>
+            <LabelInputContainer className="mb-4 max-w-[25rem]">
+              <Label htmlFor="confirmPassword">{tFields('user-confirm-password')}</Label>
+              <Input
+                {...register('confirmPassword')}
+                id="confirmPassword"
+                disabled={isLoading}
+                placeholder={tFields('user-confirm-password')}
+                type="password"
+              />
+              {errors.confirmPassword && (
+                <span className="text-xs text-red-400">{tValidation('confirm-password-error')}</span>
+              )}
+            </LabelInputContainer>
+          </div>
         </div>
       </form>
       <div className="relative mt-8 flex flex-row justify-center text-sm">

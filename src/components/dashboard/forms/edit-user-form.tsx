@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { IconDeviceFloppy, IconLetterC, IconLoader2, IconUser } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
-import { cities, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
+import { states, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
 import { ActionResponse, DataTableUser } from '@/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -36,7 +36,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
   const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
-  const [city, setCity] = React.useState<string>(userData?.city ?? '');
+  const [state, setCity] = React.useState<string>(userData?.state ?? '');
   type schemaType = z.infer<typeof UserSchema>;
 
   const [emailVerified, setEmailVerified] = React.useState(userData?.emailVerified ? true : false);
@@ -49,13 +49,18 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
       emailVerified: emailVerified,
       active: userData?.active!,
       paid: userData?.paid!,
+      state: userData?.state!,
+      pickupId: '0',
     };
   } else {
     defaultValues = {
       role: roleOptions[userData?.role!],
       emailVerified: emailVerified,
       active: userData?.active!,
+      state: userData?.state!,
       paid: userData?.paid!,
+      pickupId: userData?.pickupId ?? undefined,
+      storeName: 'N/A',
     };
   }
 
@@ -178,7 +183,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   disabled={isLoading}
                   defaultValue={userData?.email ?? ''}
                   id="email"
-                  placeholder={t('user-email')}
+                  placeholder={tFields('user-email')}
                   type="email"
                   onChange={(event) => {
                     if (event.target?.value !== userData?.email) {
@@ -205,6 +210,35 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
+                <Label htmlFor="state">{tFields('user-state')}</Label>
+                <Combobox
+                  items={states}
+                  selectedItems={state}
+                  onSelect={(selectedItem: string) => {
+                    setCity(selectedItem);
+                    setValue('state', selectedItem);
+                  }}
+                  placeholder={tFields('user-state-placeholder')}
+                  displayValue={(item: string) => item}
+                  itemKey={(item: string) => states.indexOf(item).toString()}
+                  multiSelect={false}
+                />
+                {errors.state && <span className="text-xs text-red-400">{tValidation('state-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Input
+                  {...register('city')}
+                  defaultValue={userData?.city ?? ''}
+                  disabled={isLoading}
+                  id="city"
+                  placeholder={tFields('user-city')}
+                  type="text"
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('city-error')}</span>}
+              </LabelInputContainer>
+
+              <LabelInputContainer>
                 <Label htmlFor="address">{tFields('user-address')}</Label>
                 <Input
                   {...register('address')}
@@ -215,22 +249,6 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   type="text"
                 />
                 {errors.address && <span className="text-xs text-red-400">{tValidation('address-error')}</span>}
-              </LabelInputContainer>
-              <LabelInputContainer>
-                <Label htmlFor="city">{tFields('user-city')}</Label>
-                <Combobox
-                  items={cities}
-                  selectedItems={city}
-                  onSelect={(selectedItem: string) => {
-                    setCity(selectedItem);
-                    setValue('city', selectedItem);
-                  }}
-                  placeholder={tFields('user-city-placeholder')}
-                  displayValue={(item: string) => item}
-                  itemKey={(item: string) => cities.indexOf(item).toString()}
-                  multiSelect={false}
-                />
-                {errors.city && <span className="text-xs text-red-400">{tValidation('user-city-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="rib">{tFields('user-rib')}</Label>
@@ -296,6 +314,35 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   type="text"
                 />
               </LabelInputContainer>
+              {getValues('role') === roleOptions.SUPPLIER && (
+                <LabelInputContainer>
+                  <Label htmlFor="pickupId">{tFields('user-pickup-id')}</Label>
+                  <Input
+                    defaultValue={userData?.pickupId ?? undefined}
+                    {...register('pickupId')}
+                    id="pickupd"
+                    placeholder={tFields('user-pickup-id')}
+                    type="text"
+                  />
+                  {errors.pickupId && <span className="text-xs text-red-400">{tValidation('pickup-id-error')}</span>}
+                </LabelInputContainer>
+              )}
+              {getValues('role') === roleOptions.SELLER && (
+                <LabelInputContainer>
+                  <Label htmlFor="storeName">
+                    {tFields('user-store-name')}
+                    <span className="ml-2 text-xs text-gray-400">{t('user-store-name-note')}</span>
+                  </Label>
+                  <Input
+                    {...register('storeName')}
+                    defaultValue={userData?.storeName ?? undefined}
+                    id="pickupd"
+                    placeholder={tFields('user-store-name')}
+                    type="text"
+                  />
+                  {errors.storeName && <span className="text-xs text-red-400">{tValidation('store-name-error')}</span>}
+                </LabelInputContainer>
+              )}
               <LabelInputContainer>
                 <Label htmlFor="emailVerified">{tFields('user-email-verified')}</Label>
                 <div className="flex h-10 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
@@ -344,7 +391,14 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
             </div>
           </div>
           <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-16">
-            <Button type="submit" className="h-12" size="default" disabled={isLoading}>
+            <Button
+              onClick={() => {
+                console.log(errors);
+              }}
+              type="submit"
+              className="h-12"
+              size="default"
+              disabled={isLoading}>
               {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
               {!isLoading && <IconDeviceFloppy className="mr-2 h-5 w-5 " />}
               {t('save-button')}

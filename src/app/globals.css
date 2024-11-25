@@ -11,6 +11,8 @@
 
     --page: 213 26% 7%;
 
+    --sidebar: 213 27% 10%;
+
     --card: 0 0% 0%;
     --card-foreground: 210 40% 98%;
 
@@ -22,7 +24,7 @@
     --primary: 182 63% 45%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 1 97% 61%;
+    --secondary: 340 75% 55%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 240 3.7% 15.9%;
@@ -30,7 +32,6 @@
 
     --accent: 0 0% 14.9%;
     --accent-foreground: 210 40% 98%;
-
     --pending: 48 91% 72%;
     --pending-foreground: 210 40% 98%;
 
@@ -48,6 +49,12 @@
 
     --navigation-height: 4.8rem;
 
+    --chart-1: 182 47% 68%;
+    --chart-5: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-2: 340 75% 55%;
+
     body {
       @apply bg-page;
     }
@@ -60,6 +67,8 @@
 
     --page: 210 20% 99%;
 
+    --sidebar: 222.2 84% 4.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
@@ -69,7 +78,7 @@
     --primary: 182 63% 45%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 1.21 100% 60.98%;
+    --secondary: 340 75% 55%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 240 4.8% 95.9%;
@@ -92,6 +101,12 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --chart-1: 182 47% 68%;
+    --chart-5: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-2: 340 75% 55%;
 
     body {
       @apply bg-page;
@@ -186,7 +201,8 @@
     .ql-snow .ql-toolbar .ql-picker-label .ql-stroke-miter,
     .ql-snow.ql-toolbar .ql-picker-item:default .ql-stroke-miter,
     .ql-snow .ql-toolbar .ql-picker-item:default .ql-stroke-miter,
-    .ql-snow .ql-picker.ql-header .ql-picker-label::before, .ql-snow .ql-picker.ql-header .ql-picker-item::before {
+    .ql-snow .ql-picker.ql-header .ql-picker-label::before,
+    .ql-snow .ql-picker.ql-header .ql-picker-item::before {
       stroke: hsl(var(--foreground));
       color: hsl(var(--foreground));
     }

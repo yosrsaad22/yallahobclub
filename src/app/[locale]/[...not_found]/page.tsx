@@ -8,7 +8,7 @@ export default async function NotFound() {
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-page">
-      <h1 className="text-9xl font-extrabold tracking-widest text-[#fc3e3b]">404</h1>
+      <h1 className="text-9xl font-extrabold tracking-widest text-[#e23670]">404</h1>
       <div className="absolute mb-24 rotate-12 rounded bg-[#2ab6bb] px-2 text-sm text-white">{t('title')}</div>
       <p className="text-md text-muted-foreground">{t('text')}</p>
       <Link

@@ -9,23 +9,26 @@ import { formatDate } from '@/lib/utils';
 
 const StatusCell = ({ status }: { status: string }) => {
   const tStatuses = useTranslations('dashboard.order-statuses');
-  const statusObj = orderStatuses.find((s) => s.Key === status) ?? orderStatuses.find((s) => s.Key === 'n-a-SH017');
+  const statusObj =
+    orderStatuses.find((s) => s.UpdateCode === status) ?? orderStatuses.find((s) => s.UpdateCode === 'EC03');
 
   if (!statusObj) return null;
-  <div className={`mr-3 inline-flex w-auto rounded-full px-3 py-1 ${statusObj.Color}`}>{tStatuses(statusObj.Key)}</div>;
+  <div className={`mr-3 inline-flex w-auto rounded-full px-3 py-1 ${statusObj.Color}`}>
+    {tStatuses(statusObj.UpdateCode)}
+  </div>;
 };
 
 const UserCell = ({ user }: { user: User }) => {
   return (
     <div className="flex flex-row items-center gap-x-2">
-      <Avatar className="h-7 w-7">
+      <Avatar className="h-8 w-8">
         <AvatarImage className="object-cover" src={`${MEDIA_HOSTNAME}${user.image}`} alt={user.fullName[0] ?? ''} />
         <AvatarFallback>
           {' '}
           <IconUser className="h-4 w-4" />
         </AvatarFallback>
       </Avatar>
-      <div className="flex h-[1.7rem] max-w-[180px] items-center overflow-hidden">
+      <div className="flex h-[2.5rem] max-w-[100px] items-center overflow-hidden">
         <p
           className="overflow-hidden text-ellipsis break-words"
           style={{

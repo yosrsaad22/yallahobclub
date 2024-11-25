@@ -56,14 +56,14 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                     <Link
                       href={item.href}
                       className={cn(
-                        'relative flex items-center justify-center gap-4  rounded-md px-[0.35rem] py-[0.35rem] text-sm font-medium hover:bg-background hover:text-foreground ',
+                        'group relative flex items-center justify-center  gap-4 rounded-md px-[0.35rem] py-[0.35rem] text-sm font-medium hover:bg-white/95 hover:text-black/95 ',
                         (path.split('/')[2] === 'marketplace' && items[index].title === 'marketplace') ||
                           path.split('/')[3] === items[index].title ||
                           (path.split('/')[1] === 'dashboard' &&
                             items[index].title === 'dashboard' &&
                             path.split('/')[2] !== 'marketplace' &&
                             path.split('/')[3] === undefined)
-                          ? 'bg-background text-foreground'
+                          ? 'bg-white/95   text-black/95'
                           : '',
                         isMinimized ? '' : 'pl-2',
                       )}
@@ -71,7 +71,20 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                         if (setOpen) setOpen(false);
                         if (!isMinimized && items[index].title === 'marketplace') toggle();
                       }}>
-                      {item.icon}
+                      <div
+                        className={cn(
+                          (path.split('/')[2] === 'marketplace' && items[index].title === 'marketplace') ||
+                            path.split('/')[3] === items[index].title ||
+                            (path.split('/')[1] === 'dashboard' &&
+                              items[index].title === 'dashboard' &&
+                              path.split('/')[2] !== 'marketplace' &&
+                              path.split('/')[3] === undefined)
+                            ? ' text-black/95'
+                            : 'text-gray-400',
+                          'group-hover:text-black/95',
+                        )}>
+                        {item.icon}
+                      </div>
                       {isMinimized && item.notificationsCount > 0 && (
                         <Badge
                           variant={'secondary'}

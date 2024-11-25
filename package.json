@@ -51,6 +51,7 @@
     "@uploadthing/react": "^7.0.2",
     "@vercel/speed-insights": "^1.0.10",
     "bcryptjs": "^2.4.3",
+    "bwip-js": "^4.5.1",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -105,6 +106,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/bwip-js": "^3.2.3",
     "@types/canvas-confetti": "^1.6.4",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
