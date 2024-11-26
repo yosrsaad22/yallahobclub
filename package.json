@@ -49,6 +49,7 @@
     "@types/lodash": "^4.17.1",
     "@types/three": ">=0.144.0",
     "@uploadthing/react": "^7.0.2",
+    "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.0.10",
     "bcryptjs": "^2.4.3",
     "bwip-js": "^4.5.1",

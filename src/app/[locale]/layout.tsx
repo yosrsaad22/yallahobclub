@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { Toaster } from '@/components/ui/toaster';
 import NextTopLoader from 'nextjs-toploader';
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = DM_Sans({ subsets: ['latin'] });
 
@@ -33,6 +34,7 @@ export default function RootLayout({
           {children}
           <Toaster />
           <SpeedInsights />
+          <Analytics />
         </body>
       </NextIntlClientProvider>
     </html>

@@ -62,11 +62,11 @@ export function TopFive({
             <span className="text-muted-foreground">{noDataMessage}</span>
           </div>
         ) : (
-          <ul className="w-full space-y-2 p-1">
+          <ul className="w-full space-y-2 p-3">
             {data.map((item, index) => (
               <li
                 key={item.id}
-                className=" flex items-center gap-2 rounded-lg border p-1 text-lg duration-200 ease-in-out hover:scale-105 hover:shadow-md ">
+                className=" flex items-center gap-2 rounded-lg border p-2 text-lg duration-200 ease-in-out hover:scale-105 hover:shadow-md ">
                 <div className="h-14 w-14">
                   {useAvatars ? (
                     <div className="flex h-full w-full items-center justify-center">
@@ -85,6 +85,8 @@ export function TopFive({
                     <Image
                       src={`${MEDIA_HOSTNAME}${item.media}`}
                       alt={item.name}
+                      width={56}
+                      height={56}
                       className="h-full w-full rounded-lg object-cover"
                     />
                   )}

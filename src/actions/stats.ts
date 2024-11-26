@@ -90,7 +90,14 @@ async function calculateMonthlyProfitAndSubOrders() {
       .reverse()
       .map(async ({ start, end }) => {
         const orders = await db.order.findMany({
-          where: { createdAt: { gte: start, lte: end } },
+          where: {
+            subOrders: {
+              some: {
+                status: 'EC02',
+              },
+            },
+            createdAt: { gte: start, lte: end },
+          },
           include: { subOrders: true },
         });
 
@@ -123,6 +130,11 @@ async function calculateSellerMonthlyProfitAndSubOrders(id: string) {
       .map(async ({ start, end }) => {
         const orders = await db.order.findMany({
           where: {
+            subOrders: {
+              some: {
+                status: 'EC02',
+              },
+            },
             sellerId: id,
             createdAt: { gte: start, lte: end },
           },
@@ -158,6 +170,7 @@ async function calculateSupplierMonthlyProfitAndSubOrders(id: string) {
       .map(async ({ start, end }) => {
         const subOrders = await db.subOrder.findMany({
           where: {
+            status: 'EC02',
             products: {
               some: {
                 product: {
@@ -199,6 +212,7 @@ async function calculateSupplierMonthlyProfitAndSubOrders(id: string) {
 async function calculateDailyProfitAndSubOrders(from: Date, to: Date) {
   const dailySubOrders = await db.subOrder.findMany({
     where: {
+      status: 'EC02',
       order: { createdAt: { gte: from, lte: to } },
     },
     include: {
@@ -239,6 +253,8 @@ async function calculateDailyProfitAndSubOrders(from: Date, to: Date) {
 async function calculateSellerDailyProfitAndSubOrders(id: string, from: Date, to: Date) {
   const dailySubOrders = await db.subOrder.findMany({
     where: {
+      status: 'EC02',
+
       order: { sellerId: id, createdAt: { gte: from, lte: to } },
     },
     include: {
@@ -279,6 +295,7 @@ async function calculateSellerDailyProfitAndSubOrders(id: string, from: Date, to
 async function calculateSupplierDailyProfitAndSubOrders(id: string, from: Date, to: Date) {
   const dailySubOrders = await db.subOrder.findMany({
     where: {
+      status: 'EC02',
       products: {
         some: {
           product: {
