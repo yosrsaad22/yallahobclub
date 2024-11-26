@@ -14,7 +14,6 @@ import {
   getWithdrawRequests,
 } from '@/actions/transactions';
 import { Transaction, WithdrawRequest } from '@prisma/client';
-import { requestPickup } from '@/actions/pickups';
 import { AdminTransactionColumns } from '@/components/dashboard/table/columns/transaction-columns';
 import { WithdrawRequestsCard } from '@/components/dashboard/cards/withdraw-requests-card';
 

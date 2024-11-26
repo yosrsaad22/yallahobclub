@@ -29,7 +29,7 @@ import { Input } from '@/components/ui/input';
 import { ConfirmWithdrawRequestActionDialog } from '../dialogs/confirm-withdraw-request-action-dialog';
 
 interface WithdrawRequestsProps {
-  requests: (WithdrawRequest & { user: User })[];
+  requests: any[];
   onCreateWithdrawRequest?: (data: any) => Promise<ActionResponse>;
   onApproveWithdrawRequest?: (id: string) => Promise<ActionResponse>;
   onDeclineWithdrawRequest?: (id: string) => Promise<ActionResponse>;
