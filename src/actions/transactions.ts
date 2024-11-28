@@ -13,8 +13,9 @@ import { getUserById } from '@/data/user';
 import { revalidatePath } from 'next/cache';
 
 export const getTransactions = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const transactions = await db.transaction.findMany({
       include: {
         order: true,
@@ -29,8 +30,9 @@ export const getTransactions = async (): Promise<ActionResponse> => {
 };
 
 export const getTransaction = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
+
     const transaction = await getTransactionById(id);
     return { success: 'transaction-fetch-success', data: transaction };
   } catch (error) {
@@ -39,8 +41,9 @@ export const getTransaction = async (id: string): Promise<ActionResponse> => {
 };
 
 export const getTransactionByUser = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
+
     const transaction = await db.transaction.findMany({
       where: {
         userId: id,
@@ -56,8 +59,9 @@ export const getTransactionByUser = async (id: string): Promise<ActionResponse> 
 
 //unused
 export const addTransaction = async (values: z.infer<typeof TransactionSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const user = await getUserById(values.userId);
 
     const transaction = await db.transaction.create({
@@ -84,8 +88,9 @@ export const addTransaction = async (values: z.infer<typeof TransactionSchema>):
 };
 
 export const createTransaction = async (userId: string, type: string, amount: number): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const user = await getUserById(userId);
 
     const transaction = await db.transaction.create({
@@ -116,8 +121,9 @@ export const createTransaction = async (userId: string, type: string, amount: nu
 };
 
 export const getWithdrawRequests = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const requests = await db.withdrawRequest.findMany({
       include: {
         user: true,
@@ -131,8 +137,9 @@ export const getWithdrawRequests = async (): Promise<ActionResponse> => {
 };
 
 export const getWidthdrawRequestByUser = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
+
     const requests = await db.withdrawRequest.findMany({
       where: {
         userId: id,
@@ -146,8 +153,9 @@ export const getWidthdrawRequestByUser = async (id: string): Promise<ActionRespo
 };
 
 export const createWithdrawRequest = async (values: z.infer<typeof WithdrawRequestSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
+
     const user = await getUserById(values.userId);
     const request = await db.withdrawRequest.create({
       data: {
@@ -171,8 +179,9 @@ export const createWithdrawRequest = async (values: z.infer<typeof WithdrawReque
 };
 
 export const approveWithdrawRequest = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const fetchedRequest = await db.withdrawRequest.findUnique({ where: { id }, include: { user: true } });
     const request = await db.withdrawRequest.update({
       where: { id },
@@ -194,8 +203,9 @@ export const approveWithdrawRequest = async (id: string): Promise<ActionResponse
 };
 
 export const declineWithdrawRequest = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const fetchedRequest = await db.withdrawRequest.findUnique({ where: { id }, include: { user: true } });
     const request = await db.withdrawRequest.update({
       where: { id },

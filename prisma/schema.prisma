@@ -54,6 +54,15 @@ enum UserPack {
   MACHROU3
 }
 
+model Billing {
+  id        String    @id @default(cuid())
+  createdAt DateTime?
+  pack      UserPack
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
   id            String    @id @default(cuid())
   code          String    @unique
@@ -71,9 +80,10 @@ model User {
   role          UserRole  @default(SELLER)
   active        Boolean?  @default(false)
   paid          Boolean   @default(false)
+  billing       Billing[]
   CIN1          String?
   CIN2          String?
-  boarded       Boolean   @default(false)
+  boarded       Int       @default(0)
   balance       Float     @default(0)
   createdAt     DateTime  @default(now())
   pickupId      String?

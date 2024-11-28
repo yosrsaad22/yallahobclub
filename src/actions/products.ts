@@ -13,8 +13,9 @@ import cleanOrphanFiles from './files';
 import { generateCode } from '@/lib/utils';
 
 export const getProducts = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+
     const products = await db.product.findMany({
       include: {
         supplier: true,
@@ -34,8 +35,9 @@ export const getProducts = async (): Promise<ActionResponse> => {
 };
 
 export const getProductsBySeller = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER);
   try {
+    await roleGuard(UserRole.SELLER);
+
     const seller = await currentUser();
     const user = await db.user.findUnique({
       where: {
@@ -62,9 +64,9 @@ export const getProductsBySeller = async (): Promise<ActionResponse> => {
 };
 
 export const addToMyProducts = async (productId: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER);
-
   try {
+    await roleGuard(UserRole.SELLER);
+
     const seller = await currentUser();
 
     if (!seller) return { error: 'user-not-found-error' };
@@ -107,9 +109,9 @@ export const addToMyProducts = async (productId: string): Promise<ActionResponse
 };
 
 export const removeFromMyProducts = async (productId: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER);
-
   try {
+    await roleGuard(UserRole.SELLER);
+
     const seller = await currentUser();
 
     if (!seller) return { error: 'user-not-found-error' };
@@ -151,8 +153,9 @@ export const removeFromMyProducts = async (productId: string): Promise<ActionRes
 };
 
 export const getProductsBySupplier = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+
     const products = await db.product.findMany({
       where: {
         supplierId: id,
@@ -167,8 +170,9 @@ export const getProductsBySupplier = async (id: string): Promise<ActionResponse>
 };
 
 export const getProduct = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+
     const product = await getProductById(id);
     if (!product) return { error: 'product-not-found-error' };
     return { success: 'product-fetch-success', data: product };
@@ -178,9 +182,10 @@ export const getProduct = async (id: string): Promise<ActionResponse> => {
 };
 
 export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
-  const user = await currentUser();
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    const user = await currentUser();
+
     const supplier = await getUserById(values.supplierId);
 
     if (!supplier) return { error: 'user-not-found-error' };
@@ -235,8 +240,9 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
 };
 
 export const editProduct = async (id: string, values: z.infer<typeof ProductSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+
     const existingProduct = await getProductById(id);
     if (!existingProduct) {
       return { error: 'product-not-found-error' };
@@ -327,8 +333,9 @@ export const editProduct = async (id: string, values: z.infer<typeof ProductSche
 };
 
 export const deleteProduct = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+
     const product = await getProductById(id);
 
     const usersWithProduct = await db.user.findMany({
@@ -368,8 +375,9 @@ export const deleteProduct = async (id: string): Promise<ActionResponse> => {
 };
 
 export const bulkDeleteProducts = async (ids: string[]): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+
     await db.$transaction(async (transaction) => {
       await transaction.product.deleteMany({
         where: {

@@ -34,15 +34,17 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
   type schemaType = z.infer<typeof UserSettingsSchema>;
 
   const [selectedPack, setSelectedPack] = React.useState(user?.pack as packOptions);
-  console.log(user?.state);
   const [state, setCity] = React.useState<string>(user?.state!);
   const tPricing = useTranslations('home.pricing');
+  const defaultValues = {
+    state: user?.state,
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<schemaType>({ resolver: zodResolver(UserSettingsSchema) });
+  } = useForm<schemaType>({ resolver: zodResolver(UserSettingsSchema), defaultValues });
 
   if (user) {
     setValue('pack', user.pack);
