@@ -2,13 +2,13 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import { MonthlyProfitAndSubOrders } from '@/types';
+import { MonthlyProfit } from '@/types';
 import { IconCalendar, IconInfinity } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { LineChart, CartesianGrid, XAxis, YAxis, Line, Legend } from 'recharts';
 
-interface MonthlyProfitAndSubOrdersProps {
-  data: MonthlyProfitAndSubOrders[];
+interface MonthlyProfitChartProps {
+  data: MonthlyProfit[];
 }
 
 // Chart Configuration
@@ -17,20 +17,16 @@ const chartConfig: ChartConfig = {
     label: 'Profit',
     color: 'hsl(var(--chart-1)/80%)',
   },
-  subOrders: {
-    label: 'SubOrders',
-    color: 'hsl(var(--chart-2)/80%)',
-  },
 };
 
-export function MonthlyProfitAndSubOrdersChart({ data }: MonthlyProfitAndSubOrdersProps) {
+export function MonthlyProfitChart({ data }: MonthlyProfitChartProps) {
   const tStats = useTranslations('dashboard.stats');
   // Tooltip Renderer
   const CustomTooltipContent = ({ active, payload, label }: any) => {
     if (!active || !payload || !payload.length) return null;
 
     return (
-      <div className="grid min-w-[11rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+      <div className="grid min-w-[9.5rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
         <div className="font-medium">{label}</div>
         {payload.map((item: any) => (
           <div key={item.dataKey} className="flex items-center justify-between">
@@ -59,10 +55,10 @@ export function MonthlyProfitAndSubOrdersChart({ data }: MonthlyProfitAndSubOrde
               <IconCalendar className="h-5 w-5 text-secondary" />
               {tStats('last-6-months')}
             </span>{' '}
-            {tStats('monthly-profit-sub-orders-title')}{' '}
+            {tStats('monthly-profit-title')}{' '}
           </div>
         </CardTitle>
-        <CardDescription>{tStats('monthly-profit-sub-orders-description')}</CardDescription>
+        <CardDescription>{tStats('monthly-profit-description')}</CardDescription>
       </CardHeader>
       <CardContent className="p-3">
         {data.length === 0 ? (
@@ -98,7 +94,6 @@ export function MonthlyProfitAndSubOrdersChart({ data }: MonthlyProfitAndSubOrde
                 )}
               />
               <Line dataKey="profit" type="monotone" stroke={chartConfig.profit.color} strokeWidth={5} />
-              <Line dataKey="subOrders" type="monotone" stroke={chartConfig.subOrders.color} strokeWidth={5} />
             </LineChart>
           </ChartContainer>
         )}

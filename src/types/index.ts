@@ -101,6 +101,20 @@ export type MonthlyProfitAndSubOrders = {
   subOrders: number;
 };
 
+export type DailyProfit = {
+  date: string;
+  subOrders: number;
+  profit: number;
+  soldCourses: number;
+};
+
+export type MonthlyProfit = {
+  month: string; // e.g., 'Jan'
+  profit: number;
+  subOrders: number;
+  soldCourses: number;
+};
+
 export type TopFiveItem = {
   id: string;
   name: string;
@@ -122,8 +136,8 @@ export type AdminStats = {
   pendingSubOrders: number;
   returnedSubOrders: number;
   paidSubOrders: number;
-  monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
-  dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
+  monthlyProfit: MonthlyProfit[];
+  dailyProfit: DailyProfit[];
   topFiveProducts: TopFiveItem[];
   topFiveSellers: TopFiveItem[];
 };

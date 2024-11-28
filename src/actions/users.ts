@@ -14,8 +14,9 @@ import { capitalizeWords, generateCode } from '@/lib/utils';
 import { DEFAULT_PASSWORD, roleOptions } from '@/lib/constants';
 
 export const getUsers = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const users = await db.user.findMany({
       where: {
         role: {
@@ -31,8 +32,9 @@ export const getUsers = async (): Promise<ActionResponse> => {
 };
 
 export const getSellers = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const sellers = await db.user.findMany({
       where: {
         role: UserRole.SELLER,
@@ -46,8 +48,9 @@ export const getSellers = async (): Promise<ActionResponse> => {
 };
 
 export const getSuppliers = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const suppliers = await db.user.findMany({
       where: {
         role: UserRole.SUPPLIER,
@@ -61,8 +64,9 @@ export const getSuppliers = async (): Promise<ActionResponse> => {
 };
 
 export const getUser = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const user = await getUserById(id);
     if (!user) return { error: 'user-not-found-error' };
     return { success: 'user-fetch-success', data: user };
@@ -72,8 +76,9 @@ export const getUser = async (id: string): Promise<ActionResponse> => {
 };
 
 export const addUser = async (values: z.infer<typeof UserSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const existingNumber = await getUserByNumber(values.number);
     const existingEmail = await getUserByEmail(values.email);
 
@@ -125,11 +130,23 @@ export const addUser = async (values: z.infer<typeof UserSchema>): Promise<Actio
 };
 
 export const editUser = async (id: string, values: z.infer<typeof UserSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const existingUser = await getUserById(id);
     if (!existingUser) {
       return { error: 'user-not-found-error' };
+    }
+
+    if (existingUser.paid === false && values.paid !== existingUser.paid) {
+      console.log('triggered');
+      await db.billing.create({
+        data: {
+          pack: values.pack as UserPack,
+          createdAt: new Date(),
+          userId: id,
+        },
+      });
     }
 
     if (values.number !== existingUser.number) {
@@ -193,8 +210,9 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
 };
 
 export const deleteUser = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     await db.user.delete({
       where: {
         id: id,
@@ -210,8 +228,9 @@ export const deleteUser = async (id: string): Promise<ActionResponse> => {
 };
 
 export const bulkDeleteUsers = async (ids: string[]): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     await db.$transaction(async (transaction) => {
       await transaction.user.deleteMany({
         where: {

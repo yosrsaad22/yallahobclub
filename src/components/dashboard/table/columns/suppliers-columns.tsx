@@ -85,6 +85,18 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
     },
   },
   {
+    accessorKey: 'state',
+    meta: {
+      columnName: 'state',
+    },
+  },
+  {
+    accessorKey: 'city',
+    meta: {
+      columnName: 'city',
+    },
+  },
+  {
     accessorKey: 'balance',
     meta: {
       columnName: 'balance',
@@ -107,15 +119,6 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
     },
     cell: ({ row }) => {
       return <BooleanCell value={row.getValue('active')} trueText="user-active" falseText="user-not-active" />;
-    },
-  },
-  {
-    accessorKey: 'paid',
-    meta: {
-      columnName: 'Paid',
-    },
-    cell: ({ row }) => {
-      return <BooleanCell value={row.getValue('paid')} trueText="user-paid" falseText="user-not-paid" />;
     },
   },
 ];

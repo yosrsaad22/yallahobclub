@@ -69,8 +69,9 @@ export const saveVideoProgress = async (id: string, videoProgress: number): Prom
 };
 
 export const getLeads = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const leads = await db.lead.findMany({
       orderBy: { createdAt: 'desc' },
     });
@@ -81,8 +82,9 @@ export const getLeads = async (): Promise<ActionResponse> => {
 };
 
 export const bulkDeleteLeads = async (ids: string[]): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     await db.$transaction(async (transaction) => {
       await transaction.lead.deleteMany({
         where: {

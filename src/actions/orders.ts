@@ -25,9 +25,10 @@ import { createTransaction } from './transactions';
 import { generateLabel } from './documents';
 
 export const sellerGetOrders = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER);
-  const user = await currentUser();
   try {
+    await roleGuard(UserRole.SELLER);
+    const user = await currentUser();
+
     const orders = await db.order.findMany({
       where: { sellerId: user?.id },
       orderBy: { createdAt: 'desc' },
@@ -52,9 +53,9 @@ export const sellerGetOrders = async (): Promise<ActionResponse> => {
 };
 
 export const supplierGetOrders = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.SUPPLIER);
-  const user = await currentUser();
   try {
+    await roleGuard(UserRole.SUPPLIER);
+    const user = await currentUser();
     const orders = await db.order.findMany({
       where: {
         subOrders: {
@@ -96,8 +97,9 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
 };
 
 export const adminGetOrders = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const orders = await db.order.findMany({
       include: {
         seller: true,
@@ -131,9 +133,9 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
 };
 
 export const getOrderById = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
-  const role = await currentRole();
   try {
+    await roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
+    const role = await currentRole();
     let order;
     if (role === roleOptions.ADMIN) {
       order = await admingGetOrderById(id);
@@ -149,8 +151,9 @@ export const getOrderById = async (id: string): Promise<ActionResponse> => {
 };
 
 export const cancelOrder = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER || UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.SELLER || UserRole.ADMIN);
+
     const order = await userGetOrderById(id);
 
     if (!order) {
@@ -229,9 +232,9 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
 
 export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<ActionResponse> => {
   // Ensure the user has the correct role
-  roleGuard(UserRole.ADMIN || UserRole.SELLER);
-  const user = await currentUser();
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SELLER);
+    const user = await currentUser();
     // Fetch the seller details
     const seller = await getUserById(values.sellerId);
     if (!seller) return { error: 'user-not-found-error' };
@@ -619,8 +622,9 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
 };
 
 export const printLabel = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SUPPLIER || UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.SUPPLIER || UserRole.ADMIN);
+
     const subOrder = await db.subOrder.findUnique({
       where: { id },
       include: {
@@ -657,8 +661,9 @@ export const printLabel = async (id: string): Promise<ActionResponse> => {
 };
 
 export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const orders = await db.order.findMany({
       where: { id: { in: ids } },
       include: {

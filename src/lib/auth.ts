@@ -18,5 +18,7 @@ export const currentPack = async () => {
 
 export const roleGuard = async (allowedRole: UserRole) => {
   const role = await currentRole();
-  if (role !== allowedRole) return { error: 'unauthorized-error' };
+  if (role !== allowedRole) {
+    throw new Error('Unauthorized');
+  }
 };
