@@ -11,8 +11,9 @@ import { getChapterById, getCourseByDefault } from '@/data/course';
 import { UTApi } from 'uploadthing/server';
 
 export const getCourse = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const course = await getCourseByDefault();
     if (!course) {
       await db.course.create({
@@ -34,8 +35,9 @@ export const editCourse = async (
   values: z.infer<typeof CourseSchema>,
   chapters: Chapter[],
 ): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const existingCourse = await getCourseByDefault();
 
     if (!existingCourse) return { error: 'course-not-found-error' };
@@ -74,8 +76,9 @@ export const editCourse = async (
 };
 
 export const getChapters = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+
     const chapters = await db.chapter.findMany({
       orderBy: {
         position: 'asc',
@@ -88,8 +91,9 @@ export const getChapters = async (): Promise<ActionResponse> => {
 };
 
 export const addChapter = async (values: z.infer<typeof ChapterSchema>, position: number): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const course = await db.course.findFirst();
     if (!course) return { error: 'course-not-found-error' };
     const chapter = await db.chapter.create({
@@ -113,8 +117,9 @@ export const addChapter = async (values: z.infer<typeof ChapterSchema>, position
 };
 
 export const editChapter = async (id: string, values: z.infer<typeof ChapterSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const existingChapter = await getChapterById(id);
 
     if (!existingChapter) return { error: 'chapter-not-found-error' };
@@ -145,8 +150,9 @@ export const editChapter = async (id: string, values: z.infer<typeof ChapterSche
 };
 
 export const deleteChapter = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const chapter = await getChapterById(id);
     if (!chapter) return { error: 'chapter-not-found-error' };
     await deleteVideo(chapter.video);
@@ -164,9 +170,10 @@ export const deleteChapter = async (id: string): Promise<ActionResponse> => {
 };
 
 export const deleteVideo = async (key: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   const utapi = new UTApi();
   try {
+    await roleGuard(UserRole.ADMIN);
+
     await utapi.deleteFiles(key);
     return { success: 'video-delete-success' };
   } catch (error) {
@@ -175,8 +182,9 @@ export const deleteVideo = async (key: string): Promise<ActionResponse> => {
 };
 
 export const getUserProgress = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+
     const chapters = await db.chapter.findMany({
       orderBy: {
         position: 'asc',
@@ -211,9 +219,9 @@ export const getUserProgress = async (id: string): Promise<ActionResponse> => {
 };
 
 export const setChapterCompleted = async (userId: string, chapterId: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER);
-
   try {
+    await roleGuard(UserRole.SELLER);
+
     const res = await db.userProgress.upsert({
       where: {
         userId_chapterId: {

@@ -12,15 +12,20 @@ import { UserRole } from '@prisma/client';
 import { ActionResponse } from '@/types';
 
 export const adminGetCompanyInfo = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
+  try {
+    await roleGuard(UserRole.ADMIN);
 
-  const companyInfo = await db.companyInfo.findUnique({ where: { companyName: 'ECOMNESS' } });
-  return { success: 'company-fetch-success', data: companyInfo };
+    const companyInfo = await db.companyInfo.findUnique({ where: { companyName: 'ECOMNESS' } });
+    return { success: 'company-fetch-success', data: companyInfo };
+  } catch (error) {
+    return { error: 'company-fetch-error' };
+  }
 };
 
 export const adminEditSettings = async (values: z.infer<typeof AdminSettingsSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const user = await currentUser();
     const existingUser = await getUserById(user?.id!);
     if (!existingUser) {
@@ -96,8 +101,9 @@ export const adminEditSettings = async (values: z.infer<typeof AdminSettingsSche
 };
 
 export const userEditSettings = async (values: z.infer<typeof UserSettingsSchema>): Promise<ActionResponse> => {
-  roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
+
     const user = await currentUser();
     const existingUser = await getUserById(user?.id!);
     if (!existingUser) {

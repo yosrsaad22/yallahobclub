@@ -53,6 +53,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
           setError(tValidation(res.error));
         } else {
           reset();
+          setState('');
           setSelectedPack('');
           setSuccess(tValidation(res.success));
         }
@@ -127,7 +128,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 itemKey={(item: string) => states.indexOf(item).toString()}
                 multiSelect={false}
               />
-              {errors.state && <span className="text-xs text-red-400">{tValidation('user-state-error')}</span>}
+              {errors.state && <span className="text-xs text-red-400">{tValidation('state-error')}</span>}
             </LabelInputContainer>
             <LabelInputContainer className="mb-4 max-w-[25rem]">
               <Label htmlFor="city">{tFields('user-city')}</Label>

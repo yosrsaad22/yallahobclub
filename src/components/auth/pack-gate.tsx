@@ -14,7 +14,7 @@ export const PackGate = async ({ children, allowedPack }: PackGateProps) => {
   if (pack !== allowedPack) {
     return (
       <div className="relative">
-        <div className="absolute inset-0 z-[20] h-full  backdrop-blur-md ">
+        <div className="absolute inset-0 z-[20] h-full   backdrop-blur-md ">
           <PayWallCard title={t('title')} text={t('course-text')} buttonText={t('get-course')} />
         </div>
         {children};

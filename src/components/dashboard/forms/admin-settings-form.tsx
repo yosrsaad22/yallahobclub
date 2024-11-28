@@ -34,14 +34,16 @@ export function AdminSettingsForm({ className, companyInfo }: AdminSettingsFormP
   const session = useSession();
 
   type schemaType = z.infer<typeof AdminSettingsSchema>;
-  const [state, setCity] = React.useState<string>(user?.state ?? '');
-
+  const [state, setCity] = React.useState<string>(user?.state!);
+  const defaultValues = {
+    state: user?.state,
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<schemaType>({ resolver: zodResolver(AdminSettingsSchema) });
+  } = useForm<schemaType>({ resolver: zodResolver(AdminSettingsSchema), defaultValues });
 
   const onSubmit: SubmitHandler<schemaType> = async (data, event) => {
     event?.preventDefault();
@@ -184,7 +186,7 @@ export function AdminSettingsForm({ className, companyInfo }: AdminSettingsFormP
                   itemKey={(item: string) => states.indexOf(item).toString()}
                   multiSelect={false}
                 />
-                {errors.state && <span className="text-xs text-red-400">{tValidation('user-state-error')}</span>}
+                {errors.state && <span className="text-xs text-red-400">{tValidation('state-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="address">{tFields('user-address')}</Label>

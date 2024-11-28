@@ -12,7 +12,6 @@ export default async function AdminHome() {
     to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   });
   const statsData = res.error ? [] : res.data;
-
   const handleRefetch = async (range: DateRange) => {
     'use server';
     const res = await adminGetStats({

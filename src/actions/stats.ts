@@ -1,10 +1,11 @@
 'use server';
 import { db } from '@/lib/db';
 import { currentUser, roleGuard } from '@/lib/auth';
-import { ActionResponse, DailyProfitAndSubOrders, MonthlyProfitAndSubOrders } from '@/types';
+import { ActionResponse, DailyProfit, DailyProfitAndSubOrders, MonthlyProfitAndSubOrders } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { UserRole } from '@prisma/client';
 import { endOfDay, endOfMonth, startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
+import { packOptions } from '@/lib/constants';
 
 interface DateRange {
   from?: Date;
@@ -79,7 +80,7 @@ async function fetchBasicSupplierCounts(id: string, from: Date, to: Date) {
   ]);
 }
 
-async function calculateMonthlyProfitAndSubOrders() {
+async function calculateMonthlyProfit() {
   return Promise.all(
     Array.from({ length: 6 })
       .map((_, index) => {
@@ -89,6 +90,7 @@ async function calculateMonthlyProfitAndSubOrders() {
       })
       .reverse()
       .map(async ({ start, end }) => {
+        // Fetch orders that are relevant for the calculation
         const orders = await db.order.findMany({
           where: {
             subOrders: {
@@ -101,18 +103,45 @@ async function calculateMonthlyProfitAndSubOrders() {
           include: { subOrders: true },
         });
 
+        // Calculate platform profit from orders
         const monthlyProfit = orders.reduce(
           (total, order) =>
             total + order.subOrders.reduce((subTotal, subOrder) => subTotal + (subOrder.platformProfit || 0), 0),
           0,
         );
 
+        // Get the number of subOrders (deliveries)
         const subOrdersCount = orders.reduce((total, order) => total + order.subOrders.length, 0);
+
+        // Get the number of sold courses in this period
+        const soldCourses = await db.billing.findMany({
+          where: {
+            createdAt: { gte: start, lte: end },
+          },
+        });
+
+        // Calculate course profit
+        const courseProfit = soldCourses.reduce((total, course) => {
+          switch (course.pack) {
+            case packOptions.DAMREJ:
+              return total;
+            case packOptions.AJEJA:
+              return total + 750;
+            case packOptions.MACHROU3:
+              return total + 1500;
+            default:
+              return total;
+          }
+        }, 0);
+
+        // Total profit includes both platform profit and course profit
+        const totalProfit = monthlyProfit + courseProfit;
 
         return {
           month: start.toLocaleString('default', { month: 'short' }),
-          profit: monthlyProfit,
+          profit: totalProfit,
           subOrders: subOrdersCount,
+          soldCourses: soldCourses.length, // Number of courses sold
         };
       }),
   );
@@ -209,7 +238,15 @@ async function calculateSupplierMonthlyProfitAndSubOrders(id: string) {
   );
 }
 
-async function calculateDailyProfitAndSubOrders(from: Date, to: Date) {
+async function calculateDailyProfit() {
+  // Get the current date and calculate the date 9 days before today
+  const today = new Date();
+  const from = new Date(today);
+  from.setDate(today.getDate() - 9); // Set 'from' to 9 days ago
+
+  const to = today; // 'to' will be today
+
+  // Fetch subOrders within the date range
   const dailySubOrders = await db.subOrder.findMany({
     where: {
       status: 'EC02',
@@ -220,30 +257,73 @@ async function calculateDailyProfitAndSubOrders(from: Date, to: Date) {
     },
   });
 
-  const dailyDataMap: { [key: string]: { subOrders: Set<string>; profit: number } } = {};
+  // Mapping of daily data by date
+  const dailyDataMap: { [key: string]: { subOrders: Set<string>; profit: number; coursesSold: number } } = {};
 
-  dailySubOrders.forEach((subOrder) => {
+  // Process each suborder
+  for (const subOrder of dailySubOrders) {
     const dateStr = subOrder.order?.createdAt.toISOString().split('T')[0];
-    if (!dateStr) return;
+    if (!dateStr) continue;
+
+    // Initialize data for this date if it doesn't exist
     if (!dailyDataMap[dateStr]) {
-      dailyDataMap[dateStr] = { subOrders: new Set(), profit: 0 };
+      dailyDataMap[dateStr] = { subOrders: new Set(), profit: 0, coursesSold: 0 };
     }
-    if (subOrder.order) {
-      dailyDataMap[dateStr].subOrders.add(subOrder.order.id);
-    }
+
+    // Add subOrder to the set of subOrders for the day
+    dailyDataMap[dateStr].subOrders.add(subOrder.order!.id);
+
+    // Add platform profit for the suborder
     dailyDataMap[dateStr].profit += subOrder.platformProfit || 0;
+  }
+
+  // Fetch the sold courses within the specified date range
+  const soldCourses = await db.billing.findMany({
+    where: {
+      createdAt: { gte: from, lte: to },
+    },
   });
 
-  const filledDailyData: DailyProfitAndSubOrders[] = [];
+  // Calculate course profit and count sold courses
+  soldCourses.forEach((course) => {
+    const dateStr = course.createdAt!.toISOString().split('T')[0];
+    if (!dailyDataMap[dateStr]) {
+      dailyDataMap[dateStr] = { subOrders: new Set(), profit: 0, coursesSold: 0 };
+    }
+
+    // Add course profit based on the pack type
+    switch (course.pack) {
+      case packOptions.DAMREJ:
+        break; // No profit for DAMREJ
+      case packOptions.AJEJA:
+        dailyDataMap[dateStr].profit += 750;
+        break;
+      case packOptions.MACHROU3:
+        dailyDataMap[dateStr].profit += 1500;
+        break;
+      default:
+        break;
+    }
+
+    // Count the number of courses sold
+    dailyDataMap[dateStr].coursesSold += 1;
+  });
+
+  // Fill daily data with calculated profit and subOrder counts
+  const filledDailyData: DailyProfit[] = [];
   let currentDate = new Date(from);
   while (currentDate <= to) {
     const dateStr = currentDate.toISOString().split('T')[0];
     const data = dailyDataMap[dateStr];
+
     filledDailyData.push({
       date: dateStr,
       subOrders: data ? data.subOrders.size : 0,
       profit: parseFloat((data ? data.profit : 0).toFixed(2)),
+      soldCourses: data ? data.coursesSold : 0, // Number of courses sold on this date
     });
+
+    // Increment the current date by 1
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
@@ -570,15 +650,16 @@ async function fetchTopFiveSellers(from: Date, to: Date) {
 }
 
 export const adminGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   const from = dateRange.from || new Date();
   const to = dateRange.to || new Date();
 
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const [counts, monthlyData, dailyData, topFiveProducts, topFiveSellers, subOrders, orders] = await Promise.all([
       fetchBasicCounts(from, to),
-      calculateMonthlyProfitAndSubOrders(),
-      calculateDailyProfitAndSubOrders(startOfDay(subDays(new Date(), 10)), endOfDay(new Date())),
+      calculateMonthlyProfit(),
+      calculateDailyProfit(),
       fetchTopFiveProducts(from, to),
       fetchTopFiveSellers(from, to),
       db.subOrder.findMany({
@@ -601,8 +682,27 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       subOrder.statusHistory.some((history) => history.status === '28'),
     ).length;
 
-    const totalPlatformProfit = orders.reduce((total, order) => {
+    const platformOrderProfit = orders.reduce((total, order) => {
       return total + order.subOrders.reduce((subTotal, subOrder) => subTotal + (subOrder.platformProfit || 0), 0);
+    }, 0);
+
+    const soldCourses = db.billing.findMany({
+      where: {
+        createdAt: { gte: from, lte: to },
+      },
+    });
+
+    const platformCourseProfit = (await soldCourses).reduce((total, course) => {
+      switch (course.pack) {
+        case packOptions.DAMREJ:
+          return total;
+        case packOptions.AJEJA:
+          return total + 750;
+        case packOptions.MACHROU3:
+          return total + 1500;
+        default:
+          return total;
+      }
     }, 0);
 
     const totalSellerProfit = orders.reduce((total, order) => {
@@ -616,7 +716,7 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       data: {
         leads,
         subOrders: subOrders.length,
-        platformProfit: totalPlatformProfit.toFixed(1),
+        platformProfit: (platformCourseProfit + platformOrderProfit).toFixed(1),
         transactions,
         sellersProfit: totalSellerProfit.toFixed(1),
         completedSubOrders,
@@ -626,8 +726,8 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
         sellers,
         suppliers,
         products,
-        monthlyProfitAndSubOrders: monthlyData,
-        dailyProfitAndSubOrders: dailyData,
+        monthlyProfit: monthlyData,
+        dailyProfit: dailyData,
         topFiveProducts,
         topFiveSellers,
       },
@@ -639,11 +739,11 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
 };
 
 export const sellerGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   const from = dateRange.from || new Date();
   const to = dateRange.to || new Date();
 
   try {
+    await roleGuard(UserRole.SELLER);
     const user = await currentUser();
     const [counts, monthlyData, dailyData, topFiveProducts, subOrders, orders] = await Promise.all([
       fetchBasicSellerCounts(user?.id!, from, to),
@@ -705,11 +805,12 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
 };
 
 export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   const from = dateRange.from || new Date();
   const to = dateRange.to || new Date();
 
   try {
+    await roleGuard(UserRole.SUPPLIER);
+
     const user = await currentUser();
     const [counts, monthlyData, dailyData, topFiveProducts, subOrders, orders] = await Promise.all([
       fetchBasicSupplierCounts(user?.id!, from, to),

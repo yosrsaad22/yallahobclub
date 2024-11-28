@@ -15,9 +15,10 @@ import { generateDechargeDoc } from './documents';
 import { createShipment } from '@/lib/massar';
 
 export const supplierGetPickups = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.SUPPLIER);
-  const user = await currentUser();
   try {
+    await roleGuard(UserRole.SUPPLIER);
+    const user = await currentUser();
+
     const pickups = await db.pickup.findMany({
       where: {
         subOrders: {
@@ -58,8 +59,9 @@ export const supplierGetPickups = async (): Promise<ActionResponse> => {
 };
 
 export const adminGetPickups = async (): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   try {
+    await roleGuard(UserRole.ADMIN);
+
     const pickups = await db.pickup.findMany({
       include: {
         subOrders: {
@@ -96,9 +98,10 @@ export const adminGetPickups = async (): Promise<ActionResponse> => {
 };
 
 export const getPickupById = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
-  const role = await currentRole();
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    const role = await currentRole();
+
     let pickup;
     if (role === roleOptions.ADMIN) {
       pickup = await admingGetPickupById(id);
@@ -112,10 +115,11 @@ export const getPickupById = async (id: string): Promise<ActionResponse> => {
 };
 
 export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN);
   const tColors = await getTranslations('dashboard.colors');
 
   try {
+    await roleGuard(UserRole.ADMIN);
+
     // Fetch Orders and related SubOrders based on the provided order IDs
     const orders = await db.order.findMany({
       where: {
@@ -280,10 +284,10 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
 };
 
 export const requestPickup = async (orderIds: string[]): Promise<ActionResponse> => {
-  roleGuard(UserRole.SUPPLIER);
-  const user = await currentUser();
   const tColors = await getTranslations('dashboard.colors');
   try {
+    await roleGuard(UserRole.SUPPLIER);
+    const user = await currentUser();
     // Fetch subOrders where the supplier matches the current user
     const subOrders = await db.subOrder.findMany({
       where: {
@@ -430,8 +434,9 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
 };
 
 export const printPickup = async (id: string): Promise<ActionResponse> => {
-  roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
   try {
+    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+
     const pickup = await db.pickup.findUnique({
       where: {
         id: id,

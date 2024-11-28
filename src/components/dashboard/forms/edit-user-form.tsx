@@ -10,7 +10,7 @@ import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { IconDeviceFloppy, IconLetterC, IconLoader2, IconUser } from '@tabler/icons-react';
+import { IconCircleCheck, IconDeviceFloppy, IconLetterC, IconLoader2, IconUser } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
 import { states, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
@@ -24,6 +24,7 @@ import { formatDate } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { useCurrentRole } from '@/hooks/use-current-role';
 import { Combobox } from '@/components/ui/combobox';
+import { set } from 'lodash';
 
 interface EditUserFormProps extends React.HTMLAttributes<HTMLDivElement> {
   userData: DataTableUser | null;
@@ -38,6 +39,8 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
   const tValidation = useTranslations('validation');
   const [state, setCity] = React.useState<string>(userData?.state ?? '');
   type schemaType = z.infer<typeof UserSchema>;
+  const [userRole, setUserRole] = React.useState(userData?.role!);
+  const [userPack, setUserPack] = React.useState(userData?.pack!);
 
   const [emailVerified, setEmailVerified] = React.useState(userData?.emailVerified ? true : false);
   const [progress, setProgress] = React.useState({ completedChapters: 0, totalChapters: 0 });
@@ -63,6 +66,14 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
       storeName: 'N/A',
     };
   }
+
+  React.useEffect(() => {
+    if (userPack !== userData?.pack) {
+      setValue('paid', false);
+    } else {
+      setValue('paid', userData.paid);
+    }
+  }, [userPack]);
 
   const progressPercentage = Math.round((progress.completedChapters / progress.totalChapters) * 100);
 
@@ -94,7 +105,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
             title: tValidation('success-title'),
             description: tValidation(res.success),
           });
-          router.push(`/dashboard/${role?.toLowerCase()}/${data.role?.toLowerCase()}s`);
+          router.push(`/dashboard/admin/${data.role?.toLowerCase()}s`);
         } else {
           toast({
             variant: 'destructive',
@@ -134,7 +145,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   {tFields('user-created-at')} {formatDate(userData?.createdAt!)}
                 </p>
               </div>
-              {userData?.role == roleOptions.SELLER && userData?.pack !== packOptions.DAMREJ && (
+              {userRole == roleOptions.SELLER && userPack !== packOptions.DAMREJ && (
                 <div className="flex w-full flex-col items-start justify-center md:w-1/2">
                   <h2 className="pb-1 text-lg font-semibold">
                     {t('user-progress')}
@@ -262,12 +273,15 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                 />
                 {errors.rib && <span className="text-xs text-red-400">{tValidation('rib-error')}</span>}
               </LabelInputContainer>
-              {userData?.role === roleOptions.SELLER && (
+              {userRole === roleOptions.SELLER && (
                 <LabelInputContainer>
                   <Label htmlFor="pack">{tFields('user-pack')}</Label>
                   <Select
                     defaultValue={getValues('pack')}
-                    onValueChange={(value: keyof typeof packOptions) => setValue('pack', packOptions[value])}>
+                    onValueChange={(value: keyof typeof packOptions) => {
+                      setUserPack(packOptions[value]);
+                      setValue('pack', packOptions[value]);
+                    }}>
                     <SelectTrigger disabled={isLoading}>
                       <SelectValue defaultValue={getValues('pack')} id="pack" placeholder={tFields('user-pack')} />
                     </SelectTrigger>
@@ -286,7 +300,10 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                 <Label htmlFor="role">{tFields('user-role')}</Label>
                 <Select
                   defaultValue={getValues('role')}
-                  onValueChange={(value: keyof typeof roleOptions) => setValue('role', roleOptions[value])}>
+                  onValueChange={(value: keyof typeof roleOptions) => {
+                    setUserRole(roleOptions[value]);
+                    setValue('role', roleOptions[value]);
+                  }}>
                   <SelectTrigger disabled={isLoading}>
                     <SelectValue placeholder={tFields('user-role')} defaultValue={getValues('role')} id="role" />
                   </SelectTrigger>
@@ -314,7 +331,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   type="text"
                 />
               </LabelInputContainer>
-              {getValues('role') === roleOptions.SUPPLIER && (
+              {userRole === roleOptions.SUPPLIER && (
                 <LabelInputContainer>
                   <Label htmlFor="pickupId">{tFields('user-pickup-id')}</Label>
                   <Input
@@ -327,7 +344,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   {errors.pickupId && <span className="text-xs text-red-400">{tValidation('pickup-id-error')}</span>}
                 </LabelInputContainer>
               )}
-              {getValues('role') === roleOptions.SELLER && (
+              {userRole === roleOptions.SELLER && (
                 <LabelInputContainer>
                   <Label htmlFor="storeName">
                     {tFields('user-store-name')}
@@ -374,31 +391,37 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   />
                 </div>
               </LabelInputContainer>
-
-              <LabelInputContainer>
-                <Label htmlFor="paid">{tFields('user-paid')}</Label>
-                <div className="flex h-10 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                  <div className="font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    {t('user-paid-note')}
+              {userRole === roleOptions.SELLER && (
+                <LabelInputContainer>
+                  <Label htmlFor="paid">{tFields('user-paid')}</Label>
+                  <div className="flex h-10 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    <div className="font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      {t('user-paid-note')}
+                    </div>
+                    {userPack === userData?.pack && userData.paid === false && (
+                      <Switch
+                        defaultChecked={userData.paid}
+                        onCheckedChange={(checked) => setValue('paid', checked)}
+                        id="paid"
+                      />
+                    )}
+                    {userPack === userData?.pack && userData.paid === true && (
+                      <IconCircleCheck className="h-8 w-8 text-success" />
+                    )}
+                    {userPack !== userData?.pack && (
+                      <Switch
+                        defaultChecked={false}
+                        onCheckedChange={(checked) => setValue('paid', checked)}
+                        id="paid"
+                      />
+                    )}
                   </div>
-                  <Switch
-                    defaultChecked={userData?.paid ?? false}
-                    onCheckedChange={(checked) => setValue('paid', checked)}
-                    id="paid"
-                  />
-                </div>
-              </LabelInputContainer>
+                </LabelInputContainer>
+              )}
             </div>
           </div>
           <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-16">
-            <Button
-              onClick={() => {
-                console.log(errors);
-              }}
-              type="submit"
-              className="h-12"
-              size="default"
-              disabled={isLoading}>
+            <Button type="submit" className="h-12" size="default" disabled={isLoading}>
               {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
               {!isLoading && <IconDeviceFloppy className="mr-2 h-5 w-5 " />}
               {t('save-button')}
