@@ -25,6 +25,7 @@ import { Progress } from '@/components/ui/progress';
 import { useCurrentRole } from '@/hooks/use-current-role';
 import { Combobox } from '@/components/ui/combobox';
 import { set } from 'lodash';
+import Image from 'next/image';
 
 interface EditUserFormProps extends React.HTMLAttributes<HTMLDivElement> {
   userData: DataTableUser | null;
@@ -42,6 +43,9 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
   const [userRole, setUserRole] = React.useState(userData?.role!);
   const [userPack, setUserPack] = React.useState(userData?.pack!);
 
+  const [userBoardedState, setUserBoardedState] = React.useState(userData?.boarded!);
+  const boardingStates = ['not-started', 'documents-uploaded', 'on-boarding-completed'];
+
   const [emailVerified, setEmailVerified] = React.useState(userData?.emailVerified ? true : false);
   const [progress, setProgress] = React.useState({ completedChapters: 0, totalChapters: 0 });
   let defaultValues;
@@ -54,6 +58,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
       paid: userData?.paid!,
       state: userData?.state!,
       pickupId: '0',
+      boarded: userData?.boarded,
     };
   } else {
     defaultValues = {
@@ -64,6 +69,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
       paid: userData?.paid!,
       pickupId: userData?.pickupId ?? undefined,
       storeName: 'N/A',
+      boarded: userData?.boarded,
     };
   }
 
@@ -353,7 +359,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   <Input
                     {...register('storeName')}
                     defaultValue={userData?.storeName ?? undefined}
-                    id="pickupd"
+                    id="storeName"
                     placeholder={tFields('user-store-name')}
                     type="text"
                   />
@@ -415,6 +421,39 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                         id="paid"
                       />
                     )}
+                  </div>
+                </LabelInputContainer>
+              )}
+              <LabelInputContainer>
+                <Label htmlFor="boarded">{tFields('user-boarded')}</Label>
+                <Select
+                  defaultValue={boardingStates[getValues('boarded')]}
+                  onValueChange={(value) => {
+                    setUserBoardedState(boardingStates.indexOf(value));
+                    setValue('boarded', boardingStates.indexOf(value));
+                  }}>
+                  <SelectTrigger disabled={isLoading}>
+                    <SelectValue
+                      defaultValue={boardingStates[getValues('boarded')]}
+                      id="boarded"
+                      placeholder={tFields('user-boarded')}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(boardingStates).map((option) => (
+                      <SelectItem key={option} value={option as (typeof packOptions)[keyof typeof packOptions]}>
+                        {t(option)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </LabelInputContainer>
+              {userBoardedState !== 0 && (
+                <LabelInputContainer className="col-span-1 md:col-span-2">
+                  <Label htmlFor="documents">{tFields('user-documents')}</Label>
+                  <div className="flex flex-col  items-center justify-center gap-6 rounded-md border border-border p-4 md:flex-row">
+                    <Image alt="CIN1" src={`${MEDIA_HOSTNAME}${userData?.CIN1}`} width={200} height={200} />
+                    <Image alt="CIN1" src={`${MEDIA_HOSTNAME}${userData?.CIN2}`} width={200} height={200} />
                   </div>
                 </LabelInputContainer>
               )}

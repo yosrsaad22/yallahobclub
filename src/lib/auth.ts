@@ -16,9 +16,12 @@ export const currentPack = async () => {
   return session?.user?.pack;
 };
 
-export const roleGuard = async (allowedRole: UserRole) => {
+export const roleGuard = async (allowedRoles: UserRole | UserRole[]) => {
   const role = await currentRole();
-  if (role !== allowedRole) {
+
+  const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+  if (role === undefined || !roles.includes(role)) {
     throw new Error('Unauthorized');
   }
 };

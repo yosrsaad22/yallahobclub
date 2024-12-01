@@ -140,6 +140,7 @@ export const AddChapterDialog: React.FC<AddChapterDialogProps> = ({ onChapterAdd
                     });
                   }}
                   onUploadError={(error: Error) => {
+                    console.log(error);
                     setIsUploading(false);
                     toast({
                       variant: 'destructive',

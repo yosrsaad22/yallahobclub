@@ -27,7 +27,6 @@ const ChapterCard: FC<ChapterCardProps> = ({ chapter, onEdit, onDelete }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [isLoading, startTransition] = React.useTransition();
-  const [isVideoReady, setIsVideoReady] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
   const locale = useLocale();
   const style = {
@@ -81,17 +80,8 @@ const ChapterCard: FC<ChapterCardProps> = ({ chapter, onEdit, onDelete }) => {
               <IconGripVertical className="h-5 w-5 text-muted-foreground" />
             </Button>
             <div className="aspect-video w-56 md:w-56">
-              {!isVideoReady && <Skeleton className="h-full w-full" />}
-              <div className={!isVideoReady ? 'hidden' : ''}>
-                <ReactPlayer
-                  controls={false}
-                  url={`${MEDIA_HOSTNAME}${chapter.video}`}
-                  width={'100%'}
-                  height={'100%'}
-                  onReady={() => {
-                    setIsVideoReady(true);
-                  }}
-                />
+              <div className="flex  h-full w-full items-center justify-center rounded-sm  border border-border bg-gradient-to-br from-primary to-secondary text-lg font-bold">
+                {chapter.position}
               </div>
             </div>
 

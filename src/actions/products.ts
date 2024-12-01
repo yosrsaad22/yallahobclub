@@ -14,7 +14,7 @@ import { generateCode } from '@/lib/utils';
 
 export const getProducts = async (): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
 
     const products = await db.product.findMany({
       include: {
@@ -154,7 +154,7 @@ export const removeFromMyProducts = async (productId: string): Promise<ActionRes
 
 export const getProductsBySupplier = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
 
     const products = await db.product.findMany({
       where: {
@@ -171,7 +171,7 @@ export const getProductsBySupplier = async (id: string): Promise<ActionResponse>
 
 export const getProduct = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
 
     const product = await getProductById(id);
     if (!product) return { error: 'product-not-found-error' };
@@ -183,7 +183,7 @@ export const getProduct = async (id: string): Promise<ActionResponse> => {
 
 export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
     const user = await currentUser();
 
     const supplier = await getUserById(values.supplierId);
@@ -241,7 +241,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
 
 export const editProduct = async (id: string, values: z.infer<typeof ProductSchema>): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
 
     const existingProduct = await getProductById(id);
     if (!existingProduct) {
@@ -334,7 +334,7 @@ export const editProduct = async (id: string, values: z.infer<typeof ProductSche
 
 export const deleteProduct = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
 
     const product = await getProductById(id);
 
@@ -376,7 +376,7 @@ export const deleteProduct = async (id: string): Promise<ActionResponse> => {
 
 export const bulkDeleteProducts = async (ids: string[]): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
 
     await db.$transaction(async (transaction) => {
       await transaction.product.deleteMany({

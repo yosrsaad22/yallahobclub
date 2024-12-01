@@ -51,6 +51,9 @@ export type DataTableUser = Pick<
   | 'image'
   | 'pickupId'
   | 'storeName'
+  | 'boarded'
+  | 'CIN1'
+  | 'CIN2'
 > & { role: roleOptions };
 
 export type DataTableHandlers = {

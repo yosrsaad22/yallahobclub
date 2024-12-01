@@ -102,7 +102,7 @@ export const adminEditSettings = async (values: z.infer<typeof AdminSettingsSche
 
 export const userEditSettings = async (values: z.infer<typeof UserSettingsSchema>): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.SELLER, UserRole.SUPPLIER]);
 
     const user = await currentUser();
     const existingUser = await getUserById(user?.id!);

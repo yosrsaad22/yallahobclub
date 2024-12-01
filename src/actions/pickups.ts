@@ -99,7 +99,7 @@ export const adminGetPickups = async (): Promise<ActionResponse> => {
 
 export const getPickupById = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
     const role = await currentRole();
 
     let pickup;
@@ -435,7 +435,7 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
 
 export const printPickup = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
 
     const pickup = await db.pickup.findUnique({
       where: {

@@ -91,7 +91,7 @@ export function MyProducts({ className }: MyProductsFormProps) {
     <>
       <div className="flex h-full w-full flex-col items-start justify-center space-y-6">
         <div className="flex w-full items-center space-x-4 rounded-md border border-border bg-background p-3">
-          <IconInfoCircleFilled className="h-14 w-14  text-primary" />
+          <IconInfoCircleFilled className="h-14 w-14 flex-shrink-0  text-primary" />
           <h1 className="text-sm text-muted-foreground">
             {t('my-products-info')}{' '}
             <Link href="/dashboard/marketplace" className="font-medium text-primary underline">
