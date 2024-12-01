@@ -1,3 +1,4 @@
+import { OnBoardingGate } from '@/components/auth/on-boarding-gate';
 import { RoleGate } from '@/components/auth/role-gate';
 import Footer from '@/components/dashboard/layout/footer/footer';
 import { QueryProvider } from '@/providers/query-provider';
@@ -11,10 +12,12 @@ export default async function SellerLayout({
 }>) {
   return (
     <RoleGate allowedRole={UserRole.SELLER}>
-      <QueryProvider>{children}</QueryProvider>{' '}
-      <div className=" p-4 md:p-6">
-        <Footer />
-      </div>
+      <OnBoardingGate>
+        <QueryProvider>{children}</QueryProvider>{' '}
+        <div className=" p-4 md:p-6">
+          <Footer />
+        </div>
+      </OnBoardingGate>
     </RoleGate>
   );
 }

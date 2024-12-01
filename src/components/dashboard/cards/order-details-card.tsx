@@ -169,7 +169,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
 
       <div className="flex h-full w-full flex-col items-center gap-8 pt-2">
         <div className="flex w-full items-center space-x-4 rounded-md border border-border bg-background p-2">
-          <IconInfoCircleFilled className="h-10 w-10  text-primary" />
+          <IconInfoCircleFilled className="h-10 w-10 flex-shrink-0  text-primary" />
           <h1 className="text-sm text-muted-foreground">{t('order-cancel-info')} </h1>
         </div>
         <div className="flex h-full w-full flex-col gap-8 md:flex-row">

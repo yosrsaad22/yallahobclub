@@ -1,4 +1,11 @@
-import { colorOptions, packOptions, productCategoryOptions, roleOptions, sizeOptions } from '@/lib/constants';
+import {
+  colorOptions,
+  packOptions,
+  productCategoryOptions,
+  registerRoleOptions,
+  roleOptions,
+  sizeOptions,
+} from '@/lib/constants';
 import { z } from 'zod';
 
 export const EnrollSchema = z.object({
@@ -23,6 +30,7 @@ export const RegisterSchema = z
     password: z.string().min(8),
     confirmPassword: z.string().min(8),
     pack: z.nativeEnum(packOptions),
+    role: z.nativeEnum(registerRoleOptions),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
@@ -209,6 +217,7 @@ export const UserSchema = z
     paid: z.boolean().optional(),
     pickupId: z.string().min(1),
     storeName: z.string().min(2),
+    boarded: z.number(),
   })
   .refine(
     (data) => {
@@ -294,4 +303,11 @@ export const TransactionSchema = z.object({
 export const WithdrawRequestSchema = z.object({
   amount: z.string().regex(/^(?!0(\.0{1,})?$)\d{1,}(\.\d{1,})?$/),
   userId: z.string(),
+});
+
+export const OnBoardingSchema = z.object({
+  storeName: z.string().min(3),
+  rib: z.string().regex(/^\d{20}$/),
+  CIN1: z.string().min(5),
+  CIN2: z.string().min(5),
 });

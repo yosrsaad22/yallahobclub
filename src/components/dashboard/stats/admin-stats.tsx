@@ -138,7 +138,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconCircleDashedCheck className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5 ">
+            <div className="mt-0 text-xl font-bold md:-mt-5 ">
               {isFetching ? (
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
@@ -153,7 +153,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconHourglassHigh className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5">
+            <div className="mt-0 text-xl font-bold md:-mt-5">
               {isFetching ? (
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
@@ -168,7 +168,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconPackageImport className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0  text-2xl font-bold md:-mt-5">
+            <div className="mt-0  text-xl font-bold md:-mt-5">
               {isFetching ? (
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
@@ -184,7 +184,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5">
+            <div className="mt-0 text-xl font-bold md:-mt-5">
               {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
             </div>
           </CardContent>
@@ -198,7 +198,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconUsers className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5 ">{stats?.sellers || 0}</div>
+            <div className="mt-0 text-xl font-bold md:-mt-5 ">{stats?.sellers || 0}</div>
           </CardContent>
         </Card>
         <Card className="max-h-[7rem]">
@@ -207,7 +207,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconBuildingWarehouse className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0  text-2xl font-bold md:-mt-5">{stats?.suppliers || 0}</div>
+            <div className="mt-0  text-xl font-bold md:-mt-5">{stats?.suppliers || 0}</div>
           </CardContent>
         </Card>
         <Card className="max-h-[7rem]">
@@ -216,7 +216,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconPackage className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5">{stats?.products || 0}</div>
+            <div className="mt-0 text-xl font-bold md:-mt-5">{stats?.products || 0}</div>
           </CardContent>
         </Card>
         <Card className="max-h-[7rem] ">
@@ -225,7 +225,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <IconUserQuestion className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5">{stats?.leads || 0}</div>
+            <div className="mt-0 text-xl font-bold md:-mt-5">{stats?.leads || 0}</div>
           </CardContent>
         </Card>
       </div>

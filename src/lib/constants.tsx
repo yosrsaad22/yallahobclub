@@ -23,6 +23,8 @@ import {
   IconCoin,
   IconCoinOff,
   IconClockDollar,
+  IconId,
+  IconFileCheck,
 } from '@tabler/icons-react';
 
 export enum packOptions {
@@ -32,6 +34,11 @@ export enum packOptions {
 }
 export enum roleOptions {
   ADMIN = 'ADMIN',
+  SELLER = 'SELLER',
+  SUPPLIER = 'SUPPLIER',
+}
+
+export enum registerRoleOptions {
   SELLER = 'SELLER',
   SUPPLIER = 'SUPPLIER',
 }
@@ -175,6 +182,7 @@ export const MEDIA_HOSTNAME = 'https://utfs.io/f/';
 export const notificationIcons = {
   ADMIN_NEW_PRODUCT: IconPackage,
   ADMIN_NEW_SELLER: IconUserPlus,
+  ADMIN_NEW_SUPPLIER: IconBuildingWarehouse,
   ADMIN_NEW_LEAD: IconUserQuestion,
   SUPPLIER_PRODUCT_PUBLISHED: IconPackageExport,
   SUPPLIER_PRODUCT_UNPUBLISHED: IconPackageOff,
@@ -188,11 +196,14 @@ export const notificationIcons = {
   NEW_WITHDRAW_REQUEST: IconClockDollar,
   WITHDRAW_REQUEST_APPROVED: IconCoin,
   WITHDRAW_REQUEST_DENIED: IconCoinOff,
+  ADMIN_NEW_ON_BOARDING: IconId,
+  DOCUMENTS_APPROVED: IconFileCheck,
 };
 
 export const notificationMessages = {
   ADMIN_NEW_PRODUCT: 'admin-new-product',
   ADMIN_NEW_SELLER: 'admin-new-seller',
+  ADMIN_NEW_SUPPLIER: 'admin-new-supplier',
   ADMIN_NEW_LEAD: 'admin-new-lead',
   SUPPLIER_PRODUCT_PUBLISHED: 'supplier-product-published',
   SUPPLIER_PRODUCT_UNPUBLISHED: 'supplier-product-unpublished',
@@ -206,6 +217,8 @@ export const notificationMessages = {
   NEW_WITHDRAW_REQUEST: 'new-withdraw-request',
   WITHDRAW_REQUEST_APPROVED: 'withdraw-request-approved',
   WITHDRAW_REQUEST_DENIED: 'withdraw-request-declined',
+  ADMIN_NEW_ON_BOARDING: 'admin-new-on-boarding',
+  DOCUMENTS_APPROVED: 'documents-approved',
 };
 
 export const localeOptions = {

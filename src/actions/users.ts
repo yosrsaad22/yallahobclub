@@ -1,17 +1,18 @@
 'use server';
 import { db } from '@/lib/db';
-import { roleGuard } from '@/lib/auth';
-import { UserPack, UserRole } from '@prisma/client';
+import { currentUser, roleGuard } from '@/lib/auth';
+import { NotificationType, UserPack, UserRole } from '@prisma/client';
 import { ActionResponse } from '@/types';
 import { revalidatePath } from 'next/cache';
-import { UserSchema } from '@/schemas';
+import { OnBoardingSchema, UserSchema } from '@/schemas';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { getUserByEmail, getUserById, getUserByNumber } from '@/data/user';
 import { generateEmailVerificationToken } from '@/lib/tokens';
-import { sendEmailVerificationEmail } from '@/lib/mail';
+import { sendAccountActivationEmail, sendEmailVerificationEmail } from '@/lib/mail';
 import { capitalizeWords, generateCode } from '@/lib/utils';
 import { DEFAULT_PASSWORD, roleOptions } from '@/lib/constants';
+import { notifyAllAdmins, notifyUser } from './notifications';
 
 export const getUsers = async (): Promise<ActionResponse> => {
   try {
@@ -65,7 +66,7 @@ export const getSuppliers = async (): Promise<ActionResponse> => {
 
 export const getUser = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN);
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
 
     const user = await getUserById(id);
     if (!user) return { error: 'user-not-found-error' };
@@ -138,8 +139,25 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
       return { error: 'user-not-found-error' };
     }
 
+    if (existingUser.boarded !== 2 && values.boarded === 2) {
+      notifyUser(
+        existingUser.id,
+        NotificationType.DOCUMENTS_APPROVED,
+        '/dashboard/' + existingUser.role.toLocaleLowerCase(),
+      );
+    }
+
+    if (existingUser.pack !== values.pack && values.paid === true) {
+      await db.billing.create({
+        data: {
+          pack: values.pack as UserPack,
+          createdAt: new Date(),
+          userId: id,
+        },
+      });
+    }
+
     if (existingUser.paid === false && values.paid !== existingUser.paid) {
-      console.log('triggered');
       await db.billing.create({
         data: {
           pack: values.pack as UserPack,
@@ -181,6 +199,10 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
       emailVerified = null;
     }
 
+    if (existingUser.active === false && values.active === true) {
+      await sendAccountActivationEmail(values.fullName.trim(), existingUser.email);
+    }
+
     await db.user.update({
       where: { id: existingUser.id },
       data: {
@@ -198,6 +220,7 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
         number: values.number,
         emailVerified: emailVerified,
         paid: values.paid,
+        boarded: values.boarded,
       },
     });
 
@@ -247,5 +270,33 @@ export const bulkDeleteUsers = async (ids: string[]): Promise<ActionResponse> =>
     return { error: 'users-delete-success' };
   } catch (error) {
     return { error: 'users-delete-error' };
+  }
+};
+
+export const CompleteOnBoarding = async (values: z.infer<typeof OnBoardingSchema>): Promise<ActionResponse> => {
+  try {
+    await roleGuard([UserRole.SELLER, UserRole.SUPPLIER]);
+    const user = await currentUser();
+    await db.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        rib: values.rib,
+        storeName: values.storeName,
+        CIN1: values.CIN1,
+        CIN2: values.CIN2,
+        boarded: 1,
+      },
+    });
+
+    notifyAllAdmins(NotificationType.ADMIN_NEW_ON_BOARDING, '/dashboard/admin/users/' + user?.id, user?.name!);
+
+    revalidatePath('/dashboard/seller');
+    revalidatePath('/dashboard/supplier');
+
+    return { success: 'user-on-boarding-success' };
+  } catch (error) {
+    return { error: 'users-on-boarding-error' };
   }
 };

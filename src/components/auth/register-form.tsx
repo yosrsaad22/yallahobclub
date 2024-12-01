@@ -16,9 +16,10 @@ import { FormError } from '@/components/ui/form-error';
 import { FormSuccess } from '@/components/ui/form-success';
 import { register as signup } from '@/actions/auth';
 import { GradientButton } from '../ui/button';
-import { states, packOptions } from '@/lib/constants';
+import { states, packOptions, registerRoleOptions } from '@/lib/constants';
 import { ActionResponse } from '@/types';
 import { Combobox } from '../ui/combobox';
+import { set } from 'lodash';
 
 interface RegisterFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -26,14 +27,20 @@ export function RegisterForm({ className }: RegisterFormProps) {
   const [isLoading, startTransition] = React.useTransition();
   const [error, setError] = React.useState<string | undefined>('');
   const [success, setSuccess] = React.useState<string | undefined>('');
-  const [selectedPack, setSelectedPack] = React.useState('');
+  const [selectedPack, setSelectedPack] = React.useState(packOptions.DAMREJ);
   const t = useTranslations('register');
   const tPricing = useTranslations('home.pricing');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
   const [state, setState] = React.useState<string>();
+  const [role, setRole] = React.useState(registerRoleOptions.SELLER);
 
   type schemaType = z.infer<typeof RegisterSchema>;
+
+  const defaultValues = {
+    role: registerRoleOptions.SELLER,
+    pack: packOptions.AJEJA,
+  };
 
   const {
     register,
@@ -41,7 +48,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
     formState: { errors },
     setValue,
     reset,
-  } = useForm<schemaType>({ resolver: zodResolver(RegisterSchema) });
+  } = useForm<schemaType>({ resolver: zodResolver(RegisterSchema), defaultValues });
 
   const onSubmit: SubmitHandler<schemaType> = async (data, event) => {
     event?.preventDefault();
@@ -54,7 +61,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
         } else {
           reset();
           setState('');
-          setSelectedPack('');
+
           setSuccess(tValidation(res.success));
         }
       });
@@ -63,6 +70,30 @@ export function RegisterForm({ className }: RegisterFormProps) {
 
   return (
     <div className="flex w-full flex-col">
+      <div className="feature-glass-gradient mx-auto mb-8 flex flex-row items-center justify-between gap-2 rounded-md p-1  text-sm ">
+        <div
+          onClick={() => {
+            setRole(registerRoleOptions.SELLER);
+            setValue('role', registerRoleOptions.SELLER);
+          }}
+          className={cn(
+            role === registerRoleOptions.SELLER ? 'bg-black/40 font-medium text-white' : 'text-muted-foreground',
+            'flex w-[200px] cursor-pointer items-center justify-center rounded-md p-2 px-4  hover:bg-black/40 hover:text-foreground',
+          )}>
+          {t('become-a-seller')}
+        </div>
+        <div
+          onClick={() => {
+            setRole(registerRoleOptions.SUPPLIER);
+            setValue('role', registerRoleOptions.SUPPLIER);
+          }}
+          className={cn(
+            role === registerRoleOptions.SUPPLIER ? 'bg-black/40 font-medium text-foreground' : 'text-muted-foreground',
+            'flex w-[200px] cursor-pointer items-center justify-center rounded-md p-2 px-4 hover:bg-black/40 hover:text-foreground',
+          )}>
+          {t('become-a-supplier')}
+        </div>
+      </div>
       <form className="flex flex-col gap-0 md:gap-2">
         <div className="flex flex-col gap-0 md:flex-row md:gap-8 ">
           <div className="flex w-full flex-col items-center  lg:items-end">
@@ -169,84 +200,89 @@ export function RegisterForm({ className }: RegisterFormProps) {
           </div>
         </div>
       </form>
+      {role === registerRoleOptions.SELLER && (
+        <>
+          <div className=" mt-10 flex min-w-full flex-col  gap-8 text-left lg:flex-row">
+            <div
+              onClick={() => {
+                setValue('pack', packOptions.DAMREJ);
+                setSelectedPack(packOptions.DAMREJ);
+              }}
+              className={cn(
+                selectedPack === packOptions.DAMREJ ? 'border-primary shadow-sm shadow-primary' : '',
+                'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
+              )}>
+              <div className="flex flex-row items-center justify-center gap-4">
+                {selectedPack === packOptions.DAMREJ && (
+                  <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
+                )}
+                {selectedPack !== packOptions.DAMREJ && (
+                  <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
+                )}
+                <div className="flex flex-col items-start justify-center">
+                  <h1 className="text-gradient text-md text-md font-bold  ">PACK DAMREJ</h1>
+                  <p className="text-sm font-medium italic text-gray-400">{tPricing('free')}</p>
+                </div>
+              </div>
+              <h2 className="text-gradient ml-2 flex text-xl font-semibold">0 DT</h2>
+            </div>
+            <div
+              onClick={() => {
+                setSelectedPack(packOptions.AJEJA);
+                setValue('pack', packOptions.AJEJA);
+              }}
+              className={cn(
+                selectedPack === packOptions.AJEJA ? 'border-primary shadow-sm shadow-primary' : '',
+                'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
+              )}>
+              <div className="flex flex-row items-center justify-center gap-4">
+                {selectedPack === packOptions.AJEJA && (
+                  <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
+                )}
+                {selectedPack !== packOptions.AJEJA && (
+                  <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
+                )}
+                <div className="flex flex-col items-start justify-center">
+                  <h1 className="text-gradient text-md font-bold">PACK 3JEJA</h1>
+                  <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
+                </div>
+              </div>
+              <h2 className="text-gradient  ml-2 flex text-xl font-semibold">750 DT</h2>
+            </div>
+            <div
+              onClick={() => {
+                setValue('pack', packOptions.MACHROU3);
+                setSelectedPack(packOptions.MACHROU3);
+              }}
+              className={cn(
+                selectedPack === packOptions.MACHROU3 ? 'border-primary shadow-sm shadow-primary' : '',
+                'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
+              )}>
+              <div className="flex flex-row items-center justify-center gap-4 ">
+                {selectedPack === packOptions.MACHROU3 && (
+                  <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
+                )}
+                {selectedPack !== packOptions.MACHROU3 && (
+                  <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
+                )}
+                <div className="flex flex-col items-start justify-center">
+                  <h1 className="text-gradient text-md font-bold">PACK MACHROU3</h1>
+                  <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
+                </div>
+              </div>
+              <h2 className="text-gradient  ml-4 flex text-xl font-semibold">1500 DT</h2>
+            </div>
+          </div>
+          <div className="flex flex-row justify-center pt-2">
+            {errors.pack && <span className="text-xs text-red-400">{tValidation('pack-error')}</span>}
+          </div>
+        </>
+      )}
+
       <div className="relative mt-8 flex flex-row justify-center text-sm">
         <Link href={'/#pricing'} passHref>
           <span className="bg-background px-2 text-muted-foreground underline">{t('pricing-details')}</span>
         </Link>
-      </div>
-      <div className=" mt-10 flex min-w-full flex-col  gap-8 text-left lg:flex-row">
-        <div
-          onClick={() => {
-            setValue('pack', packOptions.DAMREJ);
-            setSelectedPack(packOptions.DAMREJ);
-          }}
-          className={cn(
-            selectedPack === packOptions.DAMREJ ? 'border-primary shadow-sm shadow-primary' : '',
-            'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
-          )}>
-          <div className="flex flex-row items-center justify-center gap-4">
-            {selectedPack === packOptions.DAMREJ && (
-              <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
-            )}
-            {selectedPack !== packOptions.DAMREJ && (
-              <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
-            )}
-            <div className="flex flex-col items-start justify-center">
-              <h1 className="text-gradient text-md text-md font-bold  ">PACK DAMREJ</h1>
-              <p className="text-sm font-medium italic text-gray-400">{tPricing('free')}</p>
-            </div>
-          </div>
-          <h2 className="text-gradient ml-2 flex text-xl font-semibold">0 DT</h2>
-        </div>
-        <div
-          onClick={() => {
-            setSelectedPack(packOptions.AJEJA);
-            setValue('pack', packOptions.AJEJA);
-          }}
-          className={cn(
-            selectedPack === packOptions.AJEJA ? 'border-primary shadow-sm shadow-primary' : '',
-            'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
-          )}>
-          <div className="flex flex-row items-center justify-center gap-4">
-            {selectedPack === packOptions.AJEJA && (
-              <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
-            )}
-            {selectedPack !== packOptions.AJEJA && (
-              <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
-            )}
-            <div className="flex flex-col items-start justify-center">
-              <h1 className="text-gradient text-md font-bold">PACK 3JEJA</h1>
-              <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
-            </div>
-          </div>
-          <h2 className="text-gradient  ml-2 flex text-xl font-semibold">750 DT</h2>
-        </div>
-        <div
-          onClick={() => {
-            setValue('pack', packOptions.MACHROU3);
-            setSelectedPack(packOptions.MACHROU3);
-          }}
-          className={cn(
-            selectedPack === packOptions.MACHROU3 ? 'border-primary shadow-sm shadow-primary' : '',
-            'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
-          )}>
-          <div className="flex flex-row items-center justify-center gap-4 ">
-            {selectedPack === packOptions.MACHROU3 && (
-              <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
-            )}
-            {selectedPack !== packOptions.MACHROU3 && (
-              <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
-            )}
-            <div className="flex flex-col items-start justify-center">
-              <h1 className="text-gradient text-md font-bold">PACK MACHROU3</h1>
-              <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
-            </div>
-          </div>
-          <h2 className="text-gradient  ml-4 flex text-xl font-semibold">1500 DT</h2>
-        </div>
-      </div>
-      <div className="flex flex-row justify-center pt-2">
-        {errors.pack && <span className="text-xs text-red-400">{tValidation('pack-error')}</span>}
       </div>
       <div className="mx-auto w-full max-w-[25rem]">
         <FormError message={error} />

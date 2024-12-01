@@ -17,7 +17,6 @@ import Image from 'next/image';
 import { UploadButton } from '@/lib/uploadthing';
 import { MEDIA_HOSTNAME } from '@/lib/constants';
 import { useRouter } from '@/navigation';
-import ChapterCard from '../cards/chapter-card';
 import {
   arrayMove,
   SortableContext,
@@ -41,6 +40,7 @@ import { AddChapterDialog } from '../dialogs/add-chapter-dialog';
 import { cn } from '@/lib/utils';
 import { editCourse } from '@/actions/course';
 import { Textarea } from '@/components/ui/textarea';
+import ChapterCard from '../cards/chapter-card';
 
 interface CourseFormProps extends React.HTMLAttributes<HTMLDivElement> {
   courseData: Course | null;

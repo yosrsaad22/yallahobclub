@@ -134,7 +134,7 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
 
 export const getOrderById = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.SELLER, UserRole.ADMIN, UserRole.SUPPLIER]);
     const role = await currentRole();
     let order;
     if (role === roleOptions.ADMIN) {
@@ -152,7 +152,7 @@ export const getOrderById = async (id: string): Promise<ActionResponse> => {
 
 export const cancelOrder = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SELLER || UserRole.ADMIN);
+    await roleGuard([UserRole.SELLER, UserRole.ADMIN]);
 
     const order = await userGetOrderById(id);
 
@@ -233,7 +233,7 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
 export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<ActionResponse> => {
   // Ensure the user has the correct role
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SELLER);
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER]);
     const user = await currentUser();
     // Fetch the seller details
     const seller = await getUserById(values.sellerId);
@@ -623,7 +623,7 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
 
 export const printLabel = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SUPPLIER || UserRole.ADMIN);
+    await roleGuard([UserRole.SUPPLIER, UserRole.ADMIN]);
 
     const subOrder = await db.subOrder.findUnique({
       where: { id },
