@@ -93,6 +93,27 @@ export const ourFileRouter = {
         }
       }
     }),
+
+  CIN1: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+    .middleware(() => handleAuth())
+    .onUploadComplete(async ({ metadata, file }) => {
+      if (metadata.id) {
+        try {
+        } catch (error) {
+          return { error: 'image-upload-error' };
+        }
+      }
+    }),
+  CIN2: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
+    .middleware(() => handleAuth())
+    .onUploadComplete(async ({ metadata, file }) => {
+      if (metadata.id) {
+        try {
+        } catch (error) {
+          return { error: 'image-upload-error' };
+        }
+      }
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

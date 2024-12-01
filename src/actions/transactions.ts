@@ -31,7 +31,7 @@ export const getTransactions = async (): Promise<ActionResponse> => {
 
 export const getTransaction = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.SELLER, UserRole.ADMIN, UserRole.SUPPLIER]);
 
     const transaction = await getTransactionById(id);
     return { success: 'transaction-fetch-success', data: transaction };
@@ -42,7 +42,7 @@ export const getTransaction = async (id: string): Promise<ActionResponse> => {
 
 export const getTransactionByUser = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SELLER || UserRole.ADMIN || UserRole.SUPPLIER);
+    await roleGuard([UserRole.SELLER, UserRole.ADMIN, UserRole.SUPPLIER]);
 
     const transaction = await db.transaction.findMany({
       where: {
@@ -138,7 +138,7 @@ export const getWithdrawRequests = async (): Promise<ActionResponse> => {
 
 export const getWidthdrawRequestByUser = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.SELLER, UserRole.SUPPLIER]);
 
     const requests = await db.withdrawRequest.findMany({
       where: {
@@ -154,7 +154,7 @@ export const getWidthdrawRequestByUser = async (id: string): Promise<ActionRespo
 
 export const createWithdrawRequest = async (values: z.infer<typeof WithdrawRequestSchema>): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.SELLER, UserRole.SUPPLIER]);
 
     const user = await getUserById(values.userId);
     const request = await db.withdrawRequest.create({

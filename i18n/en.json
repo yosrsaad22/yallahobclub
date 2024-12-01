@@ -17,6 +17,24 @@
       "text": "please click on the button below to reset your forgotten password and access your account.",
       "button": "Reset Password",
       "note": "If you didn't request this E-mail, there's nothing to worry about, you can safely ignore it."
+    },
+    "account-activation": {
+      "subject": "Your account request has been approved",
+      "preview": "Account approved",
+      "title": "Welcome to Ecomness",
+      "greetings": "Hi ",
+      "text": "we have processed and approved your request to join Ecomness, you can now access the platform using your credentials.",
+      "button": "Connect To Your Account",
+      "note": "In case of any problem feel free to contact our support team."
+    },
+    "on-boarding-approved": {
+      "subject": "Your documents have been approved",
+      "preview": "Documents approved",
+      "title": "Welcome to Ecomness",
+      "greetings": "Hi ",
+      "text": "we have processed your provided documents and approved them. You can now start using the platform.",
+      "button": "Connect To Your Account",
+      "note": "In case of any problem feel free to contact our support team."
     }
   },
   "fields": {
@@ -38,6 +56,10 @@
     "user-new-password": "New Password",
     "user-pack": "Pack",
     "user-rib": "Bank Account RIB",
+    "user-documents": "Documents",
+    "user-boarded": "On Boarding Status",
+    "user-cin-1": "National Identity Card (front)",
+    "user-cin-2": "National Identity Card (back)",
     "user-store-name": "Online Store Name",
     "user-created-at": "Member since",
     "user-active": "Active",
@@ -153,8 +175,8 @@
     "color": "Color",
     "size": "Size",
     "product-supplier-placeholder": "Select product supplier",
-    "order-seller-placeholder": "Select order seller",
-    "order-state-placeholder": "Select order shipping state",
+    "order-seller-placeholder": "Select seller",
+    "order-state-placeholder": "Select shipping state",
     "user-state-placeholder": "Select a state",
     "user-state": "State",
     "pickup-created-at": "Request Date",
@@ -191,6 +213,8 @@
     "email-error": "A valid E-mail is required",
     "number-error": "Phone number is required and must contain 8 numbers",
     "address-error": "Address is required",
+    "cin-1-error": "Front side of national identity card is required",
+    "cin-2-error": "Back side of national identity card is required",
     "password-error": "Password is required and must contain at least 8 characters",
     "confirm-password-error": "Password and confirm password must be identical",
     "current-password-error": "Invalid current password, please try again or logout and go to 'forgot password'",
@@ -338,7 +362,9 @@
     "withdraw-request-minimal-amount-error": "The minimum amount for a withdraw request is 50 TND",
     "order-paid-error": "Error while marking order(s) as paid",
     "order-paid-success": "Order(s) marked as paid successfully",
-    "order-paid-invalid-error": "Only orders with statuses 'Exchange Closed','Return Closed' or 'Delivery Completed' can be marked as paid"
+    "order-paid-invalid-error": "Only orders with statuses 'Exchange Closed','Return Closed' or 'Delivery Completed' can be marked as paid",
+    "user-on-boarding-success": "User onboarding has been completed successfully",
+    "user-on-boarding-error": "Error while completing user onboarding"
   },
   "not-found": {
     "title": "Page Not Found",
@@ -582,6 +608,8 @@
     "form-text": "Enter your information and choose a pack to request the creation of your account",
     "pricing-details": "Get more details on our pricing and packs",
     "register-button": "Create Account",
+    "become-a-seller": "Become a Seller",
+    "become-a-supplier": "Become a supplier",
     "consent": "By registering, you agree to our",
     "terms": "Terms of Service",
     "consent2": "and",
@@ -664,6 +692,7 @@
       "view-all": "View All",
       "no-notifications": "You have no notifications yet",
       "admin-new-seller": "{subject} has created an account and joined the platform as a seller",
+      "admin-new-supplier": "{subject} has created an account and joined the platform as a supplier",
       "admin-new-lead": "New lead {subject} has enrolled for the free course",
       "admin-new-product": "Supplier {subject} has added a new product",
       "supplier-product-published": "Your product {subject} has been approved and is now available in the marketplace",
@@ -677,7 +706,9 @@
       "new-transaction": "Your account balance has been updated due to a new transaction.",
       "new-withdraw-request": "New withdraw request by {subject}",
       "withdraw-request-approved": "Your withdraw request has been approved",
-      "withdraw-request-declined": "Your withdraw request has been declined"
+      "withdraw-request-declined": "Your withdraw request has been declined",
+      "admin-new-on-boarding": "User {subject} has completed the on-boarding process and is awaiting documment approval",
+      "documents-approved": "Your documents have been approved, you can now start using the platform"
     },
     "view-in-market": "View in marketplace",
     "pages": {
@@ -918,7 +949,7 @@
       "exchange-note": "Select the order from your orders list that you want to exchange and specify the product(s) to be returned",
       "order-status": "Order Tracking",
       "order-products-note": "Select the product(s) from your products list that you want to add to this order and specify the quantity, size, and color",
-      "select-order-product": "Select a product or more from your list of products",
+      "select-order-product": "Select a product or more",
       "order-cancel": "Cancel",
       "order-cancel-info": "An order can only be cancelled if is not pacakged yet",
       "order-status-note": "The order status will be updated automatically by the system based on the order's progress and will always show the latest known status",
@@ -935,7 +966,20 @@
       "approve": "Approve",
       "decline": "Decline",
       "search": "Search...",
-      "multi-order-note": "For orders containing different products from different suppliers, the order will be split into multiple orders and delivery fees will increase"
+      "multi-order-note": "For orders containing different products from different suppliers, the order will be split into multiple orders and delivery fees will increase",
+      "composed-order": "This order is a multi-supplier order and will be subject to additionnal delivery fees",
+      "on-boarding-title": "Glad to see you made it",
+      "on-boarding-description": "You are almost there, Only a few steps before you gain access to our platform. Please provide the required information below.",
+      "on-boarding-2-title": "We are currently reviewing your information",
+      "on-boarding-2-description": "Our team is currently reivewing and processing the information you provided. You will recieve and E-mail as soon as we process your documents, feel free to contact us if you have any questions.",
+      "upload": "Upload",
+      "cin-1-note": "Please provide a clear photo of the front of your national identity card.",
+      "cin-2-note": "Please provide a clear photo of the back of your national identity card.",
+      "get-started": "Get Started",
+      "try-again": "Try Again",
+      "not-started": "Not started",
+      "documents-uploaded": "Documents uploaded, awaiting approval",
+      "on-boarding-completed": "On boarding completed"
     },
     "course": {
       "image": "Course Thumbnail",

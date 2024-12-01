@@ -208,6 +208,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
   const [platformProfit, setPlatformProfit] = React.useState<number>(0);
   const [totalPlatformProfit, setTotalPlatformProfit] = React.useState<number>(0);
   const [sellerProfit, setSellerProfit] = React.useState<number>(0);
+  const [isComposedOrder, setIsComposedOrder] = React.useState<boolean>(false);
   const [total, setTotal] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -235,6 +236,8 @@ export function AddOrderForm({}: AddOrderFormProps) {
       totalPlatformProfit += platformProfit * quantity;
       totalPrice += detailPrice * quantity;
     });
+
+    setIsComposedOrder(suppliers.size > 1);
 
     suppliers.size > 1 ? setDeliveryFee(7 * suppliers.size) : setDeliveryFee(8);
     // Add delivery fee to the total price
@@ -468,11 +471,12 @@ export function AddOrderForm({}: AddOrderFormProps) {
           <h2 className=" text-lg font-semibold">{t('order-information')}</h2>
           <p className=" text-sm text-muted-foreground">{t('order-products-note')}</p>
           <div className="my-6 flex w-full items-center space-x-4 rounded-md border border-border bg-background p-2">
-            <IconInfoCircleFilled className="h-9 w-9  text-primary" />
+            <IconInfoCircleFilled className="h-9 w-9 flex-shrink-0  text-primary" />
             <h1 className="text-sm text-muted-foreground">{t('multi-order-note')} </h1>
           </div>
           <LabelInputContainer>
-            <Label htmlFor="my-products">
+            <Label className="flex items-center justify-between" htmlFor="my-products">
+              {' '}
               {tFields('order-products')}
               <span className="font-bold text-destructive"> *</span>
             </Label>
@@ -697,6 +701,11 @@ export function AddOrderForm({}: AddOrderFormProps) {
               )}
             </div>
           </LabelInputContainer>
+          {isComposedOrder && (
+            <div className="mt-4 flex animate-pulse items-center justify-center px-2 text-sm font-medium text-muted-foreground">
+              {t('composed-order')}
+            </div>
+          )}
         </div>
         <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-4">
           <Button type="submit" className="h-12" size="default" disabled={isLoading}>

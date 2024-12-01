@@ -54,7 +54,7 @@ export async function notifyAllAdmins(type: NotificationType, link: string, subj
 
 export async function markNotificationsAsRead(userId: string) {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
 
     await db.notification.updateMany({
       where: { userId, read: false },

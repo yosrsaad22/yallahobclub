@@ -8,5 +8,7 @@
   "singleQuote": true,
   "quoteProps": "as-needed",
   "printWidth": 120,
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": [
+    "prettier-plugin-tailwindcss"
+  ]
 }

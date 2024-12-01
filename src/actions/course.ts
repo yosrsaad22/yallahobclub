@@ -77,7 +77,7 @@ export const editCourse = async (
 
 export const getChapters = async (): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
 
     const chapters = await db.chapter.findMany({
       orderBy: {
@@ -183,7 +183,7 @@ export const deleteVideo = async (key: string): Promise<ActionResponse> => {
 
 export const getUserProgress = async (id: string): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN || UserRole.SELLER || UserRole.SUPPLIER);
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
 
     const chapters = await db.chapter.findMany({
       orderBy: {

@@ -10,7 +10,7 @@ export type ExtendedUser = DefaultSession['user'] & {
   city: string;
   pack: packOptions;
   active: boolean;
-  boarded: boolean;
+  boarded: number;
   paid: boolean;
   code: string;
   rib: string;

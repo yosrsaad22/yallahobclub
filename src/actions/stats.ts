@@ -710,7 +710,6 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     }, 0);
 
     const pendingSubOrders = subOrders.length - (completedSubOrders + paidSubOrders + returnedSubOrders);
-
     return {
       success: 'stats-fetch-success',
       data: {

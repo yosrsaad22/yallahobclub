@@ -16,14 +16,14 @@ import {
 import { getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
-interface EmailVerificationTemplateProps {
+interface BasicEmailTemplateProps {
   hostname: string;
   fullName: string;
   link: string;
   messages: (key: string) => string;
 }
 
-export const EmailVerificationTemplate = ({ hostname, fullName, link, messages }: EmailVerificationTemplateProps) => (
+export const BasicEmailTemplate = ({ hostname, fullName, link, messages }: BasicEmailTemplateProps) => (
   <Html>
     <Head />
     <Preview>{messages('preview')}</Preview>
@@ -132,7 +132,7 @@ export const EmailVerificationTemplate = ({ hostname, fullName, link, messages }
   </Html>
 );
 
-export default EmailVerificationTemplate;
+export default BasicEmailTemplate;
 
 const footerText = {
   fontSize: '12px',

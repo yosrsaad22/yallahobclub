@@ -1,7 +1,6 @@
 'use server';
 import { signIn } from '@/auth';
 import { getUserByEmail, getUserById, getUserByNumber } from '@/data/user';
-import { BadCredentialsError, EmailNotVerifiedError, UserNotActiveError } from '@/lib/auth-error';
 import { db } from '@/lib/db';
 import { sendEmailVerificationEmail } from '@/lib/mail';
 import { generateEmailVerificationToken } from '@/lib/tokens';
@@ -29,9 +28,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
   if (existingEmail || existingNumber) {
     return { error: 'existing-user-error' };
   }
-  /* switch (values.pack) {
-    case UserPack.DAMREJ:
- */
+
   const newUser = await db.user.create({
     data: {
       code: 'ENSE-' + generateCode(),
@@ -43,6 +40,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
       city: values.city,
       password: hashedPassword,
       pack: values.pack,
+      role: values.role,
     },
   });
 
@@ -50,17 +48,19 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
 
   await sendEmailVerificationEmail(values.fullName, verificationToken.email, verificationToken.token);
 
-  await notifyAllAdmins(NotificationType.ADMIN_NEW_SELLER, `/dashboard/admin/sellers/${newUser.id}`, values.fullName);
+  if (values.role === UserRole.SELLER) {
+    await notifyAllAdmins(NotificationType.ADMIN_NEW_SELLER, `/dashboard/admin/sellers/${newUser.id}`, values.fullName);
+  } else {
+    await notifyAllAdmins(
+      NotificationType.ADMIN_NEW_SUPPLIER,
+      `/dashboard/admin/suppliers/${newUser.id}`,
+      values.fullName,
+    );
+  }
 
   revalidatePath('/dashboard/admin/sellers');
 
   return { success: 'register-success' };
-
-  // TODO : Implement online payment
-  /*  default:
-      return { error: 'payment-needed-error' };
-  }
-  */
 };
 
 export const login = async (values: z.infer<typeof LoginSchema>): Promise<ActionResponse> => {

@@ -130,7 +130,7 @@ export function SellerStatsComponent({ initialStats, onRefetch }: SellerStatsPro
             <IconCircleDashedCheck className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5 ">
+            <div className="mt-0 text-xl font-bold md:-mt-5 ">
               {isFetching ? (
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
@@ -145,7 +145,7 @@ export function SellerStatsComponent({ initialStats, onRefetch }: SellerStatsPro
             <IconHourglassHigh className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5">
+            <div className="mt-0 text-xl font-bold md:-mt-5">
               {isFetching ? (
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
@@ -160,7 +160,7 @@ export function SellerStatsComponent({ initialStats, onRefetch }: SellerStatsPro
             <IconPackageImport className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0  text-2xl font-bold md:-mt-5">
+            <div className="mt-0  text-xl font-bold md:-mt-5">
               {isFetching ? (
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
@@ -176,7 +176,7 @@ export function SellerStatsComponent({ initialStats, onRefetch }: SellerStatsPro
             <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="mt-0 text-2xl font-bold md:-mt-5">
+            <div className="mt-0 text-xl font-bold md:-mt-5">
               {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
             </div>
           </CardContent>

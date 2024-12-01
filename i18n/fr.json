@@ -11,12 +11,30 @@
     },
     "password-reset": {
       "subject": "Réinitialisez votre mot de passe",
-      "preview": "Demande de réinitialisation du mot de passe",
+      "preview": "Demande de réinitialisation de mot de passe",
       "title": "Réinitialisez votre mot de passe",
       "greetings": "Bonjour ",
       "text": "veuillez cliquer sur le bouton ci-dessous pour réinitialiser votre mot de passe oublié et accéder à votre compte.",
       "button": "Réinitialiser le mot de passe",
       "note": "Si vous n'avez pas demandé cet e-mail, il n'y a rien à craindre, vous pouvez l'ignorer en toute sécurité."
+    },
+    "account-activation": {
+      "subject": "Votre demande de compte a été approuvée",
+      "preview": "Compte approuvé",
+      "title": "Bienvenue chez Ecomness",
+      "greetings": "Bonjour ",
+      "text": "nous avons traité et approuvé votre demande de rejoindre Ecomness, vous pouvez maintenant accéder à la plateforme en utilisant vos identifiants.",
+      "button": "Connectez-vous à votre compte",
+      "note": "En cas de problème, n'hésitez pas à contacter notre équipe de support."
+    },
+    "on-boarding-approved": {
+      "subject": "Vos documents ont été approuvés",
+      "preview": "Documents approuvés",
+      "title": "Bienvenue chez Ecomness",
+      "greetings": "Bonjour ",
+      "text": "nous avons traité vos documents fournis et les avons approuvés. Vous pouvez maintenant commencer à utiliser la plateforme.",
+      "button": "Connectez-vous à votre compte",
+      "note": "En cas de problème, n'hésitez pas à contacter notre équipe de support."
     }
   },
   "fields": {
@@ -39,6 +57,10 @@
     "user-pack": "Pack",
     "user-pickup-id": "ID de pickup Massar",
     "user-rib": "RIB de compte bancaire",
+    "user-documents": "Documents",
+    "user-boarded": "Statut de on boarding",
+    "user-cin-1": "Carte d'identité nationale (recto)",
+    "user-cin-2": "Carte d'identité nationale (verso)",
     "user-created-at": "Membre depuis",
     "user-active": "Actif",
     "user-not-active": "Non Actif",
@@ -153,8 +175,8 @@
     "size": "Taille",
     "order-product-code": "Code",
     "product-supplier-placeholder": "Sélectionnez le fournisseur du produit",
-    "order-seller-placeholder": "Sélectionnez le vendeur de la commande",
-    "order-state-placeholder": "Sélectionnez le gouvérnorat de livraison de la commande",
+    "order-seller-placeholder": "Sélectionnez le vendeur",
+    "order-state-placeholder": "Sélectionnez le gouvérnorat",
     "user-state-placeholder": "Sélectionnez un gouvérnorat",
     "pickup-created-at": "Date de création",
     "pickup-pickup-date": "Date de pickup",
@@ -197,6 +219,8 @@
     "role-error": "Veuillez sélectionner un rôle",
     "pickup-id-error": "L'ID de ramassage du fournisseur est requis",
     "rib-error": "Le RIB est requis et doit contenir 20 chiffres",
+    "cin-1-error": "Le recto de la carte d'identité nationale est requis",
+    "cin-2-error": "Le verso de la carte d'identité nationale est requis",
     "store-name-error": "Le nom de la boutique est requis",
     "fiscal-id-error": "L'identifiant fiscal est requis et doit contenir 13 caractères",
     "tva-error": "La TVA est requise et doit contenir 2 chiffres",
@@ -337,7 +361,9 @@
     "withdraw-request-minimal-amount-error": "Le montant minimum pour une demande de retrait est de 50 TND",
     "order-paid-error": "Erreur lors de la déclaration des commandes comme payées",
     "order-paid-success": "Commande(s) déclarée(s) comme payées avec succès",
-    "order-paid-invalid-error": "Seules les commandes avec les statuts 'Clôture pour Echange', 'Clôture pour Retour' ou 'Livraison Terminée' peuvent être marquées comme payées"
+    "order-paid-invalid-error": "Seules les commandes avec les statuts 'Clôture pour Echange', 'Clôture pour Retour' ou 'Livraison Terminée' peuvent être marquées comme payées",
+    "user-on-boarding-success": "L'intégration de l'utilisateur a été complétée avec succès",
+    "user-on-boarding-error": "Erreur lors de l'intégration de l'utilisateur"
   },
   "not-found": {
     "title": "Page non trouvée",
@@ -580,6 +606,8 @@
     "form-title": "Créer Votre Compte",
     "form-text": "Entrez vos informations et choisissez un pack pour demander la création de votre compte",
     "pricing-details": "Obtenez plus de détails sur nos tarifs et packs",
+    "become-a-seller": "Devenir un vendeur",
+    "become-a-supplier": "Devenir un fournisseur",
     "register-button": "Créer un Compte",
     "consent": "En vous inscrivant, vous acceptez notre",
     "terms": "Conditions d'utilisation",
@@ -663,6 +691,7 @@
       "view-all": "Voir Tout",
       "no-notifications": "Vous n'avez pas encore de notifications",
       "admin-new-seller": "{subject} a créé un compte et a rejoint la plateforme en tant que vendeur",
+      "admin-new-supplier": "{subject} a créé un compte et a rejoint la plateforme en tant que fournisseur",
       "admin-new-lead": "Nouveau lead {subject} s'est inscrit pour la formation gratuite",
       "admin-new-product": "Le fournisseur {subject} a ajouté un nouveau produit",
       "supplier-product-published": "Votre produit {subject} a été approuvé et est maintenant disponible dans la marketplace",
@@ -676,7 +705,9 @@
       "new-transaction": "Votre solde de compte a été mis à jour suite à une nouvelle transaction",
       "new-withdraw-request": "Nouvelle demande de retrait par {subject}",
       "withdraw-request-declined": "Votre demande de retrait a été refusée",
-      "withdraw-request-approved": "Votre demande de retrait a été approuvée"
+      "withdraw-request-approved": "Votre demande de retrait a été approuvée",
+      "admin-new-on-boarding": "L'utilisateur {subject} a terminé le processus d'intégration et attend l'approbation des documents",
+      "documents-approved": "Vos documents ont été approuvés, vous pouvez maintenant commencer à utiliser la plateforme"
     },
     "view-in-market": "Voir dans la marketplace",
     "pages": {
@@ -916,7 +947,7 @@
       "note-d'échange": "Sélectionnez la commande de votre liste de commandes que vous souhaitez échanger et spécifiez le/les produit(s) à retourner",
       "order-status": "Tracking de la commande",
       "order-products-note": "Sélectionnez le(s) produit(s) de votre liste de produits que vous souhaitez ajouter à cette commande et spécifiez la quantité, la taille et la couleur",
-      "select-order-product": "Sélectionnez un produit ou plus de votre liste de produits",
+      "select-order-product": "Sélectionnez un produit ou plus",
       "order-cancel": "Annuler",
       "order-cancel-info": "Une commande ne peut être annulée seulement si elle n'est pas encore emballée",
       "order-status-note": "Le statut de la commande sera mis à jour automatiquement par le système en fonction de l'avancement de la commande et affichera toujours le dernier statut connu",
@@ -933,7 +964,20 @@
       "approve": "Approuver",
       "decline": "Refuser",
       "search": "Rechercher...",
-      "multi-order-note": "Pour les commandes contenant différents produits de différents fournisseurs, la commande sera divisée en plusieurs commandes et les frais de livraison augmenteront"
+      "multi-order-note": "Pour les commandes contenant différents produits de différents fournisseurs, la commande sera divisée en plusieurs commandes et les frais de livraison augmenteront",
+      "composed-order": "Cette commande est une commande multi-fournisseurs et sera soumise à des frais de livraison supplémentaires",
+      "on-boarding-title": "Ravi de vous voir ici",
+      "on-boarding-description": "Vous y êtes presque, il ne reste que quelques étapes avant d'accéder à notre plateforme. Veuillez fournir les informations requises ci-dessous.",
+      "on-boarding-2-title": "Nous examinons actuellement vos informations",
+      "on-boarding-2-description": "Notre équipe examine et traite actuellement les informations que vous avez fournies. Vous recevrez un e-mail dès que nous aurons traité vos documents. N'hésitez pas à nous contacter si vous avez des questions.",
+      "upload": "Télécharger",
+      "cin-1-note": "Veuillez fournir une photo claire du recto de votre carte d'identité nationale.",
+      "cin-2-note": "Veuillez fournir une photo claire du verso de votre carte d'identité nationale.",
+      "get-started": "Commencer",
+      "try-again": "Réessayer",
+      "not-started": "Non commencé",
+      "documents-uploaded": "Documents téléchargés, en attente d'approbation",
+      "on-boarding-completed": "On boarding terminée"
     },
     "transaction-types": {
       "admin-transaction": "Transaction administrateur",
