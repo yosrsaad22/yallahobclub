@@ -39,7 +39,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
 
   const defaultValues = {
     role: registerRoleOptions.SELLER,
-    pack: packOptions.AJEJA,
+    pack: packOptions.DAMREJ,
   };
 
   const {
@@ -70,7 +70,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
 
   return (
     <div className="flex w-full flex-col">
-      <div className="feature-glass-gradient mx-auto mb-8 flex flex-row items-center justify-between gap-2 rounded-md p-1  text-sm ">
+      <div className="feature-glass-gradient mx-0 mb-8 flex flex-row items-center justify-between gap-0 rounded-md p-1 text-sm md:mx-auto md:gap-2  ">
         <div
           onClick={() => {
             setRole(registerRoleOptions.SELLER);
@@ -78,7 +78,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
           }}
           className={cn(
             role === registerRoleOptions.SELLER ? 'bg-black/40 font-medium text-white' : 'text-muted-foreground',
-            'flex w-[200px] cursor-pointer items-center justify-center rounded-md p-2 px-4  hover:bg-black/40 hover:text-foreground',
+            'flex w-full cursor-pointer items-center justify-center rounded-md p-1 hover:bg-black/40 hover:text-foreground md:w-[200px]  md:p-2 md:px-4',
           )}>
           {t('become-a-seller')}
         </div>
@@ -89,7 +89,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
           }}
           className={cn(
             role === registerRoleOptions.SUPPLIER ? 'bg-black/40 font-medium text-foreground' : 'text-muted-foreground',
-            'flex w-[200px] cursor-pointer items-center justify-center rounded-md p-2 px-4 hover:bg-black/40 hover:text-foreground',
+            'flex w-full cursor-pointer items-center justify-center rounded-md p-1 hover:bg-black/40 hover:text-foreground md:w-[200px] md:p-2 md:px-4',
           )}>
           {t('become-a-supplier')}
         </div>
@@ -98,7 +98,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
         <div className="flex flex-col gap-0 md:flex-row md:gap-8 ">
           <div className="flex w-full flex-col items-center  lg:items-end">
             <LabelInputContainer className="mb-4 max-w-[25rem]">
-              <Label htmlFor="name">{tFields('user-full-name')}</Label>
+              <Label htmlFor="fullName">{tFields('user-full-name')}</Label>
               <Input
                 {...register('fullName')}
                 id="fullName"
@@ -145,7 +145,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
           </div>
           <div className="flex w-full flex-col items-center  lg:items-start">
             <LabelInputContainer className="mb-4 max-w-[25rem]">
-              <Label htmlFor="state">{tFields('user-state')}</Label>
+              <Label>{tFields('user-state')}</Label>
               <Combobox
                 isDark
                 items={states}
@@ -165,9 +165,10 @@ export function RegisterForm({ className }: RegisterFormProps) {
               <Label htmlFor="city">{tFields('user-city')}</Label>
               <Input
                 {...register('city')}
-                id="age"
+                id="city"
                 disabled={isLoading}
                 placeholder={tFields('user-city')}
+                className="text-autofill"
                 type="string"
               />
               {errors.city && <span className="text-xs text-red-400">{tValidation('city-error')}</span>}
@@ -176,8 +177,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
               <Label htmlFor="address">{tFields('user-address')}</Label>
               <Input
                 {...register('address')}
-                id="age"
+                id="address"
                 disabled={isLoading}
+                className="text-autofill"
                 placeholder={tFields('user-address')}
                 type="string"
               />
@@ -280,7 +282,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
       )}
 
       <div className="relative mt-8 flex flex-row justify-center text-sm">
-        <Link href={'/#pricing'} passHref>
+        <Link className="cursor-pointer" href={'/#pricing'} passHref>
           <span className="bg-background px-2 text-muted-foreground underline">{t('pricing-details')}</span>
         </Link>
       </div>
