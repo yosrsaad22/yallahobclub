@@ -20,7 +20,7 @@ export default function Register() {
     <>
       <StarsCanvas props="fixed" />
       <div className="mx-auto my-8 flex min-h-screen w-full  max-w-6xl flex-col  md:py-16">
-        <div className="mx-12 translate-y-[-1rem] animate-fade-in opacity-0  [--animation-delay:400ms]">
+        <div className="mx-4 translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:400ms]  md:mx-8">
           <div className="flex flex-col gap-y-4 pb-4 text-center">
             <h1 className="text-gradient mx-2 translate-y-[-1rem] animate-fade-in py-2 text-3xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:text-[3rem]">
               {t('form-title')}
