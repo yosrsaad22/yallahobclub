@@ -48,7 +48,7 @@ export default {
         session.user.city = token.city as string;
         session.user.pack = token.pack as string;
         session.user.active = token.active as boolean;
-        session.user.boarded = token.boarded as boolean;
+        session.user.boarded = token.boarded as number;
         session.user.paid = token.paid as boolean;
         session.user.code = token.code as string;
         session.user.rib = token.rib as string;
