@@ -86,7 +86,7 @@ export function DataTableToolbar<TData extends { id: string }>({
       });
       if (onBulkDelete) {
         onBulkDelete(ids).then((res: ActionResponse) => {
-          setPickupDialogOpen(false);
+          setDeleteDialogOpen(false);
           if (res.success) {
             table.setRowSelection({});
             toast({

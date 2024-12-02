@@ -246,7 +246,7 @@ export const deleteUser = async (id: string): Promise<ActionResponse> => {
     revalidatePath('/dashboard/admin/suppliers');
     return { success: 'user-delete-success' };
   } catch (error) {
-    return { success: 'user-delete-error' };
+    return { error: 'user-delete-error' };
   }
 };
 
@@ -267,7 +267,7 @@ export const bulkDeleteUsers = async (ids: string[]): Promise<ActionResponse> =>
     revalidatePath('/dashboard/admin/sellers');
     revalidatePath('/dashboard/admin/suppliers');
 
-    return { error: 'users-delete-success' };
+    return { success: 'users-delete-success' };
   } catch (error) {
     return { error: 'users-delete-error' };
   }

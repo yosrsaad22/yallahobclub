@@ -38,7 +38,7 @@ export enum roleOptions {
   SUPPLIER = 'SUPPLIER',
 }
 
-export enum registerRoleOptions {
+export enum secureRoleOptions {
   SELLER = 'SELLER',
   SUPPLIER = 'SUPPLIER',
 }

@@ -16,7 +16,7 @@ import { FormError } from '@/components/ui/form-error';
 import { FormSuccess } from '@/components/ui/form-success';
 import { register as signup } from '@/actions/auth';
 import { GradientButton } from '../ui/button';
-import { states, packOptions, registerRoleOptions } from '@/lib/constants';
+import { states, packOptions, secureRoleOptions } from '@/lib/constants';
 import { ActionResponse } from '@/types';
 import { Combobox } from '../ui/combobox';
 import { set } from 'lodash';
@@ -33,12 +33,12 @@ export function RegisterForm({ className }: RegisterFormProps) {
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
   const [state, setState] = React.useState<string>();
-  const [role, setRole] = React.useState(registerRoleOptions.SELLER);
+  const [role, setRole] = React.useState(secureRoleOptions.SELLER);
 
   type schemaType = z.infer<typeof RegisterSchema>;
 
   const defaultValues = {
-    role: registerRoleOptions.SELLER,
+    role: secureRoleOptions.SELLER,
     pack: packOptions.DAMREJ,
   };
 
@@ -73,22 +73,22 @@ export function RegisterForm({ className }: RegisterFormProps) {
       <div className="feature-glass-gradient mx-0 mb-8 flex flex-row items-center justify-between gap-0 rounded-md p-1 text-sm md:mx-auto md:gap-2  ">
         <div
           onClick={() => {
-            setRole(registerRoleOptions.SELLER);
-            setValue('role', registerRoleOptions.SELLER);
+            setRole(secureRoleOptions.SELLER);
+            setValue('role', secureRoleOptions.SELLER);
           }}
           className={cn(
-            role === registerRoleOptions.SELLER ? 'bg-black/40 font-medium text-white' : 'text-muted-foreground',
+            role === secureRoleOptions.SELLER ? 'bg-black/40 font-medium text-white' : 'text-muted-foreground',
             'flex w-full cursor-pointer items-center justify-center rounded-md p-1 hover:bg-black/40 hover:text-foreground md:w-[200px]  md:p-2 md:px-4',
           )}>
           {t('become-a-seller')}
         </div>
         <div
           onClick={() => {
-            setRole(registerRoleOptions.SUPPLIER);
-            setValue('role', registerRoleOptions.SUPPLIER);
+            setRole(secureRoleOptions.SUPPLIER);
+            setValue('role', secureRoleOptions.SUPPLIER);
           }}
           className={cn(
-            role === registerRoleOptions.SUPPLIER ? 'bg-black/40 font-medium text-foreground' : 'text-muted-foreground',
+            role === secureRoleOptions.SUPPLIER ? 'bg-black/40 font-medium text-foreground' : 'text-muted-foreground',
             'flex w-full cursor-pointer items-center justify-center rounded-md p-1 hover:bg-black/40 hover:text-foreground md:w-[200px] md:p-2 md:px-4',
           )}>
           {t('become-a-supplier')}
@@ -202,7 +202,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
           </div>
         </div>
       </form>
-      {role === registerRoleOptions.SELLER && (
+      {role === secureRoleOptions.SELLER && (
         <>
           <div className=" mt-10 flex min-w-full flex-col  gap-8 text-left lg:flex-row">
             <div

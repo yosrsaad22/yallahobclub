@@ -38,7 +38,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
   const t = useTranslations('dashboard.text');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
-  const [state, setCity] = React.useState<string>(userData?.state ?? '');
+  const [state, setState] = React.useState<string>(userData?.state ?? '');
   type schemaType = z.infer<typeof UserSchema>;
   const [userRole, setUserRole] = React.useState(userData?.role!);
   const [userPack, setUserPack] = React.useState(userData?.pack!);
@@ -52,7 +52,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
   if (userData?.role == roleOptions.SELLER) {
     defaultValues = {
       pack: packOptions[userData?.pack!],
-      role: roleOptions[userData?.role!],
+      role: roleOptions[userData?.role!] as roleOptions,
       emailVerified: emailVerified,
       active: userData?.active!,
       paid: userData?.paid!,
@@ -62,7 +62,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
     };
   } else {
     defaultValues = {
-      role: roleOptions[userData?.role!],
+      role: roleOptions[userData?.role!] as roleOptions,
       emailVerified: emailVerified,
       active: userData?.active!,
       state: userData?.state!,
@@ -179,7 +179,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
               )}
 
               <LabelInputContainer>
-                <Label htmlFor="name">{tFields('user-full-name')}</Label>
+                <Label htmlFor="fullName">{tFields('user-full-name')}</Label>
                 <Input
                   {...register('fullName')}
                   id="fullName"
@@ -227,12 +227,12 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
-                <Label htmlFor="state">{tFields('user-state')}</Label>
+                <Label>{tFields('user-state')}</Label>
                 <Combobox
                   items={states}
                   selectedItems={state}
                   onSelect={(selectedItem: string) => {
-                    setCity(selectedItem);
+                    setState(selectedItem);
                     setValue('state', selectedItem);
                   }}
                   placeholder={tFields('user-state-placeholder')}

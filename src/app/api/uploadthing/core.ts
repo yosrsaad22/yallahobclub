@@ -83,7 +83,7 @@ export const ourFileRouter = {
       }
     }),
 
-  productMedia: f({ video: { maxFileCount: 2 }, image: { maxFileSize: '4MB', maxFileCount: 5 } })
+  productMedia: f({ video: { maxFileSize: '1GB', maxFileCount: 2 }, image: { maxFileSize: '4MB', maxFileCount: 5 } })
     .middleware(() => handleRole([UserRole.SUPPLIER, UserRole.ADMIN]))
     .onUploadComplete(async ({ metadata, file }) => {
       if (metadata.id) {

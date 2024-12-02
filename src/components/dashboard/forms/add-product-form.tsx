@@ -486,7 +486,7 @@ export function AddProductForm({}: AddProductFormProps) {
                 }}
                 onUploadError={(error: Error) => {
                   setIsUploading(false);
-
+                  console.log(error);
                   toast({
                     variant: 'destructive',
                     title: tValidation('error-title'),
