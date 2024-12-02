@@ -323,9 +323,9 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
 
     // Process each subOrder for the current supplier
     for (const subOrder of subOrders) {
-      if (subOrder.status === 'seller-cancelled-EC01') {
+      if (subOrder.status === 'EC01') {
         return { error: 'pickup-request-order-cancelled-error' };
-      } else if (subOrder.status === 'awaiting-packaging-EC00') {
+      } else if (subOrder.status === 'EC00') {
         let ref1;
         if (subOrder!.order!.subOrders.length > 1) {
           ref1 =
