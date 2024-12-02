@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { IconDeviceFloppy, IconLoader2, IconUserPlus } from '@tabler/icons-react';
 import { toast } from '@/components/ui/use-toast';
 import { LabelInputContainer } from '@/components/ui/label-input-container';
-import { states, DEFAULT_PASSWORD, packOptions, roleOptions } from '@/lib/constants';
+import { states, DEFAULT_PASSWORD, packOptions, secureRoleOptions, roleOptions } from '@/lib/constants';
 import { ActionResponse } from '@/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -38,7 +38,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
   type schemaType = z.infer<typeof UserSchema>;
 
   let defaultValues;
-  if (defaultRole === roleOptions.SELLER) {
+  if (defaultRole === 'SELLER') {
     defaultValues = {
       pack: packOptions.DAMREJ,
       role: defaultRole,
@@ -46,6 +46,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
       active: false,
       paid: false,
       pickupId: '0',
+      boarded: 0,
     };
   } else {
     defaultValues = {
@@ -54,6 +55,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
       active: false,
       paid: false,
       storeName: 'N/A',
+      boarded: 0,
     };
   }
 
@@ -75,7 +77,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
             title: tValidation('success-title'),
             description: tValidation(res.success),
           });
-          router.push(`/dashboard/${role?.toLowerCase()}/${data.role?.toLowerCase()}s`);
+          router.push(`/dashboard/admin/${data.role?.toLowerCase()}s`);
         } else {
           toast({
             variant: 'destructive',
@@ -104,7 +106,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
             <h2 className="pb-4 text-lg font-semibold">{t('user-information')}</h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <LabelInputContainer>
-                <Label htmlFor="name">{tFields('user-full-name')}</Label>
+                <Label htmlFor="fullName">{tFields('user-full-name')}</Label>
                 <Input
                   {...register('fullName')}
                   id="fullName"
@@ -140,7 +142,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
-                <Label htmlFor="state">{tFields('user-state')}</Label>
+                <Label>{tFields('user-state')}</Label>
                 <Combobox
                   items={states}
                   selectedItems={state}
@@ -154,6 +156,17 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                   multiSelect={false}
                 />
                 {errors.state && <span className="text-xs text-red-400">{tValidation('state-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="city">{tFields('user-city')}</Label>
+                <Input
+                  {...register('city')}
+                  disabled={isLoading}
+                  id="city"
+                  placeholder={tFields('user-city')}
+                  type="text"
+                />
+                {errors.city && <span className="text-xs text-red-400">{tValidation('city-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label htmlFor="address">{tFields('user-address')}</Label>
@@ -177,7 +190,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                 />
                 {errors.rib && <span className="text-xs text-red-400">{tValidation('rib-error')}</span>}
               </LabelInputContainer>
-              {defaultRole === roleOptions.SELLER && (
+              {defaultRole === 'SELLER' && (
                 <LabelInputContainer>
                   <Label htmlFor="pack">{tFields('user-pack')}</Label>
                   <Select
@@ -198,18 +211,22 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                 </LabelInputContainer>
               )}
               <LabelInputContainer>
-                <Label htmlFor="role">{tFields('user-role')}</Label>
+                <Label>{tFields('user-role')}</Label>
                 <Select
                   disabled
                   defaultValue={getValues('role')}
-                  onValueChange={(value: keyof typeof roleOptions) => setValue('role', roleOptions[value])}>
+                  onValueChange={(value: keyof typeof secureRoleOptions) =>
+                    setValue('role', secureRoleOptions[value] as unknown as roleOptions)
+                  }>
                   <SelectTrigger disabled>
                     <SelectValue placeholder={tFields('user-role')} defaultValue={getValues('role')} id="role" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      {Object.values(roleOptions).map((option) => (
-                        <SelectItem key={option} value={option as (typeof roleOptions)[keyof typeof roleOptions]}>
+                      {Object.values(secureRoleOptions).map((option) => (
+                        <SelectItem
+                          key={option}
+                          value={option as (typeof secureRoleOptions)[keyof typeof secureRoleOptions]}>
                           {tFields(`user-${option.toLowerCase()}`)}
                         </SelectItem>
                       ))}
@@ -218,14 +235,14 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                 </Select>
                 {errors.role && <span className="text-xs text-red-400">{tValidation('role-error')}</span>}
               </LabelInputContainer>
-              {getValues('role') === roleOptions.SUPPLIER && (
+              {getValues('role') === 'SUPPLIER' && (
                 <LabelInputContainer>
                   <Label htmlFor="pickupId">{tFields('user-pickup-id')}</Label>
-                  <Input {...register('pickupId')} id="pickupd" placeholder={tFields('user-pickup-id')} type="text" />
+                  <Input {...register('pickupId')} id="pickupId" placeholder={tFields('user-pickup-id')} type="text" />
                   {errors.pickupId && <span className="text-xs text-red-400">{tValidation('pickup-id-error')}</span>}
                 </LabelInputContainer>
               )}
-              {getValues('role') === roleOptions.SELLER && (
+              {getValues('role') === 'SELLER' && (
                 <LabelInputContainer>
                   <Label htmlFor="storeName">
                     {tFields('user-store-name')}
@@ -264,16 +281,18 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
                   />
                 </div>
               </LabelInputContainer>
-
-              <LabelInputContainer>
-                <Label htmlFor="paid">{tFields('user-paid')}</Label>
-                <div className="flex h-10 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                  <div className="font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    {t('user-paid-note')}
+              {getValues('role') === 'SELLER' && (
+                <LabelInputContainer>
+                  <Label htmlFor="paid">{tFields('user-paid')}</Label>
+                  <div className="flex h-10 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    <div className="font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      {t('user-paid-note')}
+                    </div>
+                    <Switch defaultChecked={false} onCheckedChange={(checked) => setValue('paid', checked)} id="paid" />
                   </div>
-                  <Switch defaultChecked={false} onCheckedChange={(checked) => setValue('paid', checked)} id="paid" />
-                </div>
-              </LabelInputContainer>
+                </LabelInputContainer>
+              )}
+
               <LabelInputContainer>
                 <Label htmlFor="password">{tFields('user-password')}</Label>
                 <Input disabled id="password" placeholder={`${t('password-note')}: ${DEFAULT_PASSWORD}`} type="text" />
@@ -281,7 +300,14 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
             </div>
           </div>
           <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-16">
-            <Button type="submit" className="h-12" size="default" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="h-12"
+              size="default"
+              onClick={() => {
+                console.log(getValues());
+              }}
+              disabled={isLoading}>
               {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
               {!isLoading && <IconDeviceFloppy className="mr-2 h-5 w-5 " />}
               {t('save-button')}

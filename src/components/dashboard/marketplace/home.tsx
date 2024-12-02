@@ -228,7 +228,7 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
               <CarouselItem
                 onClick={() => router.push('/dashboard/marketplace/all-products?category=' + _.name)}
                 key={index}
-                className=" relative mx-auto ml-4 flex h-[110px] w-full basis-[32%] cursor-pointer flex-col items-center rounded-lg bg-muted  px-2 shadow-md transition-transform duration-300 ease-in-out hover:scale-110 md:ml-6 md:h-[130px] lg:h-[120px] lg:basis-[12%]">
+                className=" relative mx-auto ml-4 flex h-[110px] w-full basis-[32%] cursor-pointer flex-col items-center rounded-lg bg-muted  px-2 shadow-md transition-transform duration-300 ease-in-out hover:scale-110 md:ml-3 md:h-[130px] lg:h-[120px] lg:basis-[14%]">
                 <p className="md:text-md w-full overflow-hidden text-ellipsis whitespace-normal break-words pb-4 text-center text-sm font-medium md:font-semibold">
                   {tFields('category-' + _.name.toLocaleLowerCase())}
                 </p>

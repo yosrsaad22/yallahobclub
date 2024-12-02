@@ -286,10 +286,10 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                       )}
                     </div>
                     {subOrder.products.map((orderProduct, index) => (
-                      <div key={index} className="flex flex-col items-center gap-4 md:flex-row md:gap-6 ">
+                      <div key={index} className="asp flex flex-col items-center gap-4 md:flex-row md:gap-6 ">
                         {/* Product Image */}
                         <Image
-                          className="rounded-md object-contain"
+                          className="aspect-square rounded-md object-cover"
                           src={`${MEDIA_HOSTNAME}${orderProduct.product.media[0].key}`}
                           alt={orderProduct.product.name}
                           height={180}

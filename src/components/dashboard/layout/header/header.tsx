@@ -38,7 +38,7 @@ export default function Header() {
             size={'icon'}>
             <IconChevronsLeft className=" h-[1.4rem] w-[1.4rem]" />
           </Button>
-          <Link href="#" passHref>
+          <Link href="/dashboard" passHref>
             <Image
               src={'/img/logo.webp'}
               width={150}

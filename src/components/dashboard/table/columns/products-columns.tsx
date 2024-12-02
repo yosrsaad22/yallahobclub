@@ -31,8 +31,14 @@ const SupplierCell = ({ user }: { user: User }) => {
 
 const ImageCell = ({ image }: { image: string }) => {
   return (
-    <div className="flex h-[70px] w-[70px] items-center justify-center  p-2">
-      <Image className="rounded-sm" src={`${MEDIA_HOSTNAME}${image}`} width={200} height={200} alt={'image'} />
+    <div className="flex  h-[70px] w-[70px] items-center justify-center object-cover  p-2">
+      <Image
+        className="aspect-square rounded-sm object-cover"
+        src={`${MEDIA_HOSTNAME}${image}`}
+        width={70}
+        height={70}
+        alt={'image'}
+      />
     </div>
   );
 };

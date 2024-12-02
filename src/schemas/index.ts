@@ -2,7 +2,7 @@ import {
   colorOptions,
   packOptions,
   productCategoryOptions,
-  registerRoleOptions,
+  secureRoleOptions,
   roleOptions,
   sizeOptions,
 } from '@/lib/constants';
@@ -30,7 +30,7 @@ export const RegisterSchema = z
     password: z.string().min(8),
     confirmPassword: z.string().min(8),
     pack: z.nativeEnum(packOptions),
-    role: z.nativeEnum(registerRoleOptions),
+    role: z.nativeEnum(secureRoleOptions),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
@@ -211,7 +211,7 @@ export const UserSchema = z
     city: z.string(),
     state: z.string(),
     pack: z.nativeEnum(packOptions).optional(),
-    role: z.nativeEnum(roleOptions).optional(),
+    role: z.nativeEnum(roleOptions || secureRoleOptions).optional(),
     emailVerified: z.boolean().optional(),
     active: z.boolean().optional(),
     paid: z.boolean().optional(),

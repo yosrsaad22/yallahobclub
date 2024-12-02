@@ -123,7 +123,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
             <h2 className="pb-4 text-lg font-semibold">{t('user-information')}</h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <LabelInputContainer>
-                <Label htmlFor="name">{tFields('user-full-name')}</Label>
+                <Label htmlFor="fullName">{tFields('user-full-name')}</Label>
                 <Input
                   {...register('fullName')}
                   id="fullName"
@@ -162,7 +162,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
-                <Label htmlFor="state">{tFields('user-state')}</Label>
+                <Label>{tFields('user-state')}</Label>
                 <Combobox
                   items={states}
                   selectedItems={state}

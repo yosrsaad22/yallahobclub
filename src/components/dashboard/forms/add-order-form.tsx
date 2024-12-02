@@ -342,7 +342,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
             <p className="pb-6 text-sm text-muted-foreground">{t('required-note')}</p>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <LabelInputContainer>
-                <Label htmlFor="name">
+                <Label htmlFor="firstName">
                   {tFields('order-first-name')}
                   <span className="font-bold text-destructive"> *</span>
                 </Label>
@@ -388,7 +388,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
                 {errors.number && <span className="text-xs text-red-400">{tValidation('order-number-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
-                <Label htmlFor="state">
+                <Label>
                   {tFields('order-state')}
                   <span className="font-bold text-destructive"> *</span>
                 </Label>

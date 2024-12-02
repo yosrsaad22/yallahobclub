@@ -82,7 +82,7 @@ export function OnBoardingForm({ className }: OnBoardingFormProps) {
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <LabelInputContainer>
-                  <Label htmlFor="name">{tFields('user-store-name')}</Label>
+                  <Label htmlFor="storeName">{tFields('user-store-name')}</Label>
                   <Input
                     {...register('storeName')}
                     id="storeName"
