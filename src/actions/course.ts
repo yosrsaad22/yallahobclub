@@ -78,7 +78,7 @@ export const editCourse = async (
 export const getChapters = async (): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
-
+    // Fetch chapters in ascending order
     const chapters = await db.chapter.findMany({
       orderBy: {
         position: 'asc',
