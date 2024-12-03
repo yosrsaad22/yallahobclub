@@ -45,7 +45,6 @@ const UserCell = ({ user }: { user: User }) => {
 
 export const SupplierPickupColumns: ColumnDef<
   Pickup & {
-    ordersCount: number;
     subOrders: SubOrder & { order: Order; products: OrderProduct & { product: Product } }[];
   }
 >[] = [
@@ -61,16 +60,6 @@ export const SupplierPickupColumns: ColumnDef<
     },
   },
   {
-    accessorKey: 'pickupDate',
-    meta: {
-      columnName: 'pickupDate',
-    },
-    cell: ({ row }) => {
-      const date = formatDate(row.getValue('pickupDate'));
-      return <div className="flex w-full">{date}</div>;
-    },
-  },
-  {
     accessorKey: 'code',
     meta: {
       columnName: 'code',
@@ -78,15 +67,6 @@ export const SupplierPickupColumns: ColumnDef<
     cell: ({ row }) => {
       const code: string = row.getValue('code');
       return <div className="w-full">{code}</div>;
-    },
-  },
-  {
-    accessorKey: 'ordersCount',
-    meta: {
-      columnName: 'ordersCount',
-    },
-    cell: ({ row }) => {
-      return <div className="flex w-full">{row.getValue('ordersCount')}</div>;
     },
   },
   {
@@ -128,13 +108,6 @@ export const AdminPickupColumns: ColumnDef<
       columnName: 'CreatedAt',
     },
     accessorFn: (row: any) => formatDate(row.createdAt),
-  },
-  {
-    accessorKey: 'pickupDate',
-    meta: {
-      columnName: 'pickupDate',
-    },
-    accessorFn: (row: any) => formatDate(row.pickupDate),
   },
   {
     accessorKey: 'code',
