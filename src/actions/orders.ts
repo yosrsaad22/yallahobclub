@@ -624,7 +624,6 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
 export const printLabel = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.SUPPLIER, UserRole.ADMIN]);
-    const tColors = await getTranslations('dashboard.colors');
 
     const subOrder = await db.subOrder.findUnique({
       where: { id },
@@ -660,7 +659,7 @@ export const printLabel = async (id: string): Promise<ActionResponse> => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.PDF_API_ACCESS_TOKEN}`,
       },
-      body: JSON.stringify({ subOrder: subOrder, tColors: tColors }),
+      body: JSON.stringify({ subOrder: subOrder }),
     });
     console.log(response.status);
     if (!response.ok) {

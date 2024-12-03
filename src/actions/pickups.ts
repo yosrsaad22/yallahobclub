@@ -432,7 +432,6 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
 export const printPickup = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
-    const tColors: (key: string) => string = await getTranslations('dashboard.colors');
 
     const pickup = await db.pickup.findUnique({
       where: {
@@ -471,7 +470,6 @@ export const printPickup = async (id: string): Promise<ActionResponse> => {
         code: pickup!.code,
         subOrders: pickup!.subOrders,
         createdAt: pickup!.createdAt,
-        tColors: tColors,
       }),
     });
     if (!response.ok) {
