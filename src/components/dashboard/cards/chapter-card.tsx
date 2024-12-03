@@ -80,7 +80,7 @@ const ChapterCard: FC<ChapterCardProps> = ({ chapter, onEdit, onDelete }) => {
               <IconGripVertical className="h-5 w-5 text-muted-foreground" />
             </Button>
             <div className="aspect-video w-56 md:w-56">
-              <div className="flex  h-full w-full items-center justify-center rounded-sm  border border-border bg-gradient-to-br from-primary to-secondary text-lg font-bold">
+              <div className="flex h-full  w-full items-center justify-center rounded-sm border  border-border bg-gradient-to-br from-primary to-secondary text-lg font-bold text-white">
                 {chapter.position}
               </div>
             </div>
