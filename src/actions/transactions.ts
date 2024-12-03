@@ -87,24 +87,50 @@ export const addTransaction = async (values: z.infer<typeof TransactionSchema>):
   }
 };
 
-export const createTransaction = async (userId: string, type: string, amount: number): Promise<ActionResponse> => {
+export const createTransaction = async (
+  userId: string,
+  type: string,
+  amount: number,
+  orderId?: string,
+): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
 
     const user = await getUserById(userId);
-
-    const transaction = await db.transaction.create({
-      data: {
-        code: 'ENT-' + generateCode(),
-        amount: amount,
-        type: type,
-        user: {
-          connect: {
-            id: userId,
+    let transaction;
+    if (orderId) {
+      transaction = await db.transaction.create({
+        data: {
+          code: 'ENT-' + generateCode(),
+          amount: amount,
+          type: type,
+          order: {
+            connect: { id: orderId },
+          },
+          user: {
+            connect: {
+              id: userId,
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      transaction = await db.transaction.create({
+        data: {
+          code: 'ENT-' + generateCode(),
+          amount: amount,
+          type: type,
+          order: {
+            connect: { id: orderId },
+          },
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
+    }
 
     await db.user.update({
       where: { id: userId },

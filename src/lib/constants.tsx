@@ -365,7 +365,7 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '1',
-    Color: 'bg-purple-300 text-white',
+    Color: 'bg-teal-300 text-white',
   },
   {
     UpdateCode: '2',

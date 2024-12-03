@@ -3,15 +3,12 @@ import { db } from '@/lib/db';
 import { currentRole, currentUser, roleGuard } from '@/lib/auth';
 import { ActionResponse } from '@/types';
 import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
-import { NotificationType, UserRole, Pickup } from '@prisma/client';
-import { colorOptions, orderStatuses, postalCodes, roleOptions, sizeOptions, states } from '@/lib/constants';
+import { NotificationType, UserRole } from '@prisma/client';
+import { postalCodes, roleOptions, states } from '@/lib/constants';
 import { notifyAllAdmins, notifyUser } from './notifications';
 import { formatDate, generateCode } from '@/lib/utils';
 import { admingGetPickupById, supplierGetPickupById } from '@/data/pickup';
-import { createPickupRequest } from '@/lib/aramex';
 import { getTranslations } from 'next-intl/server';
-import { generateDechargeDoc } from './documents';
 import { createShipment } from '@/lib/massar';
 
 export const supplierGetPickups = async (): Promise<ActionResponse> => {
@@ -224,9 +221,8 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
           body: JSON.stringify(shipment),
         });
         const responseData = await response.json();
-
-        if (!response.ok || responseData.HasErrors === true) {
-          throw new Error('Failed to send pickup request to Aramex');
+        if (!response.ok) {
+          throw new Error('Failed to send pickup request');
         }
 
         await db.subOrder.update({
@@ -375,7 +371,7 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
 
         const responseData = await response.json();
         if (!response.ok) {
-          throw new Error('Failed to send pickup request to Aramex');
+          throw new Error('Failed to send pickup request');
         }
 
         await db.subOrder.update({
@@ -436,6 +432,7 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
 export const printPickup = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
+    const tColors: (key: string) => string = await getTranslations('dashboard.colors');
 
     const pickup = await db.pickup.findUnique({
       where: {
@@ -459,8 +456,32 @@ export const printPickup = async (id: string): Promise<ActionResponse> => {
       },
     });
 
-    const res = await generateDechargeDoc(pickup!.code, pickup!.subOrders, pickup!.createdAt, pickup!.pickupDate!);
-    return { success: 'pickup-print-success', data: res.data };
+    const url = process.env.PDF_API_URL + '/pdf/generateDecharge';
+    if (!url) {
+      throw new Error('PDF_API_URL is not defined');
+    }
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.PDF_API_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({
+        code: pickup!.code,
+        subOrders: pickup!.subOrders,
+        createdAt: pickup!.createdAt,
+        tColors: tColors,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to generate decharge document');
+    }
+
+    const res = await response.json();
+    console.log(process.env.PDF_API_URL + res.data);
+
+    return { success: 'pickup-print-success', data: process.env.PDF_API_URL + res.data };
   } catch (error) {
     return { error: 'pickup-print-error' };
   }

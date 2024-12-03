@@ -153,10 +153,7 @@ export function DataTableToolbar<TData extends { id: string }>({
               description: tValidation(res.success),
             });
 
-            const bytes = new Uint8Array(res.data);
-            const blob = new Blob([bytes], { type: 'application/pdf' });
-            const docUrl = URL.createObjectURL(blob);
-            window.open(docUrl, '_blank');
+            window.open(res.data, '_blank');
           } else {
             toast({
               variant: 'destructive',

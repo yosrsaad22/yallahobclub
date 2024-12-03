@@ -73,7 +73,7 @@ export const UserTransactionColumns: ColumnDef<Transaction & { order: Order }>[]
           <p className={` font-bold ${amount >= 0 ? 'text-success' : 'text-destructive'}`}>
             {' '}
             {amount >= 0 ? '+' : ''}
-            {amount} TND
+            {amount.toFixed(1)} TND
           </p>
         </div>
       );
@@ -145,7 +145,7 @@ export const AdminTransactionColumns: ColumnDef<Transaction & { user: User; orde
           <p className={` font-bold ${amount >= 0 ? 'text-success' : 'text-destructive'}`}>
             {' '}
             {amount >= 0 ? '+' : ''}
-            {amount} TND
+            {amount.toFixed(1)} TND
           </p>
         </div>
       );

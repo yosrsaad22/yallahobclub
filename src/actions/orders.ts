@@ -22,7 +22,7 @@ import { admingGetOrderById, userGetOrderById } from '@/data/order';
 import { generateCode } from '@/lib/utils';
 import { printLabelRequest, trackShipmentsRequest } from '@/lib/aramex';
 import { createTransaction } from './transactions';
-import { generateLabel } from './documents';
+import { getTranslations } from 'next-intl/server';
 
 export const sellerGetOrders = async (): Promise<ActionResponse> => {
   try {
@@ -624,6 +624,7 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
 export const printLabel = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.SUPPLIER, UserRole.ADMIN]);
+    const tColors = await getTranslations('dashboard.colors');
 
     const subOrder = await db.subOrder.findUnique({
       where: { id },
@@ -652,10 +653,23 @@ export const printLabel = async (id: string): Promise<ActionResponse> => {
       return { error: 'print-label-order-no-pickup-error' };
     }
 
-    const res = await generateLabel(subOrder);
-
-    return { success: 'print-label-success', data: res.data };
+    const url = process.env.PDF_API_URL + '/pdf/generateLabel';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.PDF_API_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({ subOrder: subOrder, tColors: tColors }),
+    });
+    console.log(response.status);
+    if (!response.ok) {
+      throw new Error('Failed to generate label');
+    }
+    const res = await response.json();
+    return { success: 'print-label-success', data: process.env.PDF_API_URL + res.data };
   } catch (error) {
+    console.log(error);
     return { error: 'print-label-error' };
   }
 };
@@ -752,10 +766,10 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
               },
             },
           });
-          await createTransaction(order.sellerId!, 'order-transaction', subOrder.sellerProfit!);
+          await createTransaction(order.sellerId!, 'order-transaction', subOrder.sellerProfit!, order.id);
           subOrder.products.forEach((op) => {
             if (op.product?.supplierId) {
-              createTransaction(op.product.supplierId, 'order-transaction', op.supplierProfit!);
+              createTransaction(op.product.supplierId, 'order-transaction', op.supplierProfit!, order.id);
             }
           });
         }
