@@ -365,7 +365,7 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '1',
-    Color: 'bg-teal-300 text-white',
+    Color: 'bg-pink-300 text-white',
   },
   {
     UpdateCode: '2',
@@ -373,11 +373,11 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '3',
-    Color: 'bg-green-500 text-white',
+    Color: 'bg-green-400 text-white',
   },
   {
     UpdateCode: '4',
-    Color: 'bg-blue-500 text-white',
+    Color: 'bg-blue-200 text-white',
   },
   {
     UpdateCode: '5',
@@ -385,11 +385,11 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '6',
-    Color: 'bg-red-500 text-white',
+    Color: 'bg-destructive text-white',
   },
   {
     UpdateCode: '7',
-    Color: 'bg-green-700 text-white',
+    Color: 'bg-success text-white',
   },
   {
     UpdateCode: '8',
@@ -397,15 +397,15 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '17',
-    Color: 'bg-indigo-500 text-white',
+    Color: 'bg-indigo-300 text-white',
   },
   {
     UpdateCode: '9',
-    Color: 'bg-gray-500 text-white',
+    Color: 'bg-gray-400 text-white',
   },
   {
     UpdateCode: '10',
-    Color: 'bg-teal-500 text-white',
+    Color: 'bg-teal-300 text-white',
   },
   {
     UpdateCode: '14',
@@ -417,15 +417,15 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '16',
-    Color: 'bg-green-200 text-white',
+    Color: 'bg-green-300 text-white',
   },
   {
     UpdateCode: '18',
-    Color: 'bg-indigo-300 text-white',
+    Color: 'bg-purple-300 text-white',
   },
   {
     UpdateCode: '19',
-    Color: 'bg-red-300 text-white',
+    Color: 'bg-destructive text-white',
   },
   {
     UpdateCode: '20',
@@ -445,7 +445,7 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '24',
-    Color: 'bg-blue-600 text-white',
+    Color: 'bg-blue-300 text-white',
   },
   {
     UpdateCode: '25',
@@ -453,19 +453,19 @@ export const orderStatuses = [
   },
   {
     UpdateCode: '26',
-    Color: 'bg-green-800 text-white',
+    Color: 'bg-success text-white',
   },
   {
     UpdateCode: '27',
-    Color: 'bg-purple-500 text-white',
+    Color: 'bg-purple-300 text-white',
   },
   {
     UpdateCode: '28',
-    Color: 'bg-red-700 text-white',
+    Color: 'bg-destructive text-white',
   },
   {
     UpdateCode: '29',
-    Color: 'bg-indigo-600 text-white',
+    Color: 'bg-indigo-300 text-white',
   },
 ];
 

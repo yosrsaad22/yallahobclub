@@ -162,7 +162,7 @@ export function EditProductForm({ productData }: EditProductFormProps) {
       };
       fetchSuppliers();
     }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [role]);
 
   const [isClient, setIsClient] = React.useState(false);
@@ -223,6 +223,33 @@ export function EditProductForm({ productData }: EditProductFormProps) {
                 {errors.name && <span className="text-xs text-red-400">{tValidation('product-name-error')}</span>}
               </LabelInputContainer>
               <LabelInputContainer>
+                <Label htmlFor="delivery">
+                  {tFields('product-delivery')}
+                  <span className="ml-2 text-xs text-gray-400">{t('delivery-note')}</span>
+                </Label>
+                <TextEditor
+                  value={getValues('delivery')}
+                  disabled={isLoading}
+                  onChange={(value) => setValue('delivery', value)}
+                />
+
+                {errors.delivery && (
+                  <span className="text-xs text-red-400">{tValidation('product-delivery-error')}</span>
+                )}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="description">{tFields('product-description')}</Label>
+                <TextEditor
+                  value={getValues('description')}
+                  disabled={isLoading}
+                  onChange={(value) => setValue('description', value)}
+                />
+                {errors.description && (
+                  <span className="text-xs text-red-400">{tValidation('product-description-error')}</span>
+                )}
+              </LabelInputContainer>
+
+              <LabelInputContainer>
                 <Label htmlFor="category">{tFields('product-category')}</Label>
                 <Select
                   defaultValue={getValues('category')}
@@ -250,32 +277,6 @@ export function EditProductForm({ productData }: EditProductFormProps) {
                 </Select>
                 {errors.category && (
                   <span className="text-xs text-red-400">{tValidation('product-category-error')}</span>
-                )}
-              </LabelInputContainer>
-              <LabelInputContainer>
-                <Label htmlFor="description">{tFields('product-description')}</Label>
-                <TextEditor
-                  value={getValues('description')}
-                  disabled={isLoading}
-                  onChange={(value) => setValue('description', value)}
-                />
-                {errors.description && (
-                  <span className="text-xs text-red-400">{tValidation('product-description-error')}</span>
-                )}
-              </LabelInputContainer>
-              <LabelInputContainer>
-                <Label htmlFor="delivery">
-                  {tFields('product-delivery')}
-                  <span className="ml-2 text-xs text-gray-400">{t('delivery-note')}</span>
-                </Label>
-                <TextEditor
-                  value={getValues('delivery')}
-                  disabled={isLoading}
-                  onChange={(value) => setValue('delivery', value)}
-                />
-
-                {errors.delivery && (
-                  <span className="text-xs text-red-400">{tValidation('product-delivery-error')}</span>
                 )}
               </LabelInputContainer>
               <LabelInputContainer>
