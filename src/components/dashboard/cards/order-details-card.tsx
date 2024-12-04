@@ -309,12 +309,14 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                               </span>
                               <span className="font-medium text-muted-foreground">
                                 {tFields('product-wholesale-price')} :{' '}
-                                <span className="text-foreground">{orderProduct.product.wholesalePrice} TND</span>
+                                <span className="text-foreground">
+                                  {orderProduct.product.wholesalePrice.toFixed(1)} TND
+                                </span>
                               </span>
                               {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('product-selling-price')} :{' '}
-                                  <span className="text-foreground">{orderProduct.detailPrice} TND</span>
+                                  <span className="text-foreground">{orderProduct.detailPrice.toFixed(1)} TND</span>
                                 </span>
                               )}
                               {role === roleOptions.SELLER && (
@@ -371,7 +373,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                       {role !== roleOptions.SUPPLIER && (
                         <div className="flex w-full items-center justify-between font-medium">
                           <p>{tFields('order-sub-order-total')}</p>
-                          <p>{subOrder.total} TND</p>
+                          <p>{(subOrder.total ?? 0).toFixed(1)} TND</p>
                         </div>
                       )}
                       {role === roleOptions.ADMIN && (
@@ -406,7 +408,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                 {role === roleOptions.SUPPLIER && (
                   <div className="flex w-full items-center justify-between font-medium">
                     <p>TOTAL</p>
-                    <p>{subOrders[0].total} TND</p>
+                    <p>{subOrders[0].total?.toFixed(1)} TND</p>
                   </div>
                 )}
                 <div className="flex w-full items-center justify-between font-semibold">
