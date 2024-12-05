@@ -80,7 +80,7 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                               path.split('/')[2] !== 'marketplace' &&
                               path.split('/')[3] === undefined)
                             ? ' text-black/95'
-                            : 'text-gray-400',
+                            : 'text-white',
                           'group-hover:text-black/95',
                         )}>
                         {item.icon}

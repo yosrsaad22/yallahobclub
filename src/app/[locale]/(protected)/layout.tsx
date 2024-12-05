@@ -32,7 +32,7 @@ export default async function DashboardLayout({
       <SessionProvider session={session}>
         <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange={false} enableSystem={true}>
           <div className="flex h-screen w-full flex-row ">
-            <Sidebar className=" flex-shrink-0 bg-sidebar " />
+            <Sidebar className=" flex-shrink-0 bg-gradient-to-b from-primary via-primary/90 to-secondary/80 " />
             <div className="flex w-full flex-col">
               <Header />
               <main className="custom-scrollbar relative mt-0 h-full flex-1 flex-col overflow-auto bg-page ">
