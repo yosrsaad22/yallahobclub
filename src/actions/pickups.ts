@@ -220,10 +220,12 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
           },
           body: JSON.stringify(shipment),
         });
-        const responseData = await response.json();
+
         if (!response.ok) {
           throw new Error('Failed to send pickup request');
         }
+        const responseData = await response.json();
+        console.log(responseData);
 
         await db.subOrder.update({
           where: { id: subOrder.id },
@@ -275,6 +277,7 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
     revalidatePath('/dashboard/supplier/orders');
     return { success: 'pickup-request-success' };
   } catch (error) {
+    console.log('Pickup request error :', error);
     return { error: 'pickup-request-error' };
   }
 };
