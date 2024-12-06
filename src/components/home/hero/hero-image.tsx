@@ -102,7 +102,7 @@ export const HeroImage = () => {
           width={900}
           height={600}
           className={cn('relative z-10 rounded-xl transition-opacity delay-700', inView ? 'opacity-100' : 'opacity-0')}
-          src="/img/screenshot-main.webp"
+          src="/img/dashboard-screenshot-2.webp"
           alt="Hero image"
         />
       </div>
