@@ -231,10 +231,11 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
 };
 
 export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<ActionResponse> => {
-  // Ensure the user has the correct role
   try {
+    // Ensure the user has the correct role
     await roleGuard([UserRole.ADMIN, UserRole.SELLER]);
     const user = await currentUser();
+
     // Fetch the seller details
     const seller = await getUserById(values.sellerId);
     if (!seller) return { error: 'user-not-found-error' };
@@ -242,211 +243,187 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
     // Generate a unique code for the main order
     const orderCode = `ENO-${generateCode()}`;
 
-    // Start a database transaction for atomicity
-    const order = await db.$transaction(async (tx: any) => {
-      // Step 1: Group products by their supplierId
-      const productIds = values.products.map((item) => item.productId);
-      const productsList = await tx.product.findMany({
-        where: { id: { in: productIds } },
-        select: {
-          id: true,
-          supplierId: true,
-          name: true,
-          stock: true,
-          wholesalePrice: true,
-          platformProfit: true,
-          sellers: true,
-        },
-      });
-
-      const productSupplierMap: Record<string, string> = {};
-      productsList.forEach((product: any) => {
-        if (product.supplierId) {
-          productSupplierMap[product.id] = product.supplierId;
-        } else {
-          throw new Error(`Product with ID ${product.id} does not have a supplierId`);
-        }
-      });
-
-      // Group OrderProducts by supplierId
-      const supplierGroups: Record<string, typeof values.products> = {};
-      values.products.forEach((item) => {
-        const supplierId = productSupplierMap[item.productId];
-        if (!supplierId) {
-          throw new Error(`Supplier not found for product ID ${item.productId}`);
-        }
-        if (!supplierGroups[supplierId]) {
-          supplierGroups[supplierId] = [];
-        }
-        supplierGroups[supplierId].push(item);
-      });
-
-      // Step 2: Create the main Order without SubOrders
-      const order = await tx.order.create({
-        data: {
-          code: orderCode,
-          total: values.total,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          fullName: `${values.firstName} ${values.lastName}`,
-          email: values.email,
-          number: values.number,
-          city: values.city,
-          state: values.state,
-          address: values.address,
-          seller: {
-            connect: { id: values.sellerId },
-          },
-          subOrders: {}, // Initialize empty, will be populated below
-        },
-      });
-
-      // Step 3: Create SubOrders for each supplier group
-      for (const [supplierId, products] of Object.entries(supplierGroups)) {
-        // Fetch supplier details
-        const supplier = await tx.user.findUnique({
-          where: { id: supplierId },
-          select: { id: true, fullName: true, address: true, city: true, state: true, number: true, code: true },
-        });
-        if (!supplier) {
-          throw new Error(`Supplier with ID ${supplierId} not found`);
-        }
-
-        // Generate a unique code for the SubOrder
-        const subOrderCode = `ENSO-${generateCode()}`;
-
-        // Step 3a: Create the SubOrder
-        const subOrder = await tx.subOrder.create({
-          data: {
-            code: subOrderCode,
-            status: 'EC00',
-            deliveryId: null, // To be updated when pickup is created
-            order: { connect: { id: order.id } },
-            statusHistory: {
-              create: {
-                status: 'EC00',
-                createdAt: new Date(),
-              },
-            },
-          },
-        });
-
-        let subOrderPlatformProfit = 0;
-        let subOrderSellerProfit = 0;
-        let subOrderTotal = 0;
-
-        // Calculate the delivery fee based on the number of unique suppliers
-        let deliveryFee = Object.keys(supplierGroups).length > 1 ? 7 * Object.keys(supplierGroups).length : 8;
-
-        for (const item of products) {
-          // **Seller's profit** (90% of the profit from selling the product)
-          let sellerProfit =
-            (parseFloat(item.detailPrice) -
-              (productsList.find((product: any) => product.id === item.productId)?.wholesalePrice ?? 0)) *
-            parseInt(item.quantity, 10) *
-            0.9;
-          subOrderSellerProfit += sellerProfit;
-          subOrderTotal += parseFloat(item.detailPrice) * parseInt(item.quantity, 10);
-          // **Platform Profit** (from seller's profit and supplier profit)
-          const platformProfitFromSeller =
-            (parseFloat(item.detailPrice) -
-              (productsList.find((product: any) => product.id === item.productId)?.wholesalePrice ?? 0)) *
-            parseInt(item.quantity, 10) *
-            0.1;
-
-          const platformProfitFromSupplier =
-            parseInt(item.quantity) *
-            productsList.find((product: any) => product.id === item.productId)?.platformProfit;
-
-          subOrderPlatformProfit +=
-            platformProfitFromSeller + platformProfitFromSupplier + (Object.keys(supplierGroups).length > 1 ? 0 : 1);
-
-          await tx.orderProduct.create({
-            data: {
-              code: `ENOP-${generateCode()}`,
-              quantity: item.quantity,
-              detailPrice: parseFloat(item.detailPrice),
-              size: item.size as SizeType,
-              color: item.color as ColorType,
-              supplierProfit: item.supplierProfit,
-              product: { connect: { id: item.productId } },
-              subOrder: { connect: { id: subOrder.id } },
-            },
-          });
-
-          // Step 4: Update Product Stock
-          const product = await tx.product.findUnique({
-            where: { id: item.productId },
-            include: { sellers: true },
-          });
-
-          if (!product) {
-            throw new Error(`Product with ID ${item.productId} not found`);
-          }
-
-          // Decrement stock
-          await tx.product.update({
-            where: { id: item.productId },
-            data: { stock: product.stock - parseInt(item.quantity, 10) },
-          });
-
-          // Step 6: Notify Other Sellers about Stock Changes (if applicable)
-          if (product.sellers && product.sellers.length > 0) {
-            product.sellers.forEach((seller: any) => {
-              if (seller.id !== user?.id) {
-                notifyUser(
-                  seller.id,
-                  NotificationType.SELLER_STOCK_CHANGED,
-                  `/dashboard/marketplace/all-products/${product.id}`,
-                  product.name,
-                );
-              }
-            });
-          }
-
-          // Step 7: Revalidate Product Paths
-          revalidatePath(`/dashboard/marketplace/all-products/${product.id}`);
-        }
-
-        // Add the Delivery Fee to the platform profit
-
-        // Update the subOrder with calculated profits
-        await tx.subOrder.update({
-          where: { id: subOrder.id },
-          data: {
-            platformProfit: subOrderPlatformProfit,
-            sellerProfit: subOrderSellerProfit,
-            total: subOrderTotal + deliveryFee,
-          },
-        });
-
-        // Step 5: Send Notifications to Suppliers
-        notifyUser(
-          supplier.id,
-          NotificationType.SUPPLIER_NEW_ORDER,
-          `/dashboard/supplier/orders/${order.id}`,
-          order.code,
-        );
-      }
-
-      // Step 6: Send Notifications for Other Relevant Users (like seller)
-      if (user?.role !== UserRole.ADMIN) {
-        notifyAllAdmins(NotificationType.ADMIN_NEW_ORDER, `/dashboard/admin/orders/${order.id}`, seller.fullName);
-      }
-
-      // Step 7: Revalidate Relevant Paths
-      revalidatePath(`/dashboard/marketplace`);
-      revalidatePath(`/dashboard/marketplace/all-products`);
-      revalidatePath('/dashboard/admin/orders');
-      revalidatePath('/dashboard/supplier/orders');
-      revalidatePath('/dashboard/seller/orders');
-
-      return order; // Return the created order for further use
+    // Step 1: Group products by their supplierId
+    const productIds = values.products.map((item) => item.productId);
+    const productsList = await db.product.findMany({
+      where: { id: { in: productIds } },
+      select: {
+        id: true,
+        supplierId: true,
+        name: true,
+        stock: true,
+        wholesalePrice: true,
+        platformProfit: true,
+        sellers: true,
+      },
     });
+
+    const productSupplierMap: Record<string, string> = {};
+    productsList.forEach((product) => {
+      if (product.supplierId) {
+        productSupplierMap[product.id] = product.supplierId;
+      } else {
+        throw new Error(`Product with ID ${product.id} does not have a supplierId`);
+      }
+    });
+
+    // Group OrderProducts by supplierId
+    const supplierGroups: Record<string, typeof values.products> = {};
+    values.products.forEach((item) => {
+      const supplierId = productSupplierMap[item.productId];
+      if (!supplierId) {
+        throw new Error(`Supplier not found for product ID ${item.productId}`);
+      }
+      if (!supplierGroups[supplierId]) {
+        supplierGroups[supplierId] = [];
+      }
+      supplierGroups[supplierId].push(item);
+    });
+
+    // Step 2: Create the main Order
+    const order = await db.order.create({
+      data: {
+        code: orderCode,
+        total: values.total,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        fullName: `${values.firstName} ${values.lastName}`,
+        email: values.email,
+        number: values.number,
+        city: values.city,
+        state: values.state,
+        address: values.address,
+        seller: {
+          connect: { id: values.sellerId },
+        },
+      },
+    });
+
+    // Step 3: Create SubOrders for each supplier group
+    for (const [supplierId, products] of Object.entries(supplierGroups)) {
+      const supplier = await db.user.findUnique({
+        where: { id: supplierId },
+        select: { id: true, fullName: true, address: true, city: true, state: true, number: true, code: true },
+      });
+      if (!supplier) {
+        throw new Error(`Supplier with ID ${supplierId} not found`);
+      }
+
+      // Generate a unique code for the SubOrder
+      const subOrderCode = `ENSO-${generateCode()}`;
+
+      const subOrder = await db.subOrder.create({
+        data: {
+          code: subOrderCode,
+          status: 'EC00',
+          deliveryId: null,
+          order: { connect: { id: order.id } },
+          statusHistory: {
+            create: {
+              status: 'EC00',
+              createdAt: new Date(),
+            },
+          },
+        },
+      });
+
+      let subOrderPlatformProfit = 0;
+      let subOrderSellerProfit = 0;
+      let subOrderTotal = 0;
+
+      let deliveryFee = Object.keys(supplierGroups).length > 1 ? 7 * Object.keys(supplierGroups).length : 8;
+
+      for (const item of products) {
+        let sellerProfit =
+          (parseFloat(item.detailPrice) -
+            (productsList.find((product) => product.id === item.productId)?.wholesalePrice ?? 0)) *
+          parseInt(item.quantity, 10) *
+          0.9;
+        subOrderSellerProfit += sellerProfit;
+        subOrderTotal += parseFloat(item.detailPrice) * parseInt(item.quantity, 10);
+
+        const platformProfitFromSeller =
+          (parseFloat(item.detailPrice) -
+            (productsList.find((product) => product.id === item.productId)?.wholesalePrice ?? 0)) *
+          parseInt(item.quantity, 10) *
+          0.1;
+
+        const platformProfitFromSupplier =
+          parseInt(item.quantity) *
+          (productsList.find((product) => product.id === item.productId)?.platformProfit || 0);
+
+        subOrderPlatformProfit += platformProfitFromSeller + platformProfitFromSupplier;
+
+        await db.orderProduct.create({
+          data: {
+            code: `ENOP-${generateCode()}`,
+            quantity: item.quantity,
+            detailPrice: parseFloat(item.detailPrice),
+            size: item.size as SizeType,
+            color: item.color as ColorType,
+            supplierProfit: item.supplierProfit,
+            product: { connect: { id: item.productId } },
+            subOrder: { connect: { id: subOrder.id } },
+          },
+        });
+
+        const product = await db.product.findUnique({
+          where: { id: item.productId },
+          include: { sellers: true },
+        });
+
+        if (!product) {
+          throw new Error(`Product with ID ${item.productId} not found`);
+        }
+
+        await db.product.update({
+          where: { id: item.productId },
+          data: { stock: product.stock - parseInt(item.quantity, 10) },
+        });
+
+        if (product.sellers && product.sellers.length > 0) {
+          for (const seller of product.sellers) {
+            if (seller.id !== user?.id) {
+              notifyUser(
+                seller.id,
+                NotificationType.SELLER_STOCK_CHANGED,
+                `/dashboard/marketplace/all-products/${product.id}`,
+                product.name,
+              );
+            }
+          }
+        }
+
+        revalidatePath(`/dashboard/marketplace/all-products/${product.id}`);
+      }
+
+      await db.subOrder.update({
+        where: { id: subOrder.id },
+        data: {
+          platformProfit: subOrderPlatformProfit,
+          sellerProfit: subOrderSellerProfit,
+          total: subOrderTotal + deliveryFee,
+        },
+      });
+
+      notifyUser(
+        supplier.id,
+        NotificationType.SUPPLIER_NEW_ORDER,
+        `/dashboard/supplier/orders/${order.id}`,
+        order.code,
+      );
+    }
+
+    notifyAllAdmins(NotificationType.ADMIN_NEW_ORDER, `/dashboard/admin/orders/${order.id}`, seller.fullName);
+    revalidatePath(`/dashboard/marketplace`);
+    revalidatePath(`/dashboard/marketplace/all-products`);
+    revalidatePath('/dashboard/admin/orders');
+    revalidatePath('/dashboard/supplier/orders');
+    revalidatePath('/dashboard/seller/orders');
 
     return { success: 'order-save-success' };
   } catch (error) {
-    console.log(error);
+    console.error('Add order error :', error);
     return { error: 'order-save-error' };
   }
 };
