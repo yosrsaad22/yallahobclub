@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import BasicEmailTemplate from '@/components/emails/basic-email-template';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const hostname = process.env.HOSTNAME || 'https://www.ecomness.vercel.app';
+const hostname = process.env.HOSTNAME || 'https://www.ecomness.com';
 
 export const sendEmailVerificationEmail = async (fullName: string, email: string, token: string) => {
   const confirmLink = `${hostname}/email-verification?token=${token}`;

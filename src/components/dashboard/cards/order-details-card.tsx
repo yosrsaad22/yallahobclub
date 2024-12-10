@@ -310,20 +310,20 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                               <span className="font-medium text-muted-foreground">
                                 {tFields('product-wholesale-price')} :{' '}
                                 <span className="text-foreground">
-                                  {orderProduct.product.wholesalePrice.toFixed(1)} TND
+                                  {orderProduct.product.wholesalePrice.toFixed(2)} TND
                                 </span>
                               </span>
                               {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('product-selling-price')} :{' '}
-                                  <span className="text-foreground">{orderProduct.detailPrice.toFixed(1)} TND</span>
+                                  <span className="text-foreground">{orderProduct.detailPrice.toFixed(2)} TND</span>
                                 </span>
                               )}
                               {role === roleOptions.SELLER && (
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('seller-profit-unit')} :{' '}
                                   <span className="text-foreground">
-                                    {(orderProduct.detailPrice - orderProduct.product.wholesalePrice).toFixed(1)} TND
+                                    {(orderProduct.detailPrice - orderProduct.product.wholesalePrice).toFixed(2)} TND
                                   </span>
                                 </span>
                               )}
@@ -331,7 +331,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('supplier-profit-unit')} :{' '}
                                   <span className="text-foreground">
-                                    {orderProduct.product.wholesalePrice.toFixed(1)} TND
+                                    {orderProduct.product.wholesalePrice.toFixed(2)} TND
                                   </span>
                                 </span>
                               )}
@@ -373,7 +373,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                       {role !== roleOptions.SUPPLIER && (
                         <div className="flex w-full items-center justify-between font-medium">
                           <p>{tFields('order-sub-order-total')}</p>
-                          <p>{(subOrder.total ?? 0).toFixed(1)} TND</p>
+                          <p>{(subOrder.total ?? 0).toFixed(2)} TND</p>
                         </div>
                       )}
                       {role === roleOptions.ADMIN && (
@@ -384,7 +384,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                               .reduce((total, orderProduct) => {
                                 return total + (orderProduct.supplierProfit || 0);
                               }, 0)
-                              .toFixed(1)}{' '}
+                              .toFixed(2)}{' '}
                             TND
                           </p>
                         </div>
@@ -402,18 +402,19 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                 {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
                   <div className="flex w-full items-center justify-between font-semibold">
                     <p>TOTAL</p>
-                    <p>{order.total.toFixed(1)} TND</p>
+                    <p>{order.total.toFixed(2)} TND</p>
                   </div>
                 )}
                 {role === roleOptions.SUPPLIER && (
-                  <div className="flex w-full items-center justify-between font-medium">
+                  <div className="flex w-full items-center justify-between font-semibold">
                     <p>TOTAL</p>
-                    <p>{subOrders[0].total?.toFixed(1)} TND</p>
+                    <p>{subOrders[0].total?.toFixed(2)} TND</p>
                   </div>
                 )}
+
                 <div className="flex w-full items-center justify-between font-semibold">
                   <p>{tFields('platform-profit')} (10%)</p>
-                  <p>{platformProfit.toFixed(1)} TND</p>
+                  <p>{platformProfit.toFixed(2)} TND</p>
                 </div>
 
                 {role === roleOptions.SUPPLIER && (
@@ -424,7 +425,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                         .reduce((total, orderProduct) => {
                           return total + (orderProduct.supplierProfit || 0);
                         }, 0)
-                        .toFixed(1)}{' '}
+                        .toFixed(2)}{' '}
                       TND
                     </p>
                   </div>
@@ -437,7 +438,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                         .reduce((total, subOrder) => {
                           return total + subOrder.sellerProfit!;
                         }, 0)
-                        .toFixed(1)}{' '}
+                        .toFixed(2)}{' '}
                       TND
                     </p>
                   </div>

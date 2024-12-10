@@ -385,7 +385,8 @@
       "course": {
         "title": "Course",
         "overview": "Overview",
-        "freecourse": "Free Course"
+        "freecourse": "Free Course",
+        "fullcourse": "Complete Course"
       },
       "platform": "Platform",
       "pricing": "Pricing",
@@ -402,7 +403,7 @@
     },
     "partners": {
       "text1": "Powered by the best in the business",
-      "text2": "From next-gen startups to established enterprises"
+      "text2": "to provide the best experience"
     },
     "whatweoffer": {
       "badge": "What We Offer",
@@ -598,6 +599,20 @@
     "dialog-text": "Congratulations on making it this far, You can now get the full dropshipping course by clicking on the button below.",
     "dialog-button1": "Get Full Course",
     "dialog-button2": "Keep Watching"
+  },
+  "full-course": {
+    "metadata": {
+      "title": "Ecomness - Dropshipping Course",
+      "description": "Get access to a our dropshipping course to learn everything about dropshipping, e-commerce, branding and marketing and start making money online",
+      "video-title": "Dropshipping online course"
+    },
+    "title": "Start your own online business with our",
+    "title-gradient": "Coming Soon..",
+    "text": "In this mini-course you will learn the fundamentals of dropshipping and E-commerce and you will dive in to some of the best practices and strategies to start making money online.",
+    "form-title": "Watch the Course",
+    "form-text": "Enter your information to watch the free course",
+    "watch-button": "Start Watching",
+    "buy-button": "Get the Full Course"
   },
   "register": {
     "metadata": {

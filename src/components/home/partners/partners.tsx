@@ -1,10 +1,9 @@
 import { useTranslations } from 'next-intl';
-import { AdexLogo } from '../../logos/adex';
+import { MassarLogo } from '../../logos/massar';
 import { AisecLogo } from '../../logos/aisec';
 import { AllakniLogo } from '../../logos/allakni';
 import { IeeLogo } from '../../logos/ieee';
-import { ShopifyLogo } from '../../logos/shopify';
-import { VercelLogo } from '../../logos/vercel';
+import { LightSpeedLogo } from '../../logos/lightspeed';
 
 export const Partners = () => {
   const t = useTranslations('home.partners');
@@ -15,13 +14,12 @@ export const Partners = () => {
         <br className="" />
         {t('text2')}
       </p>
-      <div className="flex flex-wrap justify-around gap-x-6 gap-y-8 [&_svg]:max-w-[16rem] [&_svg]:basis-[calc(50%-12px)] md:[&_svg]:basis-[calc(16.66%-20px)]">
-        <AdexLogo />
-        <VercelLogo />
+      <div className="flex flex-wrap items-center justify-around gap-x-6 gap-y-8 [&_svg]:max-w-[16rem] [&_svg]:basis-[calc(50%-12px)] md:[&_svg]:basis-[calc(16.66%-20px)]">
+        <MassarLogo />
+        <LightSpeedLogo />
         <IeeLogo />
         <AllakniLogo />
         <AisecLogo />
-        <ShopifyLogo />
       </div>
     </div>
   );

@@ -384,7 +384,8 @@
       "course": {
         "title": "Formation",
         "overview": "Aperçu",
-        "freecourse": "Formation Gratuite"
+        "freecourse": "Formation Gratuite",
+        "fullcourse": "Formation Complète"
       },
       "platform": "Plateforme",
       "pricing": "Tarifs",
@@ -401,7 +402,7 @@
     },
     "partners": {
       "text1": "Propulsé par les meilleurs du secteur",
-      "text2": "Des startups de nouvelle génération aux entreprises établies"
+      "text2": "pour offrir la meilleure expérience"
     },
     "whatweoffer": {
       "badge": "Ce Que Nous Offrons",
@@ -597,6 +598,20 @@
     "dialog-text": "Félicitations pour être arrivé jusqu'ici. Vous pouvez maintenant obtenir la formation complète sur le dropshipping en cliquant sur le bouton ci-dessous.",
     "dialog-button1": "Obtenir la formation complète",
     "dialog-button2": "Continuer à regarder"
+  },
+  "full-course": {
+    "metadata": {
+      "title": "Ecomness - Formation Complète sur le Dropshipping",
+      "description": "Accédez à notre formation complète sur le dropshipping pour tout apprendre sur le dropshipping, le e-commerce, le branding et le marketing et commencez à gagner de l'argent en ligne",
+      "video-title": "Formation en ligne sur le dropshipping"
+    },
+    "title": "Lancez votre propre entreprise en ligne avec notre",
+    "title-gradient": "Prochainement Disponible...",
+    "text": "Dans cette formation, vous apprendrez les fondamentaux du dropshipping et du e-commerce et vous plongerez dans certaines des meilleures pratiques et stratégies pour commencer à gagner de l'argent en ligne.",
+    "form-title": "Regarder la Formation",
+    "form-text": "Entrez vos informations pour regarder la formation complète",
+    "watch-button": "Commencer à Regarder",
+    "buy-button": "Obtenez la Formation Complète"
   },
   "register": {
     "metadata": {

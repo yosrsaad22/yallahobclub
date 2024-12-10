@@ -1,4 +1,4 @@
-export const publicRoutes = ['/', '/free-course', '/email-verification'];
+export const publicRoutes = ['/', '/free-course', '/full-course', '/email-verification'];
 
 export const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
 

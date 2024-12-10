@@ -35,9 +35,9 @@ const StatsCounter = () => {
   }, [supplierObserver]);
 
   useEffect(() => {
-    if (productInView) animateCountUp('starsCount', 50, '+', 1000);
+    if (productInView) animateCountUp('starsCount', 120, '+', 1000);
     if (revenueInView) animateCountUp('downloadsCount', 100000, '+', 1000);
-    if (supplierInView) animateCountUp('sponsorsCount', 5, '+', 1000);
+    if (supplierInView) animateCountUp('sponsorsCount', 25, '+', 1000);
   }, [productInView, revenueInView, supplierInView]);
 
   function animateCountUp(elementId: string, count: number, suffix: string, duration: number) {

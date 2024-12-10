@@ -86,7 +86,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <h1 className="text-md max-w-full truncate font-medium">{name}</h1>
         <p className="flex w-full justify-between text-sm font-normal">
           {tFields('product-minimum-profit') + ' : '}
-          <span className="font-semibold text-primary"> {(wholesalePrice * (profitMargin / 100)).toFixed(1)} TND</span>
+          <span className="font-semibold text-primary"> {(wholesalePrice * (profitMargin / 100)).toFixed(2)} TND</span>
         </p>
       </div>
 

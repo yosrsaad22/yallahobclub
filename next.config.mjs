@@ -7,7 +7,7 @@ const nextConfig = {
   env: {},
   experimental: {
     serverActions: {
-      allowedOrigins: ['ecomness.com', 'ecomness.vercel.app', 'localhost:3000'],
+      allowedOrigins: ['ecomness.com', 'localhost:3000'],
     },
   },
   images: {

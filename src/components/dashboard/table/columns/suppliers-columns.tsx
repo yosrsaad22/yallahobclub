@@ -106,7 +106,7 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
       return (
         <div className="">
           <p className={` font-semibold ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>
-            {balance.toFixed(1)} TND
+            {balance.toFixed(2)} TND
           </p>
         </div>
       );

@@ -179,7 +179,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
         return {
           ...selectedProduct,
           quantity: quantity.toString(), // Always ensure quantity is a string
-          supplierProfit: parseFloat(supplierProfit.toFixed(1)), // Ensure precision and prevent negative or NaN values
+          supplierProfit: parseFloat(supplierProfit.toFixed(2)), // Ensure precision and prevent negative or NaN values
         };
       });
 
@@ -245,7 +245,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
 
     // Calculate platform profit as 10% of total seller profit
     totalPlatformProfit =
-      totalPlatformProfit + parseFloat((totalSellerProfit * 0.1).toFixed(1)) + (suppliers.size > 1 ? 0 : 1);
+      totalPlatformProfit + parseFloat((totalSellerProfit * 0.1).toFixed(2)) + (suppliers.size > 1 ? 0 : 1);
 
     // Ensure no NaN or invalid values
     totalSellerProfit = totalSellerProfit > 0 ? totalSellerProfit * 0.9 : 0;
@@ -310,7 +310,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
       ...newProduct,
       productId: product.id,
       // Calculate the default detail price as wholesale price + profit margin percentage of the wholesale price
-      detailPrice: (product.wholesalePrice + (product.wholesalePrice * product.profitMargin) / 100).toFixed(1),
+      detailPrice: (product.wholesalePrice + (product.wholesalePrice * product.profitMargin) / 100).toFixed(2),
       quantity: '1', // Ensure the productId is set
       supplierProfit: newProduct.supplierProfit,
     };
@@ -679,16 +679,24 @@ export function AddOrderForm({}: AddOrderFormProps) {
                   <div className="mb-1 mt-3 h-[1px] w-full rounded-md bg-border " />
                   <div className="flex w-full items-center justify-between font-semibold">
                     <p>TOTAL</p>
-                    <p>{total.toFixed(1)} TND</p>
+                    <p>{total.toFixed(2)} TND</p>
                   </div>
-                  <div className="flex w-full items-center justify-between font-semibold">
-                    <p>{tFields('platform-profit')} (10%)</p>
-                    <p>{platformProfit.toFixed(1)} TND</p>
-                  </div>
+                  {role === roleOptions.ADMIN && (
+                    <div className="flex w-full items-center justify-between font-semibold">
+                      <p>{tFields('platform-profit')}</p>
+                      <p>{platformProfit.toFixed(2)} TND</p>
+                    </div>
+                  )}
+                  {role === roleOptions.SELLER && (
+                    <div className="flex w-full items-center justify-between font-semibold">
+                      <p>{tFields('platform-profit')} (10%)</p>
+                      <p>{(sellerProfit / 9).toFixed(2)} TND</p>
+                    </div>
+                  )}
 
                   <div className="flex w-full items-center justify-between font-semibold">
                     <p>{tFields('seller-profit')}</p>
-                    <p className="text-primary">{sellerProfit.toFixed(1)} TND</p>
+                    <p className="text-primary">{sellerProfit.toFixed(2)} TND</p>
                   </div>
                 </div>
               )}

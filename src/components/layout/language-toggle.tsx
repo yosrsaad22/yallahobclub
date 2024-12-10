@@ -12,10 +12,6 @@ const locales = [
     img: '/img/fr.webp',
   },
   {
-    value: 'tn',
-    img: '/img/tn.webp',
-  },
-  {
     value: 'en',
     img: '/img/uk.webp',
   },

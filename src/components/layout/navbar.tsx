@@ -99,6 +99,23 @@ export const Navbar = () => {
                         <span>{t('new-feature')}</span>
                       </LinearButton>
                     </li>
+                    <li>
+                      <Link
+                        passHref
+                        href="/full-course"
+                        onClick={() => {
+                          setPopupOpen(false);
+                        }}
+                        className="hover:text-turquoise">
+                        {t('course.fullcourse')}
+                      </Link>
+                      <LinearButton
+                        className="pointer-events-none m-0 ml-2 animate-pulse p-1 text-xs text-orange"
+                        variant="primary"
+                        size="small">
+                        <span>{t('new-feature')}</span>
+                      </LinearButton>
+                    </li>
                   </ul>
                 </PopoverContent>
               </Popover>

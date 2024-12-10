@@ -29,7 +29,7 @@ export function ReturnRate({ data }: ReturnRateProps) {
   // Calculate the total and return rate
   const total = data.reduce((acc, item) => acc + item.value, 0);
   const returns = data.find((item) => item.name.toLowerCase() === 'returns')?.value || 0;
-  const returnRate = total > 0 ? ((returns / total) * 100).toFixed(1) : '0.0';
+  const returnRate = total > 0 ? ((returns / total) * 100).toFixed(2) : '0.0';
 
   // Generate colors dynamically based on config
   const COLORS = data.map((item) => chartConfig[item.name.toLowerCase() as keyof typeof chartConfig]?.color);
