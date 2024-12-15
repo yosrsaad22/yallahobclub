@@ -256,23 +256,17 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
         </h1>
         <p className="text-md pt-8 text-center md:max-w-4xl ">{t('course-content')}</p>
         <div className=" feature-glass-gradient relative mt-12 flex w-full min-w-[80%] max-w-full items-end justify-center rounded-xl border border-slate-700/70  backdrop-blur-sm md:max-w-[80%]">
-          <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-3xl"></div>
-          <div className="flex h-full w-full  flex-col gap-4 pb-4 ">
-            <Accordion type="single" collapsible className="z-[1] w-full px-8 py-4 text-center" defaultValue="item-0">
-              {chaptersWithDuration.map((chapter, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="border-b border-slate-600">
-                  <AccordionTrigger className="text-md items-start font-medium">
-                    <p className="text-foreground/90">
-                      {locale === localeOptions.FR ? chapter.title_fr : chapter.title_en}
-                      <span className="pl-4 text-sm text-slate-400">{chapter.duration} min </span>
-                    </p>
-                  </AccordionTrigger>
-                  <AccordionContent className="text-left">
-                    {locale === localeOptions.FR ? chapter.description_fr : chapter.description_en}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+          <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/40 to-secondary/80 opacity-40 blur-3xl"></div>
+          <div className="flex h-full w-full  flex-col gap-6 p-6 ">
+            {chaptersWithDuration.map((chapter, index) => (
+              <React.Fragment key={index}>
+                <p className="text-md flex justify-between text-foreground/90">
+                  {locale === localeOptions.FR ? chapter.title_fr : chapter.title_en}
+                  <span className="text-md pl-4 font-semibold text-slate-400">{chapter.duration} min</span>
+                </p>
+                {index < chaptersWithDuration.length - 1 && <hr className="my-1 w-full border-slate-700" />}
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </div>

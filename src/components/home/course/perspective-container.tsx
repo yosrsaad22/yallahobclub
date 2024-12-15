@@ -1,6 +1,6 @@
 'use client';
-import React, { useRef } from 'react';
-import { useScroll, useTransform, motion, MotionValue } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { useScroll, useTransform, motion, MotionValue, useVelocity, useSpring } from 'framer-motion';
 import { IconPlayerPlayFilled } from '@tabler/icons-react';
 import Ripple from './ripple';
 import { Link } from '@/navigation';
@@ -16,12 +16,12 @@ export const PerspectiveContainer = ({
   const { scrollYProgress } = useScroll({
     target: containerRef,
   });
-  const [isMobile, setIsMobile] = React.useState(false);
 
-  React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile devices
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => {
@@ -29,13 +29,26 @@ export const PerspectiveContainer = ({
     };
   }, []);
 
-  const scaleDimensions = () => {
-    return isMobile ? [0.7, 0.8] : [0.65, 0.6];
-  };
+  // Adjust scale dimensions for mobile
+  const scaleDimensions = () => (isMobile ? [0.7, 0.8] : [0.65, 0.6]);
 
-  const rotate = useTransform(scrollYProgress, [0, 1], [40, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
-  const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  // Get scroll velocity to control damping
+  const scrollVelocity = useVelocity(scrollYProgress);
+
+  // Apply damping to transformations
+  const damping = 0.2; // Adjust for smoother/slower response
+  const rotate = useSpring(useTransform(scrollYProgress, [0, 1], [40, 0]), {
+    damping: 15 - scrollVelocity.get() * damping,
+    stiffness: 70,
+  });
+  const scale = useSpring(useTransform(scrollYProgress, [0, 1], scaleDimensions()), {
+    damping: 15 - scrollVelocity.get() * damping,
+    stiffness: 70,
+  });
+  const translate = useSpring(useTransform(scrollYProgress, [0, 1], [0, -100]), {
+    damping: 15 - scrollVelocity.get() * damping,
+    stiffness: 70,
+  });
 
   return (
     <div

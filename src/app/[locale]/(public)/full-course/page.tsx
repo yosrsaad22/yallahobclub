@@ -14,53 +14,11 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 
 export default async function FullCourse() {
   const fetchChapters: ActionResponse = await getPublicChapters();
-  const dummyChapters = [
-    {
-      id: 1,
-      title_en: 'Introduction to Dropshipping',
-      title_fr: 'Introduction to Dropshipping',
 
-      description_en:
-        'Learn the basics of dropshipping and how to get started Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started. ',
-      description_fr:
-        'Apprenez les bases du dropshipping et comment commencer. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.',
-    },
-    {
-      id: 1,
-      title_en: 'Introduction to Dropshipping',
-      title_fr: 'Introduction to Dropshipping',
-
-      description_en:
-        'Learn the basics of dropshipping and how to get started Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started. ',
-      description_fr:
-        'Apprenez les bases du dropshipping et comment commencer. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.',
-    },
-    {
-      id: 1,
-      title_en: 'Introduction to Dropshipping',
-      title_fr: 'Introduction to Dropshipping',
-
-      description_en:
-        'Learn the basics of dropshipping and how to get started Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started. ',
-      description_fr:
-        'Apprenez les bases du dropshipping et comment commencer. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.',
-    },
-    {
-      id: 1,
-      title_en: 'Introduction to Dropshipping',
-      title_fr: 'Introduction to Dropshipping',
-
-      description_en:
-        'Learn the basics of dropshipping and how to get started Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started.Learn the basics of dropshipping and how to get started. ',
-      description_fr:
-        'Apprenez les bases du dropshipping et comment commencer. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started. Learn the basics of dropshipping and how to get started.',
-    },
-  ];
-
-  const chaptersData = fetchChapters.error ? dummyChapters : fetchChapters.data;
+  const chaptersData = fetchChapters.error ? [] : fetchChapters.data;
   return (
     <div className="mt-12 flex min-h-screen w-full items-start justify-center">
-      <FullCourseComponent chapters={dummyChapters} />
+      <FullCourseComponent chapters={chaptersData} />
     </div>
   );
 }

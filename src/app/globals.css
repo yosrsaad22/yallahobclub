@@ -294,11 +294,14 @@
   }
 
   .glass-gradient {
-    background-image: linear-gradient(rgba(120, 119, 198, 0.3) 0%, rgba(255, 255, 255, 0.05) 100%);
+    background-image: linear-gradient(rgba(61, 96, 111, 0.3) 0%, rgba(255, 255, 255, 0.05) 100%);
   }
 
   .feature-glass-gradient {
-    background-image: linear-gradient(rgba(49, 88, 119, 0.2) 0%, rgba(255, 255, 255, 0.04) 100%);
+    background-image: linear-gradient(
+      rgba(37, 145, 166, 0.089) 0%,
+      /* A transparent teal shade */ rgba(37, 145, 166, 0.04) 100% /* A lighter transparent teal */
+    );
   }
 
   .topography {
@@ -312,9 +315,6 @@
   }
 
   .page-gradient {
-    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.4), transparent);
-  }
-  .page-gradient-2 {
     background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(84, 81, 96, 0.867), transparent);
   }
 

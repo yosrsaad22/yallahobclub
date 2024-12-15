@@ -26,7 +26,7 @@ export const PricingCard = ({
 }) => {
   return (
     <CardContainer className="inter-var relative ">
-      <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-3xl"></div>
+      <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/30 to-secondary/50 opacity-50 blur-3xl"></div>
 
       <CardBody
         className={cn(

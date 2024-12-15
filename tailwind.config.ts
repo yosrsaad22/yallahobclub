@@ -78,8 +78,9 @@ const config = {
         'glow-lines': 'linear-gradient(var(--direction),#9d9bf2 0.43%,#7877c6 14.11%,rgba(120,119,198,0) 62.95%)',
         'radial-faded': 'radial-gradient(circle at bottom center,var(--color),transparent 70%)',
         'hero-glow':
-          'conic-gradient(from 230.29deg at 51.63% 52.16%, rgb(0, 183, 255) 0deg, rgb(0, 135, 255) 67.5deg, rgb(39, 116, 157) 198.75deg, rgb(27, 157, 169) 251.25deg, rgb(54, 103, 196) 301.88deg, rgb(105, 30, 255) 360deg)',
+          'radial-gradient(circle at 50% 50%, hsl(182, 80%, 50%) 0%, hsl(182, 70%, 45%) 20%, hsl(182, 60%, 40%) 50%, transparent 50%)',
       },
+
       keyframes: {
         ripple: {
           '0%, 100%': {
@@ -123,7 +124,7 @@ const config = {
             'animation-timing-function': 'cubic-bezier(0.12,0.01,0.08,0.99)',
           },
           '100%': {
-            opacity: '0.4',
+            opacity: '0.3',
           },
         },
         'sketch-lines': {

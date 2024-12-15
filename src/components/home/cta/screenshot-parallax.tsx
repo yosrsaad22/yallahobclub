@@ -10,32 +10,36 @@ export function ScreenshotParallax() {
 }
 export const products = [
   {
-    title: 'Dashboard',
-    thumbnail: '/img/screenshot1.webp',
+    title: 'Screenshot 2',
+    thumbnail: '/img/screenshot1.png',
   },
   {
-    title: 'Statistics',
+    title: 'Screenshot 1',
     thumbnail: '/img/screenshot2.webp',
   },
   {
-    title: 'Shopping Cart',
-    thumbnail: '/img/screenshot3.webp',
+    title: 'Screenshot 3',
+    thumbnail: '/img/screenshot1.png',
   },
   {
-    title: 'Store',
-    thumbnail: '/img/screenshot4.webp',
+    title: 'Screenshot 4',
+    thumbnail: '/img/screenshot2.webp',
   },
   {
-    title: 'Invoice Dashboard',
-    thumbnail: '/img/screenshot5.webp',
+    title: 'Screenshot 5',
+    thumbnail: '/img/screenshot1.png',
   },
   {
-    title: 'Customers',
-    thumbnail: '/img/screenshot6.webp',
+    title: 'Screenshot 6',
+    thumbnail: '/img/screenshot2.webp',
   },
   {
-    title: 'More Statistics',
-    thumbnail: '/img/screenshot7.webp',
+    title: 'Screenshot 7',
+    thumbnail: '/img/screenshot1.png',
+  },
+  {
+    title: 'Screenshot 8',
+    thumbnail: '/img/screenshot2.webp',
   },
 ];
 

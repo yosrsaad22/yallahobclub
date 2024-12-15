@@ -145,7 +145,7 @@ export const Navbar = () => {
           {t('login')}
         </Link>
         <GradientLinkButton
-          innerClassName="bg-[#222738] hover:bg-gray-700 active:bg-gray-700"
+          innerClassName="bg-[#2d3441] hover:bg-gray-700 active:bg-gray-700"
           size="sm"
           href={'/register'}>
           {t('register')}
@@ -209,6 +209,25 @@ export const Navbar = () => {
                               href="/free-course"
                               className={pathName === '/free-course' ? 'text-turquoise' : 'hover:text-turquoise'}>
                               {t('course.freecourse')}
+                            </Link>
+                            <LinearButton
+                              className="pointer-events-none m-0 ml-2 animate-pulse p-1 text-xs text-orange"
+                              variant="primary"
+                              size="small">
+                              <span>{t('new-feature')}</span>
+                            </LinearButton>
+                          </div>
+                        </AccordionContent>
+                        <AccordionContent className="pb-0 text-left">
+                          <div className="flex flex-row items-center justify-center">
+                            <Link
+                              passHref
+                              onClick={() => {
+                                setSheetOpen(false);
+                              }}
+                              href="/full-course"
+                              className={pathName === '/full-course' ? 'text-turquoise' : 'hover:text-turquoise'}>
+                              {t('course.fullcourse')}
                             </Link>
                             <LinearButton
                               className="pointer-events-none m-0 ml-2 animate-pulse p-1 text-xs text-orange"

@@ -8,7 +8,7 @@ export const Platform = () => {
   const t = useTranslations('home.platform');
   return (
     <section id="platform" className="-mt-[15rem] md:-mt-[6rem]">
-      <Features color="0,225,244" colorDark="50, 80, 105" showSparkles={false}>
+      <Features color="129, 210, 237" colorDark="53, 92, 105" showSparkles={false}>
         <MainFeature
           badge={t('badge')}
           title={<>{t('title')}</>}
