@@ -9,7 +9,7 @@ export default async function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className=" page-gradient dark bg-[hsl(213,27%,10%)] pt-[4.1rem] text-foreground">
+    <div className=" page-gradient-2 dark bg-[hsl(213,27%,10%)] pt-[4.1rem] text-foreground">
       <React.Suspense fallback={null}>
         <BodyStyle backgroundColor="hsl(213,27%,10%)" />
       </React.Suspense>

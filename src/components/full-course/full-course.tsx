@@ -17,7 +17,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
   const tValidation = useTranslations('validation');
   const locale = useLocale();
 
-  const chapterDurations = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
+  const chapterDurations = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 25, 20, 15, 30];
   const chaptersWithDuration = chapters.map((chapter, index) => ({
     ...chapter,
     duration: chapterDurations[index], // Assigning a different duration for each chapter
@@ -30,80 +30,80 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
       <div className="relative flex w-full flex-col items-center justify-center gap-16">
         <div className="absolute -top-14  left-4 rotate-[7deg] md:left-20  md:top-0">
           <div className="flex animate-float-slow flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/fb.png" alt="Facebook" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute right-4 top-[50%] rotate-[10deg] md:right-64  md:top-[35%]">
           <div className="flex animate-float-fast flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700   p-3">
               <Image src="/img/meta.png" alt="Meta" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute left-2 top-1/2 -translate-y-1/2 rotate-[-10deg] transform md:left-4">
           <div className="flex animate-float-medium flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/insta.png" alt="Instagram" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute -left-4 top-[15%] rotate-[-6deg] md:left-48  md:top-[25%]">
           <div className="flex animate-float-slow flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/shopify.png" alt="Shopify" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute right-5 top-[-5%] rotate-[4deg]  md:right-32">
           <div className="flex animate-float-fast flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-2">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-2">
               <Image src="/img/canva.png" alt="Canva" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute right-2 top-[15%] rotate-[-5deg]  md:right-8">
           <div className="flex animate-float-medium flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/tiktk.png" alt="TikTok" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute bottom-16  hidden rotate-[6deg]  md:left-24 md:block">
           <div className="flex animate-float-slow flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/capcut.jpg" className="rounded-md" alt="capcut" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute bottom-[35%]  hidden rotate-[-10deg]  md:right-24 md:block">
           <div className="flex animate-float-medium flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/google-analytics.png" alt="Google" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute bottom-[30%] hidden rotate-[4deg] md:left-64 md:block">
           <div className="flex animate-float-slow flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/seo.png" alt="seo" height={36} width={36} />
             </div>
           </div>
         </div>
         <div className="absolute bottom-10  hidden rotate-[6deg]  md:right-56 md:block">
           <div className="flex animate-float-medium flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+            <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
               <Image src="/img/megaphone.png" alt="ads" height={36} width={36} />
             </div>
           </div>
@@ -147,8 +147,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
       <div className="relative flex flex-col gap-12 px-4 py-6 md:flex-row md:px-16">
         <div className=" flex flex-col items-center text-center  md:items-start md:text-left">
           <div className="relative flex h-8 flex-col items-center justify-center">
-            <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-            <div className="relative flex flex-col gap-4 rounded-full border border-gray-700 bg-gray-700/20 p-2 px-4 text-sm">
+            <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+            <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
               {t('host-meet')}
             </div>
           </div>
@@ -159,7 +159,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </h1>
           <p className="text-md max-w-full pt-8 md:max-w-xl ">{t('host-text')}</p>
         </div>
-        <div className="relative flex items-end justify-center rounded-md border border-slate-700/70 bg-black/50 backdrop-blur-sm bg-dot-gray-800/80">
+        <div className="feature-glass-gradient relative flex items-end justify-center rounded-md border border-slate-700/70 backdrop-blur-sm bg-dot-gray-700/80">
           <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/90 to-secondary/90 opacity-70 blur-3xl"></div>
           <Image src={'/img/rached.png'} className="z-[10]" height={300} width={300} alt="host" />
           <Image
@@ -176,8 +176,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
       <div className="flex flex-col items-center justify-center py-6">
         <div className="relative flex h-8 flex-col items-center justify-center">
-          <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-          <div className="relative flex flex-col gap-4 rounded-full border border-gray-700 bg-gray-700/20 p-2 px-4 text-sm">
+          <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+          <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
             {t('what-you-get')}
           </div>
         </div>
@@ -190,8 +190,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
         <div className="grid grid-cols-2 grid-rows-2 gap-12 pt-16 md:grid-cols-4 md:grid-rows-1 md:gap-16">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative  flex  w-16 animate-float-slow flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-md"></div>
-              <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
+              <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/video.png" alt="ads" height={36} width={36} />
               </div>
             </div>
@@ -203,8 +203,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative  flex w-16 animate-float-medium flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-md"></div>
-              <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
+              <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/pantone.png" alt="ads" height={36} width={36} />
               </div>
             </div>
@@ -215,8 +215,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </div>
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative flex w-16  animate-float-slow flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-md"></div>
-              <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
+              <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/headphones.png" alt="ads" height={36} width={36} />
               </div>
             </div>
@@ -227,8 +227,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </div>
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative flex w-16  animate-float-medium flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-md"></div>
-              <div className="relative flex flex-col gap-4 rounded-xl border border-gray-700 bg-gray-700/20 p-3">
+              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
+              <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/chat.png" alt="ads" height={36} width={36} />
               </div>
             </div>
@@ -244,8 +244,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
       <div className="flex flex-col items-center justify-center py-6">
         <div className="relative flex h-8 flex-col items-center justify-center">
-          <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-          <div className="relative flex flex-col gap-4 rounded-full border border-gray-700 bg-gray-700/20 p-2 px-4 text-sm">
+          <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+          <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
             {t('explore-course')}
           </div>
         </div>
@@ -255,10 +255,10 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </span>
         </h1>
         <p className="text-md pt-8 text-center md:max-w-4xl ">{t('course-content')}</p>
-        <div className=" relative mt-12 flex w-full items-end justify-center rounded-xl border border-slate-700/70 bg-black/20 backdrop-blur-sm">
-          <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-3xl"></div>
-          <div className="flex h-full w-full max-w-full flex-col  gap-4 pb-4 md:max-w-[70%] ">
-            <Accordion type="single" collapsible className="z-[1] w-full max-w-full px-8 text-center md:max-w-[70%] ">
+        <div className=" feature-glass-gradient relative mt-12 flex w-full min-w-[80%] max-w-full items-end justify-center rounded-xl border border-slate-700/70  backdrop-blur-sm md:max-w-[80%]">
+          <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-3xl"></div>
+          <div className="flex h-full w-full  flex-col gap-4 pb-4 ">
+            <Accordion type="single" collapsible className="z-[1] w-full px-8 py-4 text-center" defaultValue="item-0">
               {chaptersWithDuration.map((chapter, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="border-b border-slate-600">
                   <AccordionTrigger className="text-md items-start font-medium">
@@ -267,7 +267,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
                       <span className="pl-4 text-sm text-slate-400">{chapter.duration} min </span>
                     </p>
                   </AccordionTrigger>
-                  <AccordionContent>
+                  <AccordionContent className="text-left">
                     {locale === localeOptions.FR ? chapter.description_fr : chapter.description_en}
                   </AccordionContent>
                 </AccordionItem>
@@ -281,8 +281,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
       <div className="flex flex-col items-center justify-center py-6 pb-32">
         <div className="relative flex h-8 flex-col items-center justify-center">
-          <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-lg"></div>
-          <div className="relative flex flex-col gap-4 rounded-full border border-gray-700 bg-gray-700/20 p-2 px-4 text-sm">
+          <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+          <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
             {t('pricing.badge')}
           </div>
         </div>

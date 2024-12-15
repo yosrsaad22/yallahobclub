@@ -314,6 +314,10 @@
   .page-gradient {
     background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.4), transparent);
   }
+  .page-gradient-2 {
+    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(84, 81, 96, 0.867), transparent);
+  }
+
   .course-radial-gradient {
     background-image: radial-gradient(ellipse farthest-side at center, rgba(53, 92, 105, 0.5) 5%, transparent 100%);
   }
