@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils';
 import { useInView } from 'react-intersection-observer';
 import { Container } from '../ui/container';
 import { LinearButton } from '../ui/linear-button';
-import { SparklesCore } from '../full-course/pricing/sparkles';
 import { useTranslations } from 'next-intl';
 import { MarketingIcon } from '../icons/marketing';
 import { BrandingIcon } from '../icons/branding';
@@ -36,18 +35,6 @@ export const Features = ({ children, color, colorDark, showSparkles }: FeaturesP
           '--feature-color-dark': colorDark,
         } as React.CSSProperties
       }>
-      {showSparkles && (
-        <div className="absolute mx-auto mt-[16rem] h-40 w-[17rem] md:w-[35rem]">
-          <SparklesCore
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={200}
-            className="h-full w-full"
-            particleColor="#FFFFFF"
-          />
-        </div>
-      )}
       <div className="relative mt-[10rem] w-full">{children}</div>
     </div>
   );
