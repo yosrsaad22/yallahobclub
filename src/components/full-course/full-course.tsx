@@ -257,8 +257,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
         <p className="text-md pt-8 text-center md:max-w-4xl ">{t('course-content')}</p>
         <div className=" relative mt-12 flex w-full items-end justify-center rounded-xl border border-slate-700/70 bg-black/20 backdrop-blur-sm">
           <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-60 blur-3xl"></div>
-          <div className="flex h-full w-full  flex-col gap-4 pb-4 ">
-            <Accordion type="single" collapsible className="z-[1] w-full px-8 text-center">
+          <div className="flex h-full w-full max-w-full flex-col  gap-4 pb-4 md:max-w-[70%] ">
+            <Accordion type="single" collapsible className="z-[1] w-full max-w-full px-8 text-center md:max-w-[70%] ">
               {chaptersWithDuration.map((chapter, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="border-b border-slate-600">
                   <AccordionTrigger className="text-md items-start font-medium">
@@ -286,7 +286,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
             {t('pricing.badge')}
           </div>
         </div>
-        <h1 className="text-gradient max-w-full translate-y-[-1rem] animate-fade-in py-2  pt-4 text-center text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:text-[2.2rem]">
+        <h1 className="text-gradient max-w-full translate-y-[-1rem] animate-fade-in py-2 pt-4  text-center text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:max-w-[60%] md:text-[3rem]">
           <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text  text-transparent">
             {t('pricing.title')}
           </span>
