@@ -286,7 +286,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
             {t('pricing.badge')}
           </div>
         </div>
-        <h1 className="text-gradient max-w-full translate-y-[-1rem] animate-fade-in py-2  pt-4 text-center text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:text-[3rem]">
+        <h1 className="text-gradient max-w-full translate-y-[-1rem] animate-fade-in py-2  pt-4 text-center text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:text-[2.2rem]">
           <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text  text-transparent">
             {t('pricing.title')}
           </span>
