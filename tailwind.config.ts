@@ -5,6 +5,7 @@ const { default: flattenColorPalette } = require('tailwindcss/lib/util/flattenCo
 const svgToDataUri = require('mini-svg-data-uri');
 
 const config = {
+  darkMode: ['class'],
   content: ['./pages/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
   prefix: '',
   theme: {
@@ -89,14 +90,28 @@ const config = {
           },
         },
         'fade-in': {
-          from: { opacity: '0', transform: 'translateY(-10px)' },
-          to: { opacity: '1', transform: 'none' },
+          from: {
+            opacity: '0',
+            transform: 'translateY(-10px)',
+          },
+          to: {
+            opacity: '1',
+            transform: 'none',
+          },
         },
         'image-rotate': {
-          '0%': { transform: 'rotateX(25deg)' },
-          '25%': { transform: 'rotateX(25deg) scale(0.9)' },
-          '60%': { transform: 'none' },
-          '100%': { transform: 'none' },
+          '0%': {
+            transform: 'rotateX(25deg)',
+          },
+          '25%': {
+            transform: 'rotateX(25deg) scale(0.9)',
+          },
+          '60%': {
+            transform: 'none',
+          },
+          '100%': {
+            transform: 'none',
+          },
         },
         'image-glow': {
           '0%': {
@@ -112,10 +127,18 @@ const config = {
           },
         },
         'sketch-lines': {
-          '0%': { 'stroke-dashoffset': '1' },
-          '50%': { 'stroke-dashoffset': '0' },
-          '99%': { 'stroke-dashoffset': '0' },
-          '100%': { visiblity: 'hidden' },
+          '0%': {
+            'stroke-dashoffset': '1',
+          },
+          '50%': {
+            'stroke-dashoffset': '0',
+          },
+          '99%': {
+            'stroke-dashoffset': '0',
+          },
+          '100%': {
+            visiblity: 'hidden',
+          },
         },
         'border-beam': {
           '100%': {
@@ -123,16 +146,38 @@ const config = {
           },
         },
         'glow-line-horizontal': {
-          '0%': { opacity: '0', transform: 'translateX(0)' },
-          '5%': { opacity: '1', transform: 'translateX(0)' },
-          '90%': { opacity: '1' },
-          '100%': { opacity: '0', transform: 'translateX(min(60vw, 45rem))' },
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(0)',
+          },
+          '5%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+          '90%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateX(min(60vw, 45rem))',
+          },
         },
         'glow-line-vertical': {
-          '0%': { opacity: '0', transform: 'translateY(0)' },
-          '5%': { opacity: '1', transform: 'translateY(0)' },
-          '90%': { opacity: '1' },
-          '100%': { opacity: '0', transform: 'translateY(min(21vw, 45rem))' },
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(0)',
+          },
+          '5%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+          '90%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(min(21vw, 45rem))',
+          },
         },
         zap: {
           '0%, 9%, 11%, 100% ': {
@@ -195,29 +240,72 @@ const config = {
             transform: 'translateY(-50%)',
           },
         },
+        float: {
+          '0%': {
+            transform: 'translateY(0)',
+          },
+          '50%': {
+            transform: 'translateY(-15px)',
+          },
+          '100%': {
+            transform: 'translateY(0)',
+          },
+        },
         'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
         },
         'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
         },
         meteor: {
-          '0%': { transform: 'rotate(215deg) translateX(0)', opacity: '1' },
-          '70%': { opacity: '1' },
+          '0%': {
+            transform: 'rotate(215deg) translateX(0)',
+            opacity: '1',
+          },
+          '70%': {
+            opacity: '1',
+          },
           '100%': {
             transform: 'rotate(215deg) translateX(-500px)',
             opacity: '0',
           },
         },
         marquee: {
-          from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(calc(-100% - var(--gap)))' },
+          from: {
+            transform: 'translateX(0)',
+          },
+          to: {
+            transform: 'translateX(calc(-100% - var(--gap)))',
+          },
         },
         'marquee-vertical': {
-          from: { transform: 'translateY(0)' },
-          to: { transform: 'translateY(calc(-100% - var(--gap)))' },
+          from: {
+            transform: 'translateY(0)',
+          },
+          to: {
+            transform: 'translateY(calc(-100% - var(--gap)))',
+          },
+        },
+        shine: {
+          '0%': {
+            'background-position': '0% 0%',
+          },
+          '50%': {
+            'background-position': '100% 100%',
+          },
+          to: {
+            'background-position': '0% 0%',
+          },
         },
       },
       animation: {
@@ -234,6 +322,11 @@ const config = {
         second: 'moveInCircle 20s reverse infinite',
         third: 'moveInCircle 40s linear infinite',
         fourth: 'moveHorizontal 40s ease infinite',
+
+        'float-slow': 'float 5s ease-in-out infinite',
+        'float-medium': 'float 3s ease-in-out infinite',
+        'float-fast': 'float 2s ease-in-out infinite',
+
         fifth: 'moveInCircle 20s ease infinite',
         'meteor-effect': 'meteor 5s linear infinite',
         'fade-in': 'fade-in 1000ms var(--animation-delay, 0ms) ease forwards',
@@ -244,6 +337,7 @@ const config = {
         'sketch-lines': 'sketch-lines 1200ms ease-out forwards',
         'glow-line-horizontal': 'glow-line-horizontal var(--animation-duration) ease-in forwards',
         'glow-line-vertical': 'glow-line-vertical var(--animation-duration) ease-in forwards',
+        shine: 'shine var(--duration) infinite linear',
       },
     },
   },

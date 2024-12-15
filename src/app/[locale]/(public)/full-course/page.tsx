@@ -1,5 +1,6 @@
+import { getPublicChapters } from '@/actions/course';
 import { FullCourseComponent } from '@/components/full-course/full-course';
-import { useTranslations } from 'next-intl';
+import { ActionResponse } from '@/types';
 import { getTranslations } from 'next-intl/server';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
@@ -11,11 +12,13 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   };
 }
 
-export default function FullCourse() {
-  const t = useTranslations('full-course');
+export default async function FullCourse() {
+  const fetchChapters: ActionResponse = await getPublicChapters();
+  const chaptersData = fetchChapters.error ? [] : fetchChapters.data;
+
   return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <FullCourseComponent />
+    <div className="mt-12 flex min-h-screen w-full items-start justify-center">
+      <FullCourseComponent chapters={chaptersData} />
     </div>
   );
 }

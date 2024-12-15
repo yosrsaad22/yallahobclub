@@ -28,9 +28,11 @@ import {
 } from '@tabler/icons-react';
 
 export enum packOptions {
+  FREE = 'FREE',
   DAMREJ = 'DAMREJ',
   AJEJA = 'AJEJA',
   MACHROU3 = 'MACHROU3',
+  CHARIKA = 'CHARIKA',
 }
 export enum roleOptions {
   ADMIN = 'ADMIN',

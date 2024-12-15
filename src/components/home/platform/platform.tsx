@@ -13,7 +13,7 @@ export const Platform = () => {
           badge={t('badge')}
           title={<>{t('title')}</>}
           text={t('text')}
-          buttonLink="#pricing"
+          buttonLink="/register"
           buttonText={t('button')}
           showButton
         />

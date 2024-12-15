@@ -10,7 +10,7 @@ import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { IconCircleCheck, IconCircleCheckFilled, IconDeviceFloppy, IconLoader2, IconUser } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconLoader2, IconUser } from '@tabler/icons-react';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { userEditSettings } from '@/actions/settings';
 import { toast } from '@/components/ui/use-toast';
@@ -19,7 +19,6 @@ import { UploadButton } from '@/lib/uploadthing';
 import { states, MEDIA_HOSTNAME, packOptions, roleOptions } from '@/lib/constants';
 import { useSession } from 'next-auth/react';
 import { ActionResponse } from '@/types';
-import { cn } from '@/lib/utils';
 import { Combobox } from '@/components/ui/combobox';
 
 interface UserSettingsFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -33,10 +32,11 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
 
   type schemaType = z.infer<typeof UserSettingsSchema>;
 
-  const [selectedPack, setSelectedPack] = React.useState(user?.pack as packOptions);
+  //const [selectedPack, setSelectedPack] = React.useState(user?.pack as packOptions);
   const [state, setCity] = React.useState<string>(user?.state!);
-  const tPricing = useTranslations('home.pricing');
+  //const tPricing = useTranslations('home.pricing');
   const defaultValues = {
+    storeName: user?.role === roleOptions.SELLER ? user?.storeName : 'ECOMNESS',
     state: user?.state,
   };
   const {
@@ -44,6 +44,8 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
+    getFieldState,
   } = useForm<schemaType>({ resolver: zodResolver(UserSettingsSchema), defaultValues });
 
   if (user) {
@@ -52,6 +54,10 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
 
   const onSubmit: SubmitHandler<schemaType> = async (data, event) => {
     event?.preventDefault();
+    if (Object.keys(errors).length > 0) {
+      console.log('Form errors:', errors);
+      return;
+    }
     startTransition(() => {
       userEditSettings(data).then((res: ActionResponse) => {
         if (res.success) {
@@ -356,7 +362,7 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
           </div>
         ) */}
         <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-4">
-          <Button type="submit" size="default" disabled={isLoading}>
+          <Button type="submit" onClick={() => {}} size="default" disabled={isLoading}>
             {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
             {!isLoading && <IconDeviceFloppy className="mr-2 h-5 w-5 " />}
             {t('save-button')}

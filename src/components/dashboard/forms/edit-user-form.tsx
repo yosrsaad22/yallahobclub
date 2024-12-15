@@ -151,7 +151,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
                   {tFields('user-created-at')} {formatDate(userData?.createdAt!)}
                 </p>
               </div>
-              {userRole == roleOptions.SELLER && userPack !== packOptions.DAMREJ && (
+              {userRole == roleOptions.SELLER && userPack !== packOptions.FREE && (
                 <div className="flex w-full flex-col items-start justify-center md:w-1/2">
                   <h2 className="pb-1 text-lg font-semibold">
                     {t('user-progress')}

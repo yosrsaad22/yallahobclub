@@ -49,9 +49,11 @@ enum UserRole {
 }
 
 enum UserPack {
+  FREE
   DAMREJ
   AJEJA
   MACHROU3
+  CHARIKA
 }
 
 model Billing {

@@ -162,7 +162,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
           innerClassName={'bg-background hover:bg-gray-800 active:bg-gray-800'}
           rounded={'full'}
           size={'full'}
-          href={'/register'}>
+          href={'/full-course'}>
           {t('buy-button')}
         </GradientLinkButton>
       </motion.div>

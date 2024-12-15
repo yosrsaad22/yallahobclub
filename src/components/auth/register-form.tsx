@@ -27,9 +27,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
   const [isLoading, startTransition] = React.useTransition();
   const [error, setError] = React.useState<string | undefined>('');
   const [success, setSuccess] = React.useState<string | undefined>('');
-  const [selectedPack, setSelectedPack] = React.useState(packOptions.DAMREJ);
+  const [selectedPack, setSelectedPack] = React.useState(packOptions.FREE);
   const t = useTranslations('register');
-  const tPricing = useTranslations('home.pricing');
+  const tPricing = useTranslations('full-course.pricing');
   const tFields = useTranslations('fields');
   const tValidation = useTranslations('validation');
   const [state, setState] = React.useState<string>();
@@ -39,7 +39,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
 
   const defaultValues = {
     role: secureRoleOptions.SELLER,
-    pack: packOptions.DAMREJ,
+    pack: packOptions.FREE,
   };
 
   const {
@@ -204,7 +204,30 @@ export function RegisterForm({ className }: RegisterFormProps) {
       </form>
       {role === secureRoleOptions.SELLER && (
         <>
-          <div className=" mt-10 flex min-w-full flex-col  gap-8 text-left lg:flex-row">
+          <div className="mm:grid-cols-1 mt-10 grid w-full gap-4 text-left lg:grid-cols-3">
+            <div
+              onClick={() => {
+                setValue('pack', packOptions.FREE);
+                setSelectedPack(packOptions.FREE);
+              }}
+              className={cn(
+                selectedPack === packOptions.FREE ? 'border-primary shadow-sm shadow-primary' : '',
+                'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
+              )}>
+              <div className="flex flex-row items-center justify-center gap-4">
+                {selectedPack === packOptions.FREE && (
+                  <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
+                )}
+                {selectedPack !== packOptions.FREE && (
+                  <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
+                )}
+                <div className="flex flex-col items-start justify-center">
+                  <h1 className="text-gradient text-md text-md font-bold  ">PACK FREE</h1>
+                  <p className="text-sm font-medium italic text-gray-400">{tPricing('totally-free')}</p>
+                </div>
+              </div>
+              <h2 className="text-gradient ml-2 flex text-xl font-semibold">0 DT</h2>
+            </div>
             <div
               onClick={() => {
                 setValue('pack', packOptions.DAMREJ);
@@ -223,10 +246,10 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 )}
                 <div className="flex flex-col items-start justify-center">
                   <h1 className="text-gradient text-md text-md font-bold  ">PACK DAMREJ</h1>
-                  <p className="text-sm font-medium italic text-gray-400">{tPricing('free')}</p>
+                  <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
                 </div>
               </div>
-              <h2 className="text-gradient ml-2 flex text-xl font-semibold">0 DT</h2>
+              <h2 className="text-gradient ml-2 flex text-xl font-semibold">297 DT</h2>
             </div>
             <div
               onClick={() => {
@@ -249,8 +272,11 @@ export function RegisterForm({ className }: RegisterFormProps) {
                   <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
                 </div>
               </div>
-              <h2 className="text-gradient  ml-2 flex text-xl font-semibold">750 DT</h2>
+              <h2 className="text-gradient  ml-2 flex text-xl font-semibold">497 DT</h2>
             </div>
+          </div>
+
+          <div className="mt-4 grid w-full gap-4 text-left sm:grid-cols-2 lg:grid-cols-2">
             <div
               onClick={() => {
                 setValue('pack', packOptions.MACHROU3);
@@ -272,7 +298,30 @@ export function RegisterForm({ className }: RegisterFormProps) {
                   <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
                 </div>
               </div>
-              <h2 className="text-gradient  ml-4 flex text-xl font-semibold">1500 DT</h2>
+              <h2 className="text-gradient  ml-4 flex text-xl font-semibold">1997 DT</h2>
+            </div>
+            <div
+              onClick={() => {
+                setValue('pack', packOptions.CHARIKA);
+                setSelectedPack(packOptions.CHARIKA);
+              }}
+              className={cn(
+                selectedPack === packOptions.CHARIKA ? 'border-primary shadow-sm shadow-primary' : '',
+                'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
+              )}>
+              <div className="flex flex-row items-center justify-center gap-4 ">
+                {selectedPack === packOptions.CHARIKA && (
+                  <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
+                )}
+                {selectedPack !== packOptions.CHARIKA && (
+                  <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
+                )}
+                <div className="flex flex-col items-start justify-center">
+                  <h1 className="text-gradient text-md font-bold">PACK CHARIKA</h1>
+                  <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
+                </div>
+              </div>
+              <h2 className="text-gradient  ml-4 flex text-xl font-semibold">3297 DT</h2>
             </div>
           </div>
           <div className="flex flex-row justify-center pt-2">
@@ -282,7 +331,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
       )}
 
       <div className="relative mt-8 flex flex-row justify-center text-sm">
-        <Link className="cursor-pointer" href={'/#pricing'} passHref>
+        <Link className="cursor-pointer" href={'/full-course'} passHref>
           <span className="bg-background px-2 text-muted-foreground underline">{t('pricing-details')}</span>
         </Link>
       </div>

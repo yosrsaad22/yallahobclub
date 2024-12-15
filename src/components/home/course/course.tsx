@@ -10,7 +10,7 @@ export const Course = () => {
         <MainFeature
           showButton
           buttonText={t('button')}
-          buttonLink="#pricing"
+          buttonLink="/full-course"
           badge={t('badge')}
           title={
             <>

@@ -126,11 +126,6 @@ export const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link passHref href="/#pricing" className="hover:text-turquoise">
-                {t('pricing')}
-              </Link>
-            </li>
-            <li>
               <Link passHref href="/#testimonials" className="hover:text-turquoise">
                 {t('testimonials')}
               </Link>
@@ -225,15 +220,6 @@ export const Navbar = () => {
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
-                    <Link
-                      passHref
-                      href="/#pricing"
-                      onClick={() => {
-                        setSheetOpen(false);
-                      }}
-                      className="hover:text-turquoise">
-                      {t('pricing')}
-                    </Link>
                   </div>
                   <div className="text-md justify-top flex w-1/2 flex-col items-center gap-8 py-4 font-normal text-foreground">
                     <Link

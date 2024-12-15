@@ -388,7 +388,6 @@
         "fullcourse": "Formation Complète"
       },
       "platform": "Plateforme",
-      "pricing": "Tarifs",
       "testimonials": "Témoignages",
       "login": "Connexion",
       "register": "Inscription",
@@ -473,40 +472,6 @@
       "productCounter": "Produits",
       "revenuCounter": "Revenus générés par nos utilisateurs",
       "supplierCounter": "Fournisseurs"
-    },
-    "pricing": {
-      "badge": "Tarifs",
-      "title": "Packs Basés Sur Vos Besoins",
-      "text": "Que vous souhaitiez tout apprendre sur le e-commerce, le dropshipping, le branding et les publicités, ou simplement utiliser notre plateforme pour la liberté financière, nous avons le pack qu'il vous faut.",
-      "free": "100% Gratuit",
-      "pay-once": "Paiement unique",
-      "damrej": {
-        "description": "Vous avez déjà de l'expérience, tout ce dont vous avez besoin, ce sont des produits gagnants à des prix de gros",
-        "feature1": "Toutes les fonctionnalités de la plateforme",
-        "feature2": "Accès à nos produits",
-        "feature3": "Aucun frais de vente jusqu'à 500 DT de profit",
-        "feature4": "10% de frais sur le profit hebdomadaire",
-        "button": "Obtenez l'Offre"
-      },
-      "3jeja": {
-        "description": "Vous souhaitez apprendre des experts, bénéficier d'un suivi de 6 mois et accéder à la plateforme",
-        "feature1": "Tout dans le pack DAMREJ",
-        "feature2": "Accès au créateur de boutique",
-        "feature3": "Produits gagnants sélectionnés à la main",
-        "feature4": "Contenu marketing",
-        "feature5": "Formation de dropshipping",
-        "feature6": "6 mois de suivi",
-        "feature7": "10% de frais sur le profit hebdomadaire",
-        "button": "Obtenez l'Offre"
-      },
-      "machrou3": {
-        "description": "Vous souhaitez créer votre propre entreprise et profiter de tout ce que nous offrons",
-        "feature1": "Tout dans le pack 3JEJA",
-        "feature2": "Créer légalement votre propre entreprise",
-        "feature3": "Nous engager comme agence de marketing",
-        "feature4": "10% de frais sur le profit hebdomadaire",
-        "button": "Obtenez l'Offre"
-      }
     },
     "testimonials": {
       "title": "Ce Que Nos Clients Disent",
@@ -601,17 +566,73 @@
   },
   "full-course": {
     "metadata": {
-      "title": "Ecomness - Formation Complète sur le Dropshipping",
-      "description": "Accédez à notre formation complète sur le dropshipping pour tout apprendre sur le dropshipping, le e-commerce, le branding et le marketing et commencez à gagner de l'argent en ligne",
+      "title": "Ecomness - Formation sur le Dropshipping",
+      "description": "Accédez à notre formation sur le dropshipping pour tout apprendre sur le dropshipping, le e-commerce, le branding et le marketing et commencez à gagner de l'argent en ligne",
       "video-title": "Formation en ligne sur le dropshipping"
     },
-    "title": "Lancez votre propre entreprise en ligne avec notre",
-    "title-gradient": "Prochainement Disponible...",
-    "text": "Dans cette formation, vous apprendrez les fondamentaux du dropshipping et du e-commerce et vous plongerez dans certaines des meilleures pratiques et stratégies pour commencer à gagner de l'argent en ligne.",
-    "form-title": "Regarder la Formation",
-    "form-text": "Entrez vos informations pour regarder la formation complète",
-    "watch-button": "Commencer à Regarder",
-    "buy-button": "Obtenez la Formation Complète"
+    "title": "Tirez le meilleur parti de notre",
+    "title-gradient": "Masterclass en Dropshipping",
+    "text": "Êtes-vous prêt à commencer votre aventure dans le monde du e-commerce ? Notre formation complète en ligne sur le dropshipping est conçue pour les entrepreneurs en herbe qui veulent transformer leurs idées en une entreprise en ligne prospère. Que vous soyez un débutant complet ou que vous cherchiez à améliorer vos compétences, cette formation vous guidera de zéro à vos premières commandes—et au-delà !",
+    "buy-button": "Rejoignez la Formation",
+    "what-you-get": "Ce que vous obtiendrez",
+    "what-you-get-title": "Construire une Marque de A à Z",
+    "what-you-get-text": "Dans cette formation, nous créerons une marque à partir de zéro, étape par étape, sous vos yeux. Vous verrez notre équipe développer tout, du concept initial à une entreprise pleinement opérationnelle et prospère, vous fournissant des informations exploitables pour reproduire le processus et bien plus encore.",
+    "chapters": {
+      "title": "10 Chapitres",
+      "subtitle": "un total de 60 Heures"
+    },
+    "brand": {
+      "title": "Construire une marque",
+      "subtitle": "de A à Z"
+    },
+    "followup": {
+      "title": "Suivi Technique",
+      "subtitle": "chaque semaine"
+    },
+    "community": {
+      "title": "Communauté en Ligne",
+      "subtitle": "à votre disposition"
+    },
+    "host-meet": "Rencontrez votre hôte et co-fondateur",
+    "host-text": "Rached Khemakhem, co-fondateur et expert en e-commerce, a commencé comme ingénieur logiciel avant de décider de réorienter sa carrière pour poursuivre sa véritable passion : créer et développer des marques en ligne. Avec une compréhension approfondie du marketing et de la création de marques, Rached a lancé et développé avec succès plusieurs entreprises de e-commerce à partir de zéro, les transformant en entreprises prospères. Son expertise réside dans le développement d'identités de marque fortes, la création de stratégies marketing percutantes et l'utilisation de son bagage technique pour innover dans le domaine du e-commerce.",
+    "explore-course": "Explorez la formation en ligne",
+    "course-hours": "22 heures de contenu exclusif",
+    "course-content": "Cette formation est conçue pour vous guider dans la création d'une marque de e-commerce réussie à partir de zéro. Vous apprendrez des compétences essentielles telles que le branding, la mise en place d'une boutique Shopify, la création de stratégies marketing percutantes et la maîtrise des meilleures pratiques du dropshipping. Nous couvrirons également la création de contenu pour les réseaux sociaux, la gestion des finances, le choix des bons prix pour les produits, et comment partir d'un compte de réseau social vierge pour construire une marque qui attire de vraies commandes et atteint une croissance durable.",
+    "chapters-number": "Un total de {subject} chapitres",
+    "pricing": {
+      "badge": "Tarifs",
+      "title": "Obtenez uniquement ce dont vous avez réellement besoin",
+      "text": "Que vous souhaitiez tout apprendre sur le e-commerce, le dropshipping, le branding et les publicités, ou simplement utiliser notre plateforme pour la liberté financière, nous avons le pack qu'il vous faut.",
+      "free": "100% Gratuit",
+      "pay-once": "Paiement unique",
+      "damrej": {
+        "description": "Vous avez déjà de l'expérience, tout ce dont vous avez besoin, ce sont des produits gagnants à des prix de gros",
+        "feature1": "Toutes les fonctionnalités de la plateforme",
+        "feature2": "Accès à nos produits",
+        "feature3": "Aucun frais de vente jusqu'à 500 DT de profit",
+        "feature4": "10% de frais sur le profit hebdomadaire",
+        "button": "Obtenez l'Offre"
+      },
+      "3jeja": {
+        "description": "Vous souhaitez apprendre des experts, bénéficier d'un suivi de 6 mois et accéder à la plateforme",
+        "feature1": "Tout dans le pack DAMREJ",
+        "feature2": "Accès au créateur de boutique",
+        "feature3": "Produits gagnants sélectionnés à la main",
+        "feature4": "Contenu marketing",
+        "feature5": "Formation de dropshipping",
+        "feature6": "6 mois de suivi",
+        "feature7": "10% de frais sur le profit hebdomadaire",
+        "button": "Obtenez l'Offre"
+      },
+      "machrou3": {
+        "description": "Vous souhaitez créer votre propre entreprise et profiter de tout ce que nous offrons",
+        "feature1": "Tout dans le pack 3JEJA",
+        "feature2": "Créer légalement votre propre entreprise",
+        "feature3": "Nous engager comme agence de marketing",
+        "feature4": "10% de frais sur le profit hebdomadaire",
+        "button": "Obtenez l'Offre"
+      }
+    }
   },
   "register": {
     "metadata": {

@@ -75,6 +75,25 @@ export const editCourse = async (
   }
 };
 
+export const getPublicChapters = async (): Promise<ActionResponse> => {
+  try {
+    const chapters = await db.chapter.findMany({
+      orderBy: {
+        position: 'asc',
+      },
+      select: {
+        title_en: true,
+        title_fr: true,
+        description_en: true,
+        description_fr: true,
+      },
+    });
+    return { success: 'chapter-fetch-success', data: chapters };
+  } catch (error) {
+    return { error: 'chapter-fetch-error' };
+  }
+};
+
 export const getChapters = async (): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);

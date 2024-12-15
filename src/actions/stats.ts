@@ -123,12 +123,16 @@ async function calculateMonthlyProfit() {
         // Calculate course profit
         const courseProfit = soldCourses.reduce((total, course) => {
           switch (course.pack) {
-            case packOptions.DAMREJ:
+            case packOptions.FREE:
               return total;
+            case packOptions.DAMREJ:
+              return total + 297;
             case packOptions.AJEJA:
-              return total + 750;
+              return total + 497;
             case packOptions.MACHROU3:
-              return total + 1500;
+              return total + 1997;
+            case packOptions.CHARIKA:
+              return total + 3297;
             default:
               return total;
           }
@@ -293,13 +297,18 @@ async function calculateDailyProfit() {
 
     // Add course profit based on the pack type
     switch (course.pack) {
+      case packOptions.FREE:
+        dailyDataMap[dateStr].profit += 0;
       case packOptions.DAMREJ:
-        break; // No profit for DAMREJ
+        dailyDataMap[dateStr].profit += 297;
       case packOptions.AJEJA:
-        dailyDataMap[dateStr].profit += 750;
+        dailyDataMap[dateStr].profit += 497;
         break;
       case packOptions.MACHROU3:
-        dailyDataMap[dateStr].profit += 1500;
+        dailyDataMap[dateStr].profit += 1997;
+        break;
+      case packOptions.CHARIKA:
+        dailyDataMap[dateStr].profit += 3297;
         break;
       default:
         break;
@@ -694,12 +703,16 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
 
     const platformCourseProfit = (await soldCourses).reduce((total, course) => {
       switch (course.pack) {
-        case packOptions.DAMREJ:
+        case packOptions.FREE:
           return total;
+        case packOptions.DAMREJ:
+          return total + 297;
         case packOptions.AJEJA:
-          return total + 750;
+          return total + 497;
         case packOptions.MACHROU3:
-          return total + 1500;
+          return total + 1997;
+        case packOptions.CHARIKA:
+          return total + 3297;
         default:
           return total;
       }

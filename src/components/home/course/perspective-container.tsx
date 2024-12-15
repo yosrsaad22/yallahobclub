@@ -9,7 +9,7 @@ export const PerspectiveContainer = ({
   titleComponent,
   children,
 }: {
-  titleComponent: string | React.ReactNode;
+  titleComponent?: string | React.ReactNode;
   children: React.ReactNode;
 }) => {
   const containerRef = useRef<any>(null);
@@ -46,7 +46,7 @@ export const PerspectiveContainer = ({
         style={{
           perspective: '1000px',
         }}>
-        <Header translate={translate} titleComponent={titleComponent} />
+        {titleComponent && <Header translate={translate} titleComponent={titleComponent} />}
         <Card rotate={rotate} translate={translate} scale={scale}>
           {children}
         </Card>

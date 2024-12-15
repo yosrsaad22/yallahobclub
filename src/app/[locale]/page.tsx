@@ -6,7 +6,6 @@ import { WhatWeOffer } from '@/components/home/whatweoffer/whatweoffer';
 import { cn } from '@/lib/utils';
 import { Course } from '@/components/home/course/course';
 import { Cta } from '@/components/home/cta/cta';
-import { Pricing } from '@/components/home/pricing/pricing';
 import { Testimonials } from '@/components/home/testimonials/testimonials';
 import { getTranslations } from 'next-intl/server';
 import { FAQ } from '@/components/home/faq/faq';
@@ -41,7 +40,6 @@ export default function Home() {
         <WhatWeOffer />
         <Course />
         <Platform />
-        <Pricing />
         <Testimonials />
         <FAQ />
         <Cta />

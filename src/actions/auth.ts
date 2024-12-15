@@ -21,7 +21,7 @@ import { capitalizeWords, generateCode } from '@/lib/utils';
 
 export const register = async (values: z.infer<typeof RegisterSchema>): Promise<ActionResponse> => {
   const hashedPassword = await bcrypt.hash(values.password, 10);
-  const existingEmail = await getUserByEmail(values.email);
+  const existingEmail = await getUserByEmail(values.email.toLocaleLowerCase());
 
   const existingNumber = await getUserByNumber(values.number);
 
@@ -33,7 +33,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
     data: {
       code: 'ENSE-' + generateCode(),
       fullName: capitalizeWords(values.fullName.trim()),
-      email: values.email.trim(),
+      email: values.email.trim().toLocaleLowerCase(),
       number: values.number,
       address: values.address.trim(),
       state: values.state,
@@ -65,7 +65,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
 
 export const login = async (values: z.infer<typeof LoginSchema>): Promise<ActionResponse> => {
   let { email, password } = values;
-  email = email.trim();
+  email = email.trim().toLocaleLowerCase();
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser) {
@@ -106,7 +106,7 @@ export const logout = async () => {
 };
 
 export const forgotPassword = async (values: z.infer<typeof ForgotPasswordSchema>): Promise<ActionResponse> => {
-  const email = values.email.trim();
+  const email = values.email.trim().toLocaleLowerCase();
 
   const existingUser = await getUserByEmail(email);
   if (!existingUser) {
@@ -189,7 +189,7 @@ export const EmailVerification = async (token: string): Promise<ActionResponse> 
     },
     data: {
       emailVerified: new Date(),
-      email: existingToken.email,
+      email: existingToken.email.toLocaleLowerCase(),
     },
   });
 

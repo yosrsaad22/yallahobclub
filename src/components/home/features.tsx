@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { useInView } from 'react-intersection-observer';
 import { Container } from '../ui/container';
 import { LinearButton } from '../ui/linear-button';
-import { SparklesCore } from './pricing/sparkles';
+import { SparklesCore } from '../full-course/pricing/sparkles';
 import { useTranslations } from 'next-intl';
 import { MarketingIcon } from '../icons/marketing';
 import { BrandingIcon } from '../icons/branding';

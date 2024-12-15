@@ -40,7 +40,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
   let defaultValues;
   if (defaultRole === 'SELLER') {
     defaultValues = {
-      pack: packOptions.DAMREJ,
+      pack: packOptions.FREE,
       role: defaultRole,
       emailVerified: false,
       active: false,

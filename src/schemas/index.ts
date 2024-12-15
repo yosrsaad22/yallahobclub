@@ -136,7 +136,7 @@ export const UserSettingsSchema = z
     state: z.string(),
     newPassword: z.string().optional(),
     confirmPassword: z.string().optional(),
-    rib: z.string().optional(),
+    rib: z.string(),
     pack: z.nativeEnum(packOptions).optional(),
     storeName: z.string(),
   })

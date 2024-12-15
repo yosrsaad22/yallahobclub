@@ -25,7 +25,7 @@ const AwaitingDocumentApprovalCard: React.FC = () => {
             setTimeout(() => {
               router.refresh();
               setIsLoading(false);
-            }, 1000);
+            }, 2000);
           }}
           className="flex items-center gap-x-2"
           size={'default'}>
