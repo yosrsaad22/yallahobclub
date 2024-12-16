@@ -75,7 +75,7 @@ export const NotificationsCard: React.FC<NotificationsCardProps> = ({ notificati
               }}>
               <div className="flex flex-row items-center justify-between px-2">
                 <div className="flex flex-row items-center gap-4">
-                  <div className="rounded-full border border-border bg-page p-3 text-primary">
+                  <div className="rounded-full border border-border bg-muted p-3 text-primary">
                     <IconComponent className="h-8 w-8" />
                   </div>
                   <div className="flex flex-col space-y-1">

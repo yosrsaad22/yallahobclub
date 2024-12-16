@@ -4,12 +4,12 @@
 
 @layer base {
   .dark {
-    --background: 213 27% 10%;
+    --background: 227 9% 11%;
     --foreground: 210 40% 98%;
 
     --thumb: 0 0% 14.9%;
 
-    --page: 213 26% 7%;
+    --page: 227 9% 9%;
 
     --sidebar: 213 27% 10%;
 
@@ -42,7 +42,7 @@
     --success-foreground: 210 40% 98%;
 
     --border: 240 3.7% 15.9%;
-    --input: 215 27.9% 16.9%;
+    --input: 215.3 7.32% 23.4%;
     --ring: 212.7 26.8% 83.9%;
 
     --radius: 0.5rem;
