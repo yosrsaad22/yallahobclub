@@ -11,7 +11,7 @@ export const Testimonials = () => {
 
   return (
     <section id="testimonials">
-      <div className="builder-radial-gradient relative flex  h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background  py-24 md:shadow-xl">
+      <div className=" builder-radial-gradient relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg  py-24">
         <div className="mx-6 w-3/4 pb-0">
           <h2 className="text-gradient translate-y-[40%] text-center text-4xl font-medium leading-snug [transition:transform_1000ms_cubic-bezier(0.3,_1.17,_0.55,_0.99)_0s] md:px-32 md:text-[3.5rem] [.is-visible_&]:translate-y-0">
             {t('title')}
@@ -58,8 +58,6 @@ export const Testimonials = () => {
             </figure>
           ))}
         </Marquee>
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background"></div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background"></div>
       </div>
     </section>
   );

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 export function FAQ() {
   const t = useTranslations('home.faq');
   return (
-    <section className="builder-radial-gradient relative  flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-background py-24 md:shadow-xl">
+    <section className="builder-radial-gradient relative  flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-[hsl(200,23%,8%)] py-24 md:shadow-xl">
       <div className="mx-6 w-3/4 pb-0">
         <h2 className="text-gradient translate-y-[40%] text-center text-4xl font-medium leading-snug [transition:transform_1000ms_cubic-bezier(0.3,_1.17,_0.55,_0.99)_0s] md:px-32 md:text-[3.5rem] [.is-visible_&]:translate-y-0">
           {t('title')}

@@ -99,7 +99,7 @@ export function ResetPasswordForm({ className }: ResetPasswordFormProps) {
             disabled={isLoading}
             type="submit"
             rounded="md"
-            innerClassName="bg-background hover:bg-gray-800 active:bg-gray-800 "
+            innerClassName="bg-[#101619] hover:bg-gray-800 active:bg-gray-800 "
             size={'full'}>
             {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
             {t('reset-button')}

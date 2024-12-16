@@ -24,7 +24,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 
 export default function Home() {
   return (
-    <div className="page-gradient dark bg-[hsl(213,27%,10%)] pt-[4.1rem] text-foreground/90 ">
+    <div className="page-gradient dark bg-[hsl(200,23%,8%)] pt-[4.1rem] text-foreground/90 ">
       <Navbar />
       <main>
         <Hero />
@@ -33,7 +33,7 @@ export default function Home() {
           className={cn(
             'mask-radial-faded pointer-events-none relative z-[-1] my-[-12.8rem] h-[40rem] overflow-hidden',
             'before:absolute before:inset-0 before:bg-radial-faded before:opacity-[0.2]',
-            'after:absolute after:-left-1/2 after:top-1/2 after:h-[142.8%] after:w-[200%] after:rounded-[50%] after:border-t after:border-[rgba(120,_119,_198,_0.4)] after:bg-background',
+            'after:absolute after:-left-1/2 after:top-1/2 after:h-[142.8%] after:w-[200%] after:rounded-[50%] after:border-t after:border-[rgba(57,75,87,0.4)] after:bg-primary',
           )}>
           <StarsIllustration />
         </div>

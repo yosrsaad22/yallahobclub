@@ -64,7 +64,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
             disabled={isLoading}
             placeholder="Email@email.com"
             type="email"
-            className="bg-input"
+            className="bg-[#282b32]"
           />
           {errors.email && <span className="text-xs text-red-400">{tValidation('email-error')}</span>}
         </LabelInputContainer>
@@ -75,7 +75,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
             disabled={isLoading}
             type="submit"
             rounded="md"
-            innerClassName="bg-background hover:bg-gray-800 active:bg-gray-800 "
+            innerClassName="bg-[#101619] hover:bg-gray-800 active:bg-gray-800 "
             size={'full'}>
             {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
             {t('send-button')}

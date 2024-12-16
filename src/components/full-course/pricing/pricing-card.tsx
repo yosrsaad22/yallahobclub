@@ -58,7 +58,7 @@ export const PricingCard = ({
           </ul>
         </CardItem>
         <div className="mx-auto">
-          <GradientLinkButton size={'lg'} innerClassName="bg-[#2d3e48]" href={href}>
+          <GradientLinkButton size={'lg'} innerClassName="bg-[#172228]" href={href}>
             {buttonText}
           </GradientLinkButton>
         </div>

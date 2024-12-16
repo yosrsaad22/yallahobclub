@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 export const Course = () => {
   const t = useTranslations('home.course');
   return (
-    <section id="course">
+    <section id="course" className="mb-16">
       <Features color="129, 210, 237" colorDark="53, 92, 105" showSparkles={false}>
         <MainFeature
           showButton

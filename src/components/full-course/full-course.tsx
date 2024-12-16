@@ -122,7 +122,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </p>
           <div className="flex w-full animate-fade-in items-center justify-center [--animation-delay:400ms]">
             <GradientLinkButton
-              innerClassName={'bg-[#222738] hover:bg-gray-700 active:bg-gray-800'}
+              innerClassName="bg-[#24282e] hover:bg-gray-800 active:bg-gray-800 "
               rounded={'full'}
               size={'default'}
               href={'/register'}>
@@ -174,7 +174,9 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
       {/* what you get section */}
 
-      <div className="flex flex-col items-center justify-center py-6">
+      <div className="relative flex flex-col items-center justify-center py-6">
+        <div className="absolute inset-0 mt-4 w-full rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-40 blur-3xl"></div>
+
         <div className="relative flex h-8 flex-col items-center justify-center">
           <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
           <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
@@ -190,7 +192,6 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
         <div className="grid grid-cols-2 grid-rows-2 gap-12 pt-16 md:grid-cols-4 md:grid-rows-1 md:gap-16">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative  flex  w-16 animate-float-slow flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/video.png" alt="ads" height={36} width={36} />
               </div>
@@ -203,7 +204,6 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative  flex w-16 animate-float-medium flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/pantone.png" alt="ads" height={36} width={36} />
               </div>
@@ -215,7 +215,6 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </div>
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative flex w-16  animate-float-slow flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/headphones.png" alt="ads" height={36} width={36} />
               </div>
@@ -227,7 +226,6 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </div>
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative flex w-16  animate-float-medium flex-col items-center justify-center">
-              <div className="absolute  inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-md"></div>
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
                 <Image src="/img/chat.png" alt="ads" height={36} width={36} />
               </div>
@@ -242,7 +240,9 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
       {/* course content section */}
 
-      <div className="flex flex-col items-center justify-center py-6">
+      <div className="relative flex flex-col items-center justify-center py-16">
+        <div className="absolute inset-0 mt-12 w-full rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-30 blur-3xl"></div>
+
         <div className="relative flex h-8 flex-col items-center justify-center">
           <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
           <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">

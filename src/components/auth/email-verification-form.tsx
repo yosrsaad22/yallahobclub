@@ -51,7 +51,7 @@ export function LogiEmailVerificationForm({ className }: EmailVerificationFormPr
       <FormError message={error} />
       <FormSuccess message={success} />
       <GradientLinkButton
-        innerClassName={'bg-background hover:bg-gray-800 active:bg-gray-800'}
+        innerClassName="bg-[#101619] hover:bg-gray-800 active:bg-gray-800 "
         rounded={'md'}
         size={'full'}
         href={'/login'}>

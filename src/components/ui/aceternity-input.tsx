@@ -38,7 +38,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
         type={type}
         className={cn(
           `placeholder-text-neutral-600 duration-400 flex h-10 w-full rounded-md
-          bg-input px-3 
+          bg-[#282b32] px-3 
           py-2
           text-sm
           text-foreground transition

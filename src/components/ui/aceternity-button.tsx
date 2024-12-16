@@ -38,7 +38,7 @@ const AceternityButton = React.forwardRef<HTMLButtonElement, InputProps>(({ clas
       <button
         className={cn(
           `placeholder-text-neutral-600 duration-400 flex h-10 w-full rounded-md
-          bg-input px-3 
+          bg-[#282b32] px-3 
           py-2
           text-sm
           text-foreground transition

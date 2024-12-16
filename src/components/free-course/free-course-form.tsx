@@ -152,7 +152,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
   };
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-center ">
       <motion.div
         variants={freeCourseVariants3}
         initial="initial"
@@ -214,7 +214,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
             style={{ display: hideForm ? 'none' : 'flex flex-col' }}
             className="w-full translate-y-[-1rem] animate-fade-in  opacity-0 [--animation-delay:400ms]">
             <div>
-              <h1 className=" text-gradient mb-2 mt-8 py-2 text-center text-2xl font-semibold tracking-tight md:p-0 md:text-center">
+              <h1 className=" text-gradient mb-4 mt-8 py-2 text-center text-4xl font-semibold tracking-tight md:p-0 md:text-center">
                 {t('form-title')}
               </h1>
               <p className="mb-4 text-center text-sm text-muted-foreground">{t('text')}</p>
@@ -228,7 +228,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
                   disabled={isLoading}
                   placeholder={tFields('user-full-name')}
                   type="text"
-                  className="bg-input"
+                  className="bg-[#282b32]"
                 />
                 {errors.fullName && <span className="text-xs text-red-400">{tValidation('fullname-error')}</span>}
               </LabelInputContainer>
@@ -240,7 +240,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
                   disabled={isLoading}
                   placeholder={tFields('user-number')}
                   type="text"
-                  className="bg-input"
+                  className="bg-[#282b32]"
                 />
                 {errors.number && <span className="text-xs text-red-400">{tValidation('number-error')}</span>}
               </LabelInputContainer>
@@ -252,7 +252,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
                   disabled={isLoading}
                   placeholder="Email@email.com"
                   type="email"
-                  className="bg-input"
+                  className="bg-[#282b32]"
                 />
                 {errors.email && <span className="text-xs text-red-400">{tValidation('email-error')}</span>}
               </LabelInputContainer>
@@ -262,7 +262,7 @@ export const FreeCourseForm = ({ videoKey }: FreeCourseFormProps) => {
                   disabled={isLoading}
                   onClick={handleSubmit(onSubmit)}
                   rounded="md"
-                  innerClassName="bg-background hover:bg-gray-800 active:bg-gray-800 "
+                  innerClassName="bg-[#101619] hover:bg-gray-800 active:bg-gray-800 "
                   size={'full'}>
                   {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
 

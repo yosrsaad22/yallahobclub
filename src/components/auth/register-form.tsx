@@ -105,7 +105,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 disabled={isLoading}
                 placeholder={tFields('user-full-name')}
                 type="text"
-                className="text-autofill bg-input text-foreground"
+                className="text-autofill bg-[#282b32] text-foreground"
               />
               {errors.fullName && <span className="text-xs text-red-400">{tValidation('fullname-error')}</span>}
             </LabelInputContainer>
@@ -343,7 +343,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
             disabled={isLoading}
             onClick={handleSubmit(onSubmit)}
             rounded="md"
-            innerClassName="bg-background hover:bg-gray-800 active:bg-gray-800 "
+            innerClassName="bg-[#101619] hover:bg-gray-800 active:bg-gray-800 "
             size={'full'}>
             {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
 

@@ -16,8 +16,8 @@ import { GraphIllustration1 } from '@/components/illustrations/graph1';
 export function PlatformBento() {
   const t = useTranslations('home.platform');
   return (
-    <div className="mt-16 h-full overflow-hidden md:mx-8 md:h-auto lg:mx-16 xl:mx-24 ">
-      <div className="platform-radial-gradient scrollbar-track-rounded-ful flex snap-x snap-mandatory gap-6  overflow-x-auto px-8 pb-12 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent scrollbar-thumb-rounded-full md:flex-wrap">
+    <div className="relative mt-16 h-full overflow-hidden md:mx-8 md:h-auto lg:mx-16 xl:mx-24 ">
+      <div className="scrollbar-track-rounded-ful flex snap-x snap-mandatory gap-6  overflow-x-auto px-8 pb-12 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent scrollbar-thumb-rounded-full md:flex-wrap">
         <BentoOne
           title={t('bento1.title')}
           text={t('bento1.text')}
@@ -59,7 +59,7 @@ export const BentoOne = ({
   delivered: string;
 }) => {
   return (
-    <div className="feature-glass-gradient relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-end overflow-hidden rounded-[4.8rem] border border-transparent-white p-8 text-center md:max-w-[calc(66.66%-12px)] md:basis-[calc(66.66%-12px)] md:p-14">
+    <div className="feature-glass-gradient relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-end overflow-hidden rounded-[4rem] border border-transparent-white p-8 text-center md:max-w-[calc(66.66%-12px)] md:basis-[calc(66.66%-12px)] md:p-14">
       <motion.div
         initial="initial"
         whileHover="animate"
@@ -93,7 +93,7 @@ export const BentoOne = ({
           </div>
         </motion.div>
       </motion.div>
-      <p className="mb-4  w-full text-center text-2xl md:text-left ">{title}</p>
+      <p className="mb-2 w-full  text-center text-2xl font-semibold md:text-left ">{title}</p>
       <p className="text-md text-primary-text w-full text-center md:text-left">{text}</p>
     </div>
   );
@@ -101,11 +101,11 @@ export const BentoOne = ({
 
 export const BentoTwo = ({ title, text }: { title: string; text: string }) => {
   return (
-    <div className="feature-glass-gradient relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-end overflow-hidden rounded-[4.8rem] border border-transparent-white p-8 text-center md:basis-[calc(33.33%-12px)] md:p-14">
+    <div className="feature-glass-gradient relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-end overflow-hidden rounded-[4rem] border border-transparent-white p-8 text-center md:basis-[calc(33.33%-12px)] md:p-14">
       <div className="mask-linear-faded absolute top-[-2rem]">
         <ZapIllustration />
       </div>
-      <p className="mb-4 text-2xl">{title}</p>
+      <p className="mb-2 text-2xl font-semibold">{title}</p>
       <p className="text-md text-primary-text">{text}</p>
     </div>
   );
@@ -114,13 +114,13 @@ export const BentoTwo = ({ title, text }: { title: string; text: string }) => {
 export const BentoThree = ({ title, text }: { title: string; text: string }) => {
   -2;
   return (
-    <div className="mask-linear-faded feature-glass-gradient group relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-end overflow-hidden rounded-[4.8rem] border border-transparent-white text-center md:basis-[calc(33.33%-12px)] ">
-      <div className="pointer-events-none  absolute top-[6rem] w-full">
-        <GraphIllustration1 />
-      </div>
-      <div className="p-8 md:p-14">
-        <p className="mb-4 text-2xl">{title}</p>
+    <div className="mask-linear-faded feature-glass-gradient group relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-start  overflow-hidden rounded-[4rem] border border-transparent-white text-center md:basis-[calc(33.33%-12px)] ">
+      <div className="mt-16 p-8 md:p-14">
+        <p className="mb-2 text-2xl font-semibold">{title}</p>
         <p className="text-md text-primary-text">{text}</p>
+      </div>
+      <div className="pointer-events-none  absolute bottom-4 w-full">
+        <GraphIllustration1 />
       </div>
     </div>
   );
@@ -146,7 +146,7 @@ export const BentoFour = ({
   category3: string;
 }) => {
   return (
-    <div className="feature-glass-gradient relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-start overflow-hidden rounded-[4.8rem] border border-transparent-white text-center md:max-w-[calc(66.66%-12px)] md:basis-[calc(66.66%-12px)] md:p-14">
+    <div className="feature-glass-gradient relative flex min-h-[25rem] w-full shrink-0 snap-center flex-col items-center justify-start overflow-hidden rounded-[4rem] border border-transparent-white text-center md:max-w-[calc(66.66%-12px)] md:basis-[calc(66.66%-12px)] md:p-14">
       <motion.div
         initial="initial"
         animate="animate"
@@ -181,7 +181,7 @@ export const BentoFour = ({
         </motion.div>
       </motion.div>
       <div className="px-8 pb-8">
-        <p className="mb-4 mt-4 text-2xl">{title}</p>
+        <p className="mb-2 mt-4 text-2xl font-semibold">{title}</p>
         <p className="text-md text-primary-text">{text}</p>
       </div>
     </div>

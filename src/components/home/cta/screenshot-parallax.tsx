@@ -62,7 +62,7 @@ export const HeroParallax = ({
 
   return (
     <div ref={ref} className="relative flex h-full  flex-col overflow-hidden antialiased md:h-full ">
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-background "></div>
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[hsl(200,23%,8%)] "></div>
 
       <Header />
       <motion.div

@@ -27,7 +27,7 @@ export const Hero = ({ className }: { className?: string }) => {
         </p>
         <div className="my-12">
           <GradientLinkButton
-            innerClassName="bg-[#2d3441] hover:bg-gray-800 active:bg-gray-800"
+            innerClassName="bg-[#2d353d] hover:bg-gray-700 active:bg-gray-700"
             size="lg"
             href={'/register'}>
             {t('button')}

@@ -145,7 +145,7 @@ export const Navbar = () => {
           {t('login')}
         </Link>
         <GradientLinkButton
-          innerClassName="bg-[#2d3441] hover:bg-gray-700 active:bg-gray-700"
+          innerClassName="bg-[#1e2227] hover:bg-gray-700 active:bg-gray-700"
           size="sm"
           href={'/register'}>
           {t('register')}
@@ -156,7 +156,7 @@ export const Navbar = () => {
               <MenuIcon className="h-[1.4rem] w-[1.4rem]" />
             </Button>
           </SheetTrigger>
-          <SheetContent side={'top'} className="z-[200] w-full border-none bg-[hsl(200,100%,5%)] text-white">
+          <SheetContent side={'top'} className="z-[200] w-full border-none bg-[hsl(197,12%,12%)] text-white">
             <SheetHeader>
               <SheetTitle>
                 <Link passHref href={'/'}>
@@ -200,7 +200,7 @@ export const Navbar = () => {
                           </Link>
                         </AccordionContent>
                         <AccordionContent className="pb-0 text-left">
-                          <div className="flex flex-row items-center justify-center">
+                          <div className="flex flex-row items-center justify-center pb-8">
                             <Link
                               passHref
                               onClick={() => {
