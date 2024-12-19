@@ -568,77 +568,104 @@
   "full-course": {
     "metadata": {
       "title": "Ecomness - Dropshipping Course",
-      "description": "Get access to a our dropshipping course to learn everything about dropshipping, e-commerce, branding and marketing and start making money online",
-      "video-title": "Dropshipping online course"
+      "description": "Access our dropshipping course to learn everything about dropshipping, e-commerce, branding, and marketing, and start making money online.",
+      "video-title": "Online Dropshipping Course"
     },
-    "title": "Get the most out of our",
-    "title-gradient": "Dropshipping Masterclass",
-    "text": "Are you ready to start your journey into the world of e-commerce? Our comprehensive Dropshipping Online Course is designed for aspiring entrepreneurs who want to turn their ideas into a thriving online business. Whether you're a complete beginner or looking to level up your skills, this course will guide you from zero to your first orders—and beyond!",
-    "buy-button": "Join the Course",
+    "title": "30 days to create and launch your",
+    "title-gradient": "E-Commerce business",
+    "text": "A comprehensive program to help you succeed in e-commerce: strategies, personalized follow-up, and everything you need to launch your online store.",
+    "buy-button": "Join the course",
     "what-you-get": "What you will get",
-    "what-you-get-title": "Build a Brand from the Ground Up",
-    "what-you-get-text": "In this course, we will create a brand from scratch, step by step, right before your eyes. You’ll witness our team develop everything from the initial concept to a fully operational and thriving business, providing you with actionable insights to replicate the process and much more..",
+    "what-you-get-title": "Build a brand from A to Z",
+    "what-you-get-text": "In this course, we will create a brand from scratch, step by step, right before your eyes. You will see our team develop everything from the initial concept to a fully operational and successful business, while providing practical advice to replicate the process and much more.",
+    "why-us": "Why us?",
+    "why-us-title": "Why choose Ecomness",
+    "learning": {
+      "title": "Flexible learning",
+      "subtitle": "Fully online training, follow at your own pace, wherever and whenever you want. Complete it in 6 weeks or more, depending on your schedule."
+    },
+    "platform": {
+      "title": "Dropshipping platform",
+      "subtitle": "Access hundreds of products that you can sell without buying them in advance."
+    },
+    "coaching": {
+      "title": "Tailored coaching",
+      "subtitle": "Benefit from personalized support with 4 sessions per week, guided by our experts to achieve your entrepreneurial goals."
+    },
+    "trends": {
+      "title": "Ads and brand news",
+      "subtitle": "Stay informed about the latest trends and successes in digital marketing and e-commerce."
+    },
+    "network": {
+      "title": "Join a network of e-merchants",
+      "subtitle": "Access our private circle of e-merchants, exchange ideas, and grow in a collaborative environment."
+    },
+    "support": {
+      "title": "Technical support",
+      "subtitle": "Enjoy dedicated technical support to solve your problems quickly and easily."
+    },
     "chapters": {
       "title": "10 Chapters",
-      "subtitle": "a total of 60 Hours"
+      "subtitle": "a total of 60 hours"
     },
     "brand": {
       "title": "Build a brand",
-      "subtitle": "from the ground up"
+      "subtitle": "from scratch"
     },
     "followup": {
-      "title": "Technical Follow-up",
+      "title": "4 sessions with experts",
       "subtitle": "every week"
     },
     "community": {
-      "title": "Online Community",
-      "subtitle": "at your disposal"
+      "title": "Follow-up and motivation",
+      "subtitle": "to achieve your goals"
     },
     "host-meet": "Meet your host and co-founder",
-    "host-text": "Rached Khemakhem, co-founder and e-commerce expert, started as a software engineer to later on decide to pivot his career to pursue his true passion: building and scaling online brands. With a deep understanding of marketing and brand creation, Rached has successfully launched and grown multiple e-commerce ventures from scratch, turning them into thriving businesses. His expertise lies in developing strong brand identities, creating impactful marketing strategies, and leveraging his technical background to innovate in the e-commerce space.",
-    "explore-course": "Explore the online course",
-    "course-hours": "22 hours of exclusive content",
-    "course-content": "This course is designed to guide you through building a successful e-commerce brand from scratch. You’ll learn essential skills like branding, setting up a Shopify store, creating impactful marketing strategies, and mastering dropshipping best practices. We’ll also cover content creation for social media, managing finances, choosing the right product pricing, and starting from a blank social media account to build a brand that attracts real orders and achieves sustainable growth.",
+    "host-title": "A comprehensive E-Commerce program, not just a course",
+    "host-text": "Rached Khemakhem founded a company creating online projects like the brand 3alla9ni and Yalla Hob. For over a year, he has been offering practical coaching, with a team of experts in Meta ads, content creation, branding, etc. They have designed a training based on real market experience in Tunisia, ensuring participants' success without excuses.",
+    "explore-course": "Explore the chapters",
+    "course-hours": "Browse the program",
+    "course-content": "This course is designed to guide you in creating a successful e-commerce brand from scratch. You will learn essential skills like branding, setting up a Shopify store, creating impactful marketing strategies, and mastering best practices in dropshipping. We will also cover content creation for social media, financial management, pricing your products correctly, and how to build a brand from a blank social account that attracts real orders and experiences sustainable growth.",
     "chapters-number": "A total of {subject} chapters",
     "pricing": {
-      "badge": "Pricing",
-      "title": "Only get what you actually need",
-      "text": "Whether you want to learn all about E-commerce, Dropshipping, Brading and Ads or just want to use our platform to financial freedom we have the right pack for you.",
+      "badge": "Take action",
+      "title": "Dare to transform your life",
+      "text": "After training thousands of students, Ecomness is our flagship program to learn how to create your online store",
       "totally-free": "100% Free",
-      "pay-once": "One time payment",
+      "pay-once": "One-time payment",
       "damrej": {
-        "description": "You already have experience, all you need is winning products for wholesale prices.",
-        "feature1": "All features on the platform",
-        "feature2": "Access to winning products",
-        "feature3": "10% Fee from profit",
-        "feature4": "Dropshipping course",
-        "button": "Get Offer"
+        "description": "You already have experience, all you need are winning products at wholesale prices.",
+        "feature1": "Products to sell without needing to buy them",
+        "feature2": "Ecomness training",
+        "button": "Get the offer"
       },
       "3jeja": {
-        "description": "Learn from the experts, benefit from a 3-month technical follow-up, and access everything on the platform.",
-        "feature1": "Everything in pack DAMREJ",
-        "feature2": "3 months of technical follow-up",
-        "feature3": "Dropshipping course included",
-        "feature4": "10% Fee from profit",
-        "button": "Get Offer"
+        "description": "Learn from experts, benefit from 3 months of technical support, and access everything on the platform.",
+        "feature1": "Everything included in the DAMREJ pack",
+        "feature2": "48 online sessions with experts (Q&A, Meta ads, content creation, branding, etc.)",
+        "feature3": "Technical support to solve your problems",
+        "button": "Get the offer"
+      },
+      "brand": {
+        "description": "Start your dropshipping adventure with advanced tools, resources, and 6 months of follow-up.",
+        "feature1": "Everything included in the 3JEJA pack",
+        "feature2": "96 online sessions with experts (Q&A, Meta ads, content creation, branding, etc.)",
+        "feature3": "Creation of your website on WordPress",
+        "feature4": "Creation of your brand",
+        "button": "Get the offer"
       },
       "machrou3": {
-        "description": "Start your dropshipping journey with advanced tools, resources, and 6 months of follow-up.",
-        "feature1": "Everything in pack 3JEJA",
-        "feature2": "6 months of technical follow-up",
-        "feature3": "Website creation",
-        "feature4": "Brand book design",
-        "button": "Get Offer"
-      },
-      "charika": {
-        "description": "Take your business to the next level with 9 months of follow-up and advanced business support.",
-        "feature1": "Everything in pack MACHROU3",
-        "feature2": "Legally create your own company",
-        "feature3": "2 months of ad campaigns",
-        "feature4": "6 months of technical follow-up",
-        "button": "Get Offer"
+        "description": "Take your business to the next level with 9 months of follow-up and advanced support for your activity.",
+        "feature1": "Everything included in the BRAND pack",
+        "feature2": "144 online sessions with experts (Q&A, Meta ads, content creation, branding, etc.)",
+        "feature3": "Legal creation of your own company",
+        "feature4": "Management of your advertising campaigns for 2 months",
+        "button": "Get the offer"
       }
-    }
+    },
+    "testimonials": "Testimonials",
+    "testimonials-title": "They share their successes",
+    "testimonials-text": "Discover our clients who dared to change their lives and start their journey towards financial freedom"
   },
   "register": {
     "metadata": {
@@ -951,6 +978,7 @@
       "image-button": "Change Image",
       "user-information": "User Information",
       "user-progress": "Course Progress",
+      "annoucement": "Contact IT support (+216) 24 002 024",
       "user-email-verified-note": "User E-mail has been verified",
       "user-store-name-note": "The name that will be displayed on the shipments, default is ECOMNESS",
       "user-active-note": "User account is activated",

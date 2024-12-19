@@ -279,6 +279,29 @@ export function RegisterForm({ className }: RegisterFormProps) {
           <div className="mt-4 grid w-full gap-4 text-left sm:grid-cols-2 lg:grid-cols-2">
             <div
               onClick={() => {
+                setValue('pack', packOptions.BRAND);
+                setSelectedPack(packOptions.BRAND);
+              }}
+              className={cn(
+                selectedPack === packOptions.BRAND ? 'border-primary shadow-sm shadow-primary' : '',
+                'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
+              )}>
+              <div className="flex flex-row items-center justify-center gap-4 ">
+                {selectedPack === packOptions.BRAND && (
+                  <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
+                )}
+                {selectedPack !== packOptions.BRAND && (
+                  <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
+                )}
+                <div className="flex flex-col items-start justify-center">
+                  <h1 className="text-gradient text-md font-bold">PACK BRAND</h1>
+                  <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
+                </div>
+              </div>
+              <h2 className="text-gradient  ml-4 flex text-xl font-semibold">1997 DT</h2>
+            </div>
+            <div
+              onClick={() => {
                 setValue('pack', packOptions.MACHROU3);
                 setSelectedPack(packOptions.MACHROU3);
               }}
@@ -295,29 +318,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 )}
                 <div className="flex flex-col items-start justify-center">
                   <h1 className="text-gradient text-md font-bold">PACK MACHROU3</h1>
-                  <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
-                </div>
-              </div>
-              <h2 className="text-gradient  ml-4 flex text-xl font-semibold">1997 DT</h2>
-            </div>
-            <div
-              onClick={() => {
-                setValue('pack', packOptions.CHARIKA);
-                setSelectedPack(packOptions.CHARIKA);
-              }}
-              className={cn(
-                selectedPack === packOptions.CHARIKA ? 'border-primary shadow-sm shadow-primary' : '',
-                'feature-glass-gradient flex w-full cursor-pointer flex-row items-center justify-between rounded-lg border-2 p-4',
-              )}>
-              <div className="flex flex-row items-center justify-center gap-4 ">
-                {selectedPack === packOptions.CHARIKA && (
-                  <IconCircleCheckFilled className="flex h-6 w-6 text-primary"></IconCircleCheckFilled>
-                )}
-                {selectedPack !== packOptions.CHARIKA && (
-                  <IconCircleCheck className="flex h-6 w-6 text-primary"></IconCircleCheck>
-                )}
-                <div className="flex flex-col items-start justify-center">
-                  <h1 className="text-gradient text-md font-bold">PACK CHARIKA</h1>
                   <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
                 </div>
               </div>

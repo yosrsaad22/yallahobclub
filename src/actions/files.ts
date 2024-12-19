@@ -17,6 +17,8 @@ const cleanOrphanFiles = async () => {
     db.user.findMany({
       select: {
         image: true,
+        CIN1: true,
+        CIN2: true,
       },
     }),
     db.course.findMany({
@@ -38,6 +40,8 @@ const cleanOrphanFiles = async () => {
 
   users.forEach((user) => {
     if (user.image) usedFiles.add(user.image);
+    if (user.CIN1) usedFiles.add(user.CIN1);
+    if (user.CIN2) usedFiles.add(user.CIN2);
   });
 
   courses.forEach((course) => {

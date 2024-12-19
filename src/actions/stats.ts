@@ -2,7 +2,6 @@
 import { db } from '@/lib/db';
 import { currentUser, roleGuard } from '@/lib/auth';
 import { ActionResponse, DailyProfit, DailyProfitAndSubOrders, MonthlyProfitAndSubOrders } from '@/types';
-import { revalidatePath } from 'next/cache';
 import { UserRole } from '@prisma/client';
 import { endOfDay, endOfMonth, startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
 import { packOptions } from '@/lib/constants';
@@ -129,9 +128,9 @@ async function calculateMonthlyProfit() {
               return total + 297;
             case packOptions.AJEJA:
               return total + 497;
-            case packOptions.MACHROU3:
+            case packOptions.BRAND:
               return total + 1997;
-            case packOptions.CHARIKA:
+            case packOptions.MACHROU3:
               return total + 3297;
             default:
               return total;
@@ -304,10 +303,10 @@ async function calculateDailyProfit() {
       case packOptions.AJEJA:
         dailyDataMap[dateStr].profit += 497;
         break;
-      case packOptions.MACHROU3:
+      case packOptions.BRAND:
         dailyDataMap[dateStr].profit += 1997;
         break;
-      case packOptions.CHARIKA:
+      case packOptions.MACHROU3:
         dailyDataMap[dateStr].profit += 3297;
         break;
       default:
@@ -709,9 +708,9 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
           return total + 297;
         case packOptions.AJEJA:
           return total + 497;
-        case packOptions.MACHROU3:
+        case packOptions.BRAND:
           return total + 1997;
-        case packOptions.CHARIKA:
+        case packOptions.MACHROU3:
           return total + 3297;
         default:
           return total;

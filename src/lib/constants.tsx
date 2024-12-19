@@ -31,8 +31,8 @@ export enum packOptions {
   FREE = 'FREE',
   DAMREJ = 'DAMREJ',
   AJEJA = 'AJEJA',
+  BRAND = 'BRAND',
   MACHROU3 = 'MACHROU3',
-  CHARIKA = 'CHARIKA',
 }
 export enum roleOptions {
   ADMIN = 'ADMIN',

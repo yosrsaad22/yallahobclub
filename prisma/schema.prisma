@@ -52,8 +52,8 @@ enum UserPack {
   FREE
   DAMREJ
   AJEJA
+  BRAND
   MACHROU3
-  CHARIKA
 }
 
 model Billing {

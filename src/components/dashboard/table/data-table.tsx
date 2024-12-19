@@ -117,7 +117,7 @@ export function DataTable<TData extends { id: string }, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     rowCount: data.length,
-    initialState: { pagination: { pageSize: 8 } },
+    initialState: { pagination: { pageSize: 20 } },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -135,7 +135,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   React.useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
-      table.setPageSize(isMobile ? 8 : 8);
+      table.setPageSize(isMobile ? 8 : 20);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);

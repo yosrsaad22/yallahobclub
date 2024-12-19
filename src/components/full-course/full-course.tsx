@@ -1,11 +1,12 @@
 'use client';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import React from 'react';
-import { GradientLinkButton } from '../ui/button';
+import React, { useState } from 'react';
+import { Button, GradientLinkButton } from '../ui/button';
 import { localeOptions } from '@/lib/constants';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { PricingCard } from './pricing/pricing-card';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 interface FullCourseComponentProps extends React.HTMLAttributes<HTMLDivElement> {
   chapters: any[];
@@ -20,8 +21,20 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
   const chapterDurations = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 25, 20, 15, 30];
   const chaptersWithDuration = chapters.map((chapter, index) => ({
     ...chapter,
-    duration: chapterDurations[index], // Assigning a different duration for each chapter
+    duration: chapterDurations[index],
   }));
+
+  const images = ['/img/conversation.png', '/img/conversation1.png', '/img/conversation.png'];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center gap-24 p-8  md:gap-28 ">
@@ -32,7 +45,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-slow flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/fb.png" alt="Facebook" height={36} width={36} />
+              <Image src="/img/fb.webp" alt="Facebook" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -40,7 +53,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-fast flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700   p-3">
-              <Image src="/img/meta.png" alt="Meta" height={36} width={36} />
+              <Image src="/img/meta.webp" alt="Meta" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -48,7 +61,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-medium flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/insta.png" alt="Instagram" height={36} width={36} />
+              <Image src="/img/insta.webp" alt="Instagram" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -56,7 +69,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-slow flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/shopify.png" alt="Shopify" height={36} width={36} />
+              <Image src="/img/shopify.webp" alt="Shopify" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -64,7 +77,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-fast flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-2">
-              <Image src="/img/canva.png" alt="Canva" height={36} width={36} />
+              <Image src="/img/canva.webp" alt="Canva" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -72,7 +85,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-medium flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/tiktk.png" alt="TikTok" height={36} width={36} />
+              <Image src="/img/tiktk.webp" alt="TikTok" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -80,7 +93,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-slow flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/capcut.jpg" className="rounded-md" alt="capcut" height={36} width={36} />
+              <Image src="/img/capcut.webp" className="rounded-md" alt="capcut" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -88,7 +101,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-medium flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/google-analytics.png" alt="Google" height={36} width={36} />
+              <Image src="/img/google-analytics.webp" alt="Google" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -96,7 +109,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-slow flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/seo.png" alt="seo" height={36} width={36} />
+              <Image src="/img/seo.webp" alt="seo" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -104,7 +117,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex animate-float-medium flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-xl bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
             <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-              <Image src="/img/megaphone.png" alt="ads" height={36} width={36} />
+              <Image src="/img/megaphone.webp" alt="ads" height={36} width={36} />
             </div>
           </div>
         </div>
@@ -152,23 +165,81 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
               {t('host-meet')}
             </div>
           </div>
-          <h1 className="text-gradient max-w-full  translate-y-[-1rem] animate-fade-in  py-2 pt-4 text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:text-[3rem]">
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text  text-transparent">
-              Rached Khemakhem
+          <h1 className="text-gradient w-full translate-y-[-1rem]  animate-fade-in py-2  pt-4 text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:max-w-lg md:text-[3rem]">
+            <span className=" bg-gradient-to-r from-primary to-secondary bg-clip-text  text-transparent">
+              {t('host-title')}
             </span>
           </h1>
           <p className="text-md max-w-full pt-8 md:max-w-xl ">{t('host-text')}</p>
+          <div className="pt-8">
+            <GradientLinkButton
+              innerClassName="bg-[#24282e] hover:bg-gray-800 active:bg-gray-800 "
+              rounded={'full'}
+              size={'default'}
+              href={'/register'}>
+              {t('buy-button')}
+            </GradientLinkButton>
+          </div>
         </div>
         <div className="feature-glass-gradient relative flex items-end justify-center rounded-md border border-slate-700/70 backdrop-blur-sm bg-dot-gray-700/80">
           <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/90 to-secondary/90 opacity-70 blur-3xl"></div>
           <Image src={'/img/rached.png'} className="z-[10]" height={300} width={300} alt="host" />
-          <Image
-            src={'/img/logo-e.png'}
-            className="absolute right-4 top-2"
-            height={40}
-            width={40}
-            alt="decorative circular line"
-          />
+        </div>
+      </div>
+
+      {/* why us section */}
+
+      <div className="relative flex flex-col items-center justify-center py-6">
+        <div className="absolute inset-0 mt-4 w-full rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-40 blur-3xl"></div>
+
+        <div className="relative flex h-8 flex-col items-center justify-center">
+          <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
+          <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
+            {t('why-us')}
+          </div>
+        </div>
+        <h1 className="text-gradient max-w-full translate-y-[-1rem] animate-fade-in py-2  pt-4 text-center text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:text-[3rem]">
+          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text  text-transparent">
+            {t('why-us-title')}
+          </span>
+        </h1>
+        <div className="grid grid-cols-2 grid-rows-3 gap-6 pt-16 md:grid-cols-3 md:grid-rows-2 md:gap-10">
+          <div className="feature-glass-gradient relative flex max-w-[18rem] flex-col items-start justify-start gap-4 rounded-md border border-slate-700/70 p-4 py-5 backdrop-blur-sm ">
+            <Image src="/img/learning.webp" alt="learning" height={32} width={32} />
+            <h1 className="text-lg font-bold ">{t('learning.title')}</h1>
+            <p className="text-sm text-white/90">{t('learning.subtitle')}</p>
+          </div>
+          <div className="feature-glass-gradient relative flex max-w-[18rem] flex-col items-start justify-start gap-4 rounded-md border border-slate-700/70 p-4 py-5 backdrop-blur-sm ">
+            <Image src="/img/coaching.webp" alt="coachnig" height={32} width={32} />
+
+            <h1 className="text-lg font-bold">{t('coaching.title')}</h1>
+            <p className="text-sm text-white/90">{t('coaching.subtitle')}</p>
+          </div>
+          <div className="feature-glass-gradient relative flex max-w-[18rem] flex-col items-start justify-start gap-4 rounded-md border border-slate-700/70 p-4 py-5 backdrop-blur-sm ">
+            <Image src="/img/platform.webp" alt="platform" height={32} width={32} />
+
+            <h1 className="text-lg font-bold">{t('platform.title')}</h1>
+            <p className="text-sm text-white/90">{t('platform.subtitle')}</p>
+          </div>
+          <div className="feature-glass-gradient relative flex max-w-[18rem] flex-col items-start justify-start gap-4 rounded-md border border-slate-700/70 p-4 py-5 backdrop-blur-sm ">
+            <Image src="/img/trends.webp" alt="trends" height={32} width={32} />
+
+            <h1 className="text-lg font-bold">{t('trends.title')}</h1>
+            <p className="text-sm text-white/90">{t('trends.subtitle')}</p>
+          </div>
+
+          <div className="feature-glass-gradient relative flex max-w-[18rem] flex-col items-start justify-start gap-4 rounded-md border border-slate-700/70 p-4 py-5 backdrop-blur-sm ">
+            <Image src="/img/network.webp" alt="network" height={32} width={32} />
+
+            <h1 className="text-lg font-bold">{t('network.title')}</h1>
+            <p className="text-sm text-white/90">{t('network.subtitle')}</p>
+          </div>
+          <div className="feature-glass-gradient relative flex max-w-[18rem] flex-col items-start justify-start gap-4 rounded-md border border-slate-700/70 p-4 py-5 backdrop-blur-sm ">
+            <Image src="/img/support.webp" alt="support" height={32} width={32} />
+
+            <h1 className="text-lg font-bold">{t('support.title')}</h1>
+            <p className="text-sm text-white/90">{t('support.subtitle')}</p>
+          </div>
         </div>
       </div>
 
@@ -189,11 +260,11 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </span>
         </h1>
         <p className="text-md pt-8 text-center md:max-w-3xl ">{t('what-you-get-text')}</p>
-        <div className="grid grid-cols-2 grid-rows-2 gap-12 pt-16 md:grid-cols-4 md:grid-rows-1 md:gap-16">
+        <div className="grid grid-cols-2 grid-rows-2 gap-12 pt-16 md:grid-cols-4 md:grid-rows-1 md:gap-4">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative  flex  w-16 animate-float-slow flex-col items-center justify-center">
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-                <Image src="/img/video.png" alt="ads" height={36} width={36} />
+                <Image src="/img/video.webp" alt="ads" height={36} width={36} />
               </div>
             </div>
             <div className="flex flex-col items-center gap-1">
@@ -205,7 +276,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative  flex w-16 animate-float-medium flex-col items-center justify-center">
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-                <Image src="/img/pantone.png" alt="ads" height={36} width={36} />
+                <Image src="/img/pantone.webp" alt="ads" height={36} width={36} />
               </div>
             </div>
             <div className="flex flex-col items-center gap-1">
@@ -216,7 +287,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative flex w-16  animate-float-slow flex-col items-center justify-center">
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-                <Image src="/img/headphones.png" alt="ads" height={36} width={36} />
+                <Image src="/img/headphones.webp" alt="ads" height={36} width={36} />
               </div>
             </div>
             <div className="flex flex-col items-center gap-1 ">
@@ -227,7 +298,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative flex w-16  animate-float-medium flex-col items-center justify-center">
               <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-xl border border-gray-700  p-3">
-                <Image src="/img/chat.png" alt="ads" height={36} width={36} />
+                <Image src="/img/chat.webp" alt="ads" height={36} width={36} />
               </div>
             </div>
             <div className="flex flex-col items-center gap-1">
@@ -241,7 +312,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
       {/* course content section */}
 
       <div className="relative flex flex-col items-center justify-center py-16">
-        <div className="absolute inset-0 mt-12 w-full rounded-full bg-gradient-to-r from-primary/60 to-secondary/70 opacity-30 blur-3xl"></div>
+        <div className="absolute inset-0 mt-12 w-full rounded-full bg-gradient-to-r from-primary/60 to-secondary/70 opacity-50 blur-3xl"></div>
 
         <div className="relative flex h-8 flex-col items-center justify-center">
           <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
@@ -274,7 +345,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
       {/* pricing section */}
 
-      <div className="flex flex-col items-center justify-center py-6 pb-32">
+      <div className="flex flex-col items-center justify-center py-6">
         <div className="relative flex h-8 flex-col items-center justify-center">
           <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
           <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
@@ -295,12 +366,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
             price="297 DT"
             payOnceText={t('pricing.pay-once')}
             description={t('pricing.damrej.description')}
-            features={[
-              t('pricing.damrej.feature1'),
-              t('pricing.damrej.feature2'),
-              t('pricing.damrej.feature3'),
-              t('pricing.damrej.feature4'),
-            ]}
+            features={[t('pricing.damrej.feature1'), t('pricing.damrej.feature2')]}
             buttonText={t('pricing.damrej.button')}
           />
           <PricingCard
@@ -310,19 +376,29 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
             href="/register"
             payOnceText={t('pricing.pay-once')}
             description={t('pricing.3jeja.description')}
-            features={[
-              t('pricing.3jeja.feature1'),
-              t('pricing.3jeja.feature2'),
-              t('pricing.3jeja.feature3'),
-              t('pricing.3jeja.feature4'),
-            ]}
+            features={[t('pricing.3jeja.feature1'), t('pricing.3jeja.feature2'), t('pricing.3jeja.feature3')]}
             buttonText={t('pricing.3jeja.button')}
           />
           <PricingCard
             className="m-1 space-y-8"
             href="/register"
-            packName="MACHROU3"
+            packName="BRAND"
             price="1997 DT"
+            payOnceText={t('pricing.pay-once')}
+            description={t('pricing.brand.description')}
+            features={[
+              t('pricing.brand.feature1'),
+              t('pricing.brand.feature2'),
+              t('pricing.brand.feature3'),
+              t('pricing.brand.feature4'),
+            ]}
+            buttonText={t('pricing.brand.button')}
+          />
+          <PricingCard
+            className="m-1 space-y-8"
+            href="/register"
+            packName="MACHROU3"
+            price="3297 DT"
             payOnceText={t('pricing.pay-once')}
             description={t('pricing.machrou3.description')}
             features={[
@@ -333,21 +409,51 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
             ]}
             buttonText={t('pricing.machrou3.button')}
           />
-          <PricingCard
-            className="m-1 space-y-8"
-            href="/register"
-            packName="CHARIKA"
-            price="3297 DT"
-            payOnceText={t('pricing.pay-once')}
-            description={t('pricing.charika.description')}
-            features={[
-              t('pricing.charika.feature1'),
-              t('pricing.charika.feature2'),
-              t('pricing.charika.feature3'),
-              t('pricing.charika.feature4'),
-            ]}
-            buttonText={t('pricing.charika.button')}
+        </div>
+      </div>
+
+      {/* testimonials section */}
+
+      <div className="relative flex h-[40rem] flex-col items-center justify-center py-6 ">
+        <div className="absolute inset-0 mt-12 w-full rounded-full bg-gradient-to-r from-primary/60 to-secondary/70 opacity-50 blur-3xl"></div>
+
+        <div className="relative flex h-8 flex-col items-center justify-center">
+          <div className="feature-glass-gradient relative flex flex-col gap-4 rounded-full border border-gray-700  p-2 px-4 text-sm">
+            {t('testimonials')}
+          </div>
+        </div>
+        <h1 className="text-gradient max-w-full translate-y-[-1rem] animate-fade-in py-2 pt-4  text-center text-4xl font-semibold leading-none opacity-0 [--animation-delay:200ms] md:max-w-[60%] md:text-[3rem]">
+          <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text  text-transparent">
+            {t('testimonials-title')}
+          </span>
+        </h1>
+        <p className="text-md pt-8 text-center md:max-w-3xl ">{t('testimonials-text')}</p>
+
+        <div className="relative flex h-full w-full items-center justify-center gap-80 pt-32">
+          <Button
+            onClick={handleNextImage}
+            className="border-2 border-white bg-transparent transition-transform duration-300 ease-in-out hover:scale-110 hover:bg-transparent"
+            variant={'outline'}
+            size={'icon'}>
+            <IconChevronLeft className="h-16 w-16  " />
+          </Button>
+
+          <Image
+            src={images[currentImageIndex]}
+            className="absolute -bottom-[97px] z-0 h-[350px] w-[198px] rounded-xl transition-opacity duration-500 ease-in-out"
+            alt="screenshot"
+            height={400}
+            width={300}
           />
+          <Image src="/img/iphone.png" className="z-1 absolute -bottom-14" alt="iPhone" height={400} width={300} />
+
+          <Button
+            onClick={handleNextImage}
+            className="border-2 border-white bg-transparent transition-transform duration-300 ease-in-out hover:scale-110 hover:bg-transparent"
+            variant={'outline'}
+            size={'icon'}>
+            <IconChevronRight className="h-16 w-16  " />
+          </Button>
         </div>
       </div>
     </div>

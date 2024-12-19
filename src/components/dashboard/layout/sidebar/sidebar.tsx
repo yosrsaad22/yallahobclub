@@ -38,7 +38,7 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <nav
       className={cn(
-        `custom-scrollbar  relative hidden h-full overflow-y-auto  border-r  ease-in-out lg:flex lg:flex-col`,
+        `custom-scrollbar  relative hidden h-full overflow-y-auto ease-in-out lg:flex lg:flex-col`,
         !isMinimized ? 'w-64' : 'w-[62px]',
         className,
       )}

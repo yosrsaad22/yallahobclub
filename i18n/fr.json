@@ -570,13 +570,39 @@
       "description": "Accédez à notre formation sur le dropshipping pour tout apprendre sur le dropshipping, l'e-commerce, le branding et le marketing et commencez à gagner de l'argent en ligne.",
       "video-title": "Cours en ligne sur le dropshipping"
     },
-    "title": "Tirez le meilleur parti de notre",
-    "title-gradient": "Masterclass en Dropshipping",
-    "text": "Êtes-vous prêt à débuter votre aventure dans le monde de l'e-commerce ? Notre formation complète sur le Dropshipping en ligne est conçue pour les entrepreneurs en herbe qui souhaitent transformer leurs idées en une entreprise en ligne prospère. Que vous soyez totalement débutant ou que vous cherchiez à perfectionner vos compétences, ce cours vous guidera de zéro à vos premières commandes — et bien au-delà !",
+    "title": "30 jours pour créer et lancer votre",
+    "title-gradient": "business E-Commerce",
+    "text": "Un programme complet pour vous aider à réussir dans l’e-commerce : des stratégies, un suivi personnalisé et tout ce qu’il faut pour lancer votre boutique en ligne.",
     "buy-button": "Rejoindre la formation",
     "what-you-get": "Ce que vous recevrez",
     "what-you-get-title": "Construisez une marque de A à Z",
     "what-you-get-text": "Dans cette formation, nous allons créer une marque à partir de zéro, étape par étape, sous vos yeux. Vous verrez notre équipe développer tout, du concept initial à une entreprise pleinement opérationnelle et prospère, tout en vous fournissant des conseils pratiques pour reproduire le processus et bien plus encore.",
+    "why-us": "Pourquoi ?",
+    "why-us-title": "Pourquoi choisir Ecomness",
+    "learning": {
+      "title": "Apprentissage flexible",
+      "subtitle": "Formation entièrement en ligne, à suivre à votre rythme, où et quand vous le souhaitez. Complétez-la en 6 semaines ou plus, selon votre emploi du temps."
+    },
+    "platform": {
+      "title": "Plateforme de dropshipping",
+      "subtitle": "Accédez à des centaines de produits que vous pouvez vendre sans les acheter au préalable."
+    },
+    "coaching": {
+      "title": "Coaching sur mesure",
+      "subtitle": "Bénéficiez d'un accompagnement personnalisé avec 4 séances par semaine, guidées par nos experts pour atteindre vos objectifs entrepreneuriaux."
+    },
+    "trends": {
+      "title": "Actualités des publicités et marques",
+      "subtitle": "Restez informé des dernières tendances et réussites dans le domaine du marketing digital et du e-commerce."
+    },
+    "network": {
+      "title": "Intégrez un réseau d'E-commerçants",
+      "subtitle": "Accédez à notre cercle privé d’e-commerçants, échangez des idées et développez-vous dans un environnement collaboratif."
+    },
+    "support": {
+      "title": "Support technique",
+      "subtitle": "Profitez d’un support technique dédié pour résoudre vos problèmes rapidement et facilement."
+    },
     "chapters": {
       "title": "10 Chapitres",
       "subtitle": "un total de 60 heures"
@@ -586,58 +612,59 @@
       "subtitle": "à partir de zéro"
     },
     "followup": {
-      "title": "Suivi technique",
+      "title": "4 séances avec des experts",
       "subtitle": "chaque semaine"
     },
     "community": {
-      "title": "Communauté en ligne",
-      "subtitle": "à votre disposition"
+      "title": "Suivi et motivation",
+      "subtitle": "pour atteindre vos objectifs"
     },
     "host-meet": "Rencontrez votre hôte et cofondateur",
-    "host-text": "Rached Khemakhem, cofondateur et expert en e-commerce, a commencé comme ingénieur logiciel avant de décider de réorienter sa carrière pour poursuivre sa véritable passion : créer et développer des marques en ligne. Avec une compréhension approfondie du marketing et de la création de marques, Rached a lancé et développé avec succès plusieurs entreprises e-commerce à partir de zéro, les transformant en entreprises prospères. Son expertise réside dans le développement d’identités de marque solides, la création de stratégies marketing percutantes et l’utilisation de son expérience technique pour innover dans le domaine de l’e-commerce.",
-    "explore-course": "Explorez le cours en ligne",
-    "course-hours": "22 heures de contenu exclusif",
+    "host-title": "Un programme complet en E-Commerce, pas une simple formation",
+    "host-text": "Rached Khemakhem a fondé une société créant des projets en ligne comme la marque 3alla9ni et Yalla Hob. Depuis plus d'un an, il propose un coaching pratique, avec une équipe d'experts en Meta ads, création de contenu, branding etc. Ils ont conçu une formation basée sur l'expérience réelle du marché tunisien, garantissant le succès des participants sans excuses.",
+    "explore-course": "Explorez les chapitres",
+    "course-hours": "Parcourez le programme",
     "course-content": "Ce cours est conçu pour vous guider dans la création d'une marque e-commerce réussie à partir de zéro. Vous apprendrez des compétences essentielles comme le branding, la mise en place d'une boutique Shopify, la création de stratégies marketing percutantes et la maîtrise des meilleures pratiques en dropshipping. Nous aborderons également la création de contenu pour les réseaux sociaux, la gestion des finances, le choix des bons prix pour vos produits, et comment partir d’un compte social vierge pour bâtir une marque qui attire de vraies commandes et connaît une croissance durable.",
     "chapters-number": "Un total de {subject} chapitres",
     "pricing": {
-      "badge": "Tarification",
-      "title": "Ne payez que pour ce dont vous avez réellement besoin",
-      "text": "Que vous souhaitiez tout apprendre sur l'e-commerce, le dropshipping, le branding et la publicité ou simplement utiliser notre plateforme pour atteindre la liberté financière, nous avons l'offre qu'il vous faut.",
+      "badge": "Passez a l'action",
+      "title": "Osez transformer votre vie",
+      "text": "Après avoir formé des milliers d'étudiants, Ecomness est notre programme phare pour apprendre à créer votre boutique en ligne",
       "totally-free": "100% Gratuit",
       "pay-once": "Paiement unique",
       "damrej": {
         "description": "Vous avez déjà de l'expérience, tout ce dont vous avez besoin ce sont des produits gagnants à des prix de gros.",
-        "feature1": "Toutes les fonctionnalités de la plateforme",
-        "feature2": "Accès aux produits gagnants",
-        "feature3": "10% de frais sur les bénéfices",
-        "feature4": "Cours sur le dropshipping",
+        "feature1": "Des produits à vendre sans avoir besoin de les acheter",
+        "feature2": "Formation Ecomness",
         "button": "Obtenir l'offre"
       },
       "3jeja": {
         "description": "Apprenez auprès des experts, bénéficiez d’un suivi technique de 3 mois et accédez à tout sur la plateforme.",
         "feature1": "Tout ce qui est inclus dans le pack DAMREJ",
-        "feature2": "3 mois de suivi technique",
-        "feature3": "Cours sur le dropshipping inclus",
-        "feature4": "10% de frais sur les bénéfices",
+        "feature2": "48 séances en ligne avec des experts (Q&A, Meta ads, création de contenu, branding, etc.)",
+        "feature3": "Support technique pour résoudre vos problèmes",
+        "button": "Obtenir l'offre"
+      },
+      "brand": {
+        "description": "Commencez votre aventure dans le dropshipping avec des outils avancés, des ressources et 6 mois de suivi.",
+        "feature1": "Tout ce qui est inclus dans le pack 3JEJA",
+        "feature2": "96 séances en ligne avec des experts (Q&A, Meta ads, création de contenu, branding, etc.)",
+        "feature3": "Création de votre site web sur WordPress",
+        "feature4": "Création de votre marque",
         "button": "Obtenir l'offre"
       },
       "machrou3": {
-        "description": "Commencez votre aventure dans le dropshipping avec des outils avancés, des ressources et 6 mois de suivi.",
-        "feature1": "Tout ce qui est inclus dans le pack 3JEJA",
-        "feature2": "6 mois de suivi technique",
-        "feature3": "Création de site web",
-        "feature4": "Conception de charte graphique",
-        "button": "Obtenir l'offre"
-      },
-      "charika": {
         "description": "Faites passer votre entreprise au niveau supérieur avec 9 mois de suivi et un support avancé pour votre activité.",
-        "feature1": "Tout ce qui est inclus dans le pack MACHROU3",
-        "feature2": "Création légale de votre propre entreprise",
-        "feature3": "2 mois de campagnes publicitaires",
-        "feature4": "6 mois de suivi technique",
+        "feature1": "Tout ce qui est inclus dans le pack BRAND",
+        "feature2": "144 séances en ligne avec des experts (Q&A, Meta ads, création de contenu, branding, etc.)",
+        "feature3": "Création légale de votre propre entreprise",
+        "feature4": "Gestion de vos campagnes publicitaires pendant 2 mois",
         "button": "Obtenir l'offre"
       }
-    }
+    },
+    "testimonials": "Témoignages",
+    "testimonials-title": "Ils partagent leurs réussites",
+    "testimonials-text": "Découvrez nos clients qui ont osé a changer leur vie et commencer leur parcours vers la liberté financière"
   },
   "register": {
     "metadata": {
@@ -949,6 +976,7 @@
     "text": {
       "image-button": "Changer l'image",
       "user-information": "Informations Utilisateur",
+      "annoucement": "Contactez le support IT (+216) 24 002 024",
       "user-progress": "Avancement de la formation",
       "user-email-verified-note": "L'e-mail de l'utilisateur a été vérifié",
       "user-store-name-note": "Le nom qui sera affiché sur les colis qui est par défaut ECOMNESS",
