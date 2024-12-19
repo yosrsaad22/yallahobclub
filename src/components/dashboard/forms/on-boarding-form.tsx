@@ -85,7 +85,7 @@ export function OnBoardingForm({ className }: OnBoardingFormProps) {
               </div>
 
               <div className="flex flex-col gap-6 md:flex-row">
-                {user?.role !== roleOptions.SELLER && (
+                {user?.role === roleOptions.SELLER && (
                   <LabelInputContainer className="flex-1">
                     <Label htmlFor="storeName">{tFields('user-store-name')}</Label>
                     <Input
