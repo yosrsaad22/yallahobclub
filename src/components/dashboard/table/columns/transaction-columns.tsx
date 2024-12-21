@@ -37,7 +37,7 @@ const UserCell = ({ user }: { user: User }) => {
   );
 };
 
-export const UserTransactionColumns: ColumnDef<Transaction & { order: Order }>[] = [
+export const UserTransactionColumns: ColumnDef<Transaction & { orderCode: string }>[] = [
   {
     accessorKey: 'createdAt',
     meta: {
@@ -80,14 +80,15 @@ export const UserTransactionColumns: ColumnDef<Transaction & { order: Order }>[]
     },
   },
   {
-    accessorKey: 'order',
+    accessorKey: 'orderCode',
     meta: {
       columnName: 'order',
     },
+    accessorFn: (row) => row.orderCode,
     cell: ({ row }) => {
-      const order: Order | null = row.getValue<Order | null>('order');
+      const orderCode = row.getValue<string>('orderCode');
 
-      return <div className="">{order ? order.code : 'N/A'}</div>;
+      return <div className="">{orderCode ? orderCode : 'N/A'}</div>;
     },
   },
 ];
@@ -112,7 +113,8 @@ export const AdminTransactionColumns: ColumnDef<Transaction & { user: User; orde
     meta: {
       columnName: 'user',
     },
-    accessorFn: (row) => row.user.fullName + ' ' + row.user.email + ' ' + row.user.number + ' ' + row.user.code,
+    accessorFn: (row) =>
+      row.user.fullName + ' ' + row.user.email + ' ' + row.user.number + ' ' + row.user.code + ' ' + row.order.code,
     cell: ({ row }) => {
       const user: User = row.original.user;
 
@@ -157,7 +159,7 @@ export const AdminTransactionColumns: ColumnDef<Transaction & { user: User; orde
       columnName: 'order',
     },
     cell: ({ row }) => {
-      const order: Order | null = row.getValue<Order | null>('order');
+      const order: Order | null = row.original.order;
 
       return <div className="">{order ? order.code : 'N/A'}</div>;
     },

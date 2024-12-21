@@ -194,7 +194,7 @@
     "transaction-amount": "Amount",
     "transaction-user": "Recipient",
     "transaction-type": "Type",
-    "transaction-order": "Order Id",
+    "transaction-order-code": "Order Id",
     "transaction-user-placeholder": "Select recipient",
     "withdraw-created-at": "Creation Date",
     "withdraw-amount": "Amount",

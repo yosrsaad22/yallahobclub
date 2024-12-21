@@ -23,7 +23,14 @@ export const getTransactions = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return { success: 'transactions-fetch-success', data: transactions };
+    const updatedTransactions = transactions.map((t) => ({
+      ...t,
+      order: {
+        ...t.order,
+        code: t.order?.code ? t.order.code : 'N/A',
+      },
+    }));
+    return { success: 'transactions-fetch-success', data: updatedTransactions };
   } catch (error) {
     return { error: 'transactions-fetch-error' };
   }
@@ -40,18 +47,24 @@ export const getTransaction = async (id: string): Promise<ActionResponse> => {
   }
 };
 
-export const getTransactionByUser = async (id: string): Promise<ActionResponse> => {
+export const getTransactionsByUser = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.SELLER, UserRole.ADMIN, UserRole.SUPPLIER]);
 
-    const transaction = await db.transaction.findMany({
+    const transactions = await db.transaction.findMany({
       where: {
         userId: id,
       },
       include: { order: true },
       orderBy: { createdAt: 'desc' },
     });
-    return { success: 'transaction-fetch-success', data: transaction };
+
+    const updatedTransactions = transactions.map((t) => ({
+      ...t,
+      orderCode: t.order?.code ? t.order.code : 'N/A',
+    }));
+
+    return { success: 'transaction-fetch-success', data: updatedTransactions };
   } catch (error) {
     return { error: 'transaction-fetch-error' };
   }
@@ -120,9 +133,6 @@ export const createTransaction = async (
           code: 'ENT-' + generateCode(),
           amount: amount,
           type: type,
-          order: {
-            connect: { id: orderId },
-          },
           user: {
             connect: {
               id: userId,

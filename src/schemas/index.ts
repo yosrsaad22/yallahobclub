@@ -216,7 +216,7 @@ export const UserSchema = z
     active: z.boolean().optional(),
     paid: z.boolean().optional(),
     pickupId: z.string().min(1),
-    storeName: z.string().min(2),
+    storeName: z.string().optional(),
     boarded: z.number(),
   })
   .refine(

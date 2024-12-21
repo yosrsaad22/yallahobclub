@@ -294,23 +294,18 @@ async function calculateDailyProfit() {
       dailyDataMap[dateStr] = { subOrders: new Set(), profit: 0, coursesSold: 0 };
     }
 
-    // Add course profit based on the pack type
-    switch (course.pack) {
-      case packOptions.FREE:
-        dailyDataMap[dateStr].profit += 0;
-      case packOptions.DAMREJ:
-        dailyDataMap[dateStr].profit += 297;
-      case packOptions.AJEJA:
-        dailyDataMap[dateStr].profit += 497;
-        break;
-      case packOptions.BRAND:
-        dailyDataMap[dateStr].profit += 1997;
-        break;
-      case packOptions.MACHROU3:
-        dailyDataMap[dateStr].profit += 3297;
-        break;
-      default:
-        break;
+    if (course.pack === 'FREE') {
+      dailyDataMap[dateStr].profit += 0;
+    } else if (course.pack === 'DAMREJ') {
+      dailyDataMap[dateStr].profit += 297;
+    } else if (course.pack === 'AJEJA') {
+      dailyDataMap[dateStr].profit += 497;
+    } else if (course.pack === 'BRAND') {
+      dailyDataMap[dateStr].profit += 1997;
+    } else if (course.pack === 'MACHROU3') {
+      dailyDataMap[dateStr].profit += 3297;
+    } else {
+      dailyDataMap[dateStr].profit += 0;
     }
 
     // Count the number of courses sold
@@ -334,7 +329,7 @@ async function calculateDailyProfit() {
     // Increment the current date by 1
     currentDate.setDate(currentDate.getDate() + 1);
   }
-
+  console.log(filledDailyData);
   return filledDailyData;
 }
 
@@ -701,19 +696,18 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     });
 
     const platformCourseProfit = (await soldCourses).reduce((total, course) => {
-      switch (course.pack) {
-        case packOptions.FREE:
-          return total;
-        case packOptions.DAMREJ:
-          return total + 297;
-        case packOptions.AJEJA:
-          return total + 497;
-        case packOptions.BRAND:
-          return total + 1997;
-        case packOptions.MACHROU3:
-          return total + 3297;
-        default:
-          return total;
+      if (course.pack === packOptions.FREE) {
+        return total;
+      } else if (course.pack === packOptions.DAMREJ) {
+        return total + 297;
+      } else if (course.pack === packOptions.AJEJA) {
+        return total + 497;
+      } else if (course.pack === packOptions.BRAND) {
+        return total + 1997;
+      } else if (course.pack === packOptions.MACHROU3) {
+        return total + 3297;
+      } else {
+        return total;
       }
     }, 0);
 

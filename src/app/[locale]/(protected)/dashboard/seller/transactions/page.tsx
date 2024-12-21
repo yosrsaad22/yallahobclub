@@ -5,7 +5,7 @@ import { IconReceipt2, IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 
-import { createWithdrawRequest, getTransactionByUser, getWidthdrawRequestByUser } from '@/actions/transactions';
+import { createWithdrawRequest, getTransactionsByUser, getWidthdrawRequestByUser } from '@/actions/transactions';
 import { WithdrawRequest } from '@prisma/client';
 import { UserTransactionColumns } from '@/components/dashboard/table/columns/transaction-columns';
 import { WithdrawRequestsCard } from '@/components/dashboard/cards/withdraw-requests-card';
@@ -26,7 +26,7 @@ export default async function Transactions() {
   const breadcrumbItems = [{ title: t('pages.transactions'), link: '/dashboard/admin/transactions' }];
   const user = await currentUser();
 
-  const transactionsRes: ActionResponse = await getTransactionByUser(user?.id!);
+  const transactionsRes: ActionResponse = await getTransactionsByUser(user?.id!);
   const transactionsData: any[] = transactionsRes.error ? [] : transactionsRes.data;
   const WithdrawRequestsRes: ActionResponse = await getWidthdrawRequestByUser(user?.id!);
   const WithdrawRequestsData: (WithdrawRequest & { user: DataTableUser })[] = WithdrawRequestsRes.error

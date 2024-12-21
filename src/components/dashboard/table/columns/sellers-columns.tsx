@@ -117,14 +117,4 @@ export const SellerColumns: ColumnDef<DataTableUser>[] = [
       return <BooleanCell value={value} trueText={'user-active'} falseText={'user-not-active'} />;
     },
   },
-  {
-    accessorKey: 'paid',
-    meta: {
-      columnName: 'Paid',
-    },
-    cell: ({ row }) => {
-      const value: boolean = row.getValue('paid');
-      return <BooleanCell value={value} trueText={'user-paid'} falseText={'user-not-paid'} />;
-    },
-  },
 ];

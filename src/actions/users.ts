@@ -11,7 +11,7 @@ import { getUserByEmail, getUserById, getUserByNumber } from '@/data/user';
 import { generateEmailVerificationToken } from '@/lib/tokens';
 import { sendAccountActivationEmail, sendEmailVerificationEmail } from '@/lib/mail';
 import { capitalizeWords, generateCode } from '@/lib/utils';
-import { DEFAULT_PASSWORD, roleOptions } from '@/lib/constants';
+import { DEFAULT_PASSWORD, packOptions, roleOptions } from '@/lib/constants';
 import { notifyAllAdmins, notifyUser } from './notifications';
 
 export const getUsers = async (): Promise<ActionResponse> => {
@@ -146,8 +146,7 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
         '/dashboard/' + existingUser.role.toLocaleLowerCase(),
       );
     }
-
-    if (existingUser.pack !== values.pack && values.paid === true) {
+    if ((existingUser.pack as packOptions) !== values.pack && values.paid === true) {
       await db.billing.create({
         data: {
           pack: values.pack as UserPack,
@@ -157,7 +156,11 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
       });
     }
 
-    if (existingUser.paid === false && values.paid !== existingUser.paid) {
+    if (
+      (existingUser.pack as packOptions) === values.pack &&
+      existingUser.paid === false &&
+      values.paid !== existingUser.paid
+    ) {
       await db.billing.create({
         data: {
           pack: values.pack as UserPack,
@@ -290,7 +293,11 @@ export const CompleteOnBoarding = async (values: z.infer<typeof OnBoardingSchema
       },
     });
 
-    notifyAllAdmins(NotificationType.ADMIN_NEW_ON_BOARDING, '/dashboard/admin/users/' + user?.id, user?.name!);
+    notifyAllAdmins(
+      NotificationType.ADMIN_NEW_ON_BOARDING,
+      '/dashboard/admin/' + user?.role.toLocaleLowerCase() + 's/' + user?.id,
+      user?.name!,
+    );
 
     revalidatePath('/dashboard/seller');
     revalidatePath('/dashboard/supplier');

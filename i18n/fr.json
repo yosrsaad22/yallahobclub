@@ -190,7 +190,7 @@
     "transaction-select": "",
     "transaction-created-at": "Date de création",
     "transaction-type": "Type",
-    "transaction-code": "Code",
+    "transaction-order-code": "Code",
     "transaction-amount": "Montant",
     "transaction-user": "Bénéficiaire",
     "transaction-order": "ID de Commande",
