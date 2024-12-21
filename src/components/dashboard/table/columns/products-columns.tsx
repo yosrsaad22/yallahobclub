@@ -113,17 +113,6 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     },
   },
   {
-    accessorKey: 'platformProfit',
-    enableSorting: true,
-    meta: {
-      columnName: 'platform-profit',
-    },
-    cell: ({ row }) => {
-      const platformProfit = row.getValue<number>('platformProfit');
-      return <div className="w-1/2 text-right">{platformProfit} DT</div>;
-    },
-  },
-  {
     accessorKey: 'stock',
     enableSorting: true,
     meta: {
