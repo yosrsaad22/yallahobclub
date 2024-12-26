@@ -1,6 +1,6 @@
 'use server';
 
-import { roleGuard } from '@/lib/auth';
+import { currentRole, packGuard, roleGuard } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { ChapterSchema, CourseSchema } from '@/schemas';
 import { ActionResponse } from '@/types';
@@ -9,11 +9,16 @@ import { Chapter, UserRole } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { getChapterById, getCourseByDefault } from '@/data/course';
 import { UTApi } from 'uploadthing/server';
+import { packOptions } from '@/lib/constants';
 
 export const getCourse = async (): Promise<ActionResponse> => {
   try {
-    await roleGuard(UserRole.ADMIN);
+    const role = await currentRole();
 
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER]);
+    if (role === UserRole.SELLER) {
+      await packGuard([packOptions.DAMREJ, packOptions.AJEJA, packOptions.BRAND, packOptions.MACHROU3]);
+    }
     const course = await getCourseByDefault();
     if (!course) {
       await db.course.create({

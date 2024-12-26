@@ -203,7 +203,14 @@ export function DataTable<TData extends { id: string }, TValue>({
                   <TableRow
                     className={cn(redirectToDetails ? 'cursor-pointer' : 'pointer-events-auto')}
                     key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}>
+                    data-state={row.getIsSelected() && 'selected'}
+                    onContextMenu={(e) => {
+                      if (redirectToDetails) {
+                        e.preventDefault(); // Prevent default context menu
+                        const url = `/dashboard/${role?.toLowerCase()}/${tag}/${row.original.id}`;
+                        window.open(url, '_blank'); // Open the link in a new tab
+                      }
+                    }}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         onClick={() => {

@@ -69,7 +69,6 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                       )}
                       onClick={async () => {
                         if (setOpen) setOpen(false);
-                        if (!isMinimized && items[index].title === 'marketplace') toggle();
                       }}>
                       <div
                         className={cn(

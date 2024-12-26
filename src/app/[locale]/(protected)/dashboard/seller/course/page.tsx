@@ -38,7 +38,7 @@ export default async function SellerCourse() {
   } = fetchUserProgress.error ? [] : fetchUserProgress.data;
 
   return (
-    <PackGate allowedPack={packOptions.DAMREJ || packOptions.AJEJA || packOptions.BRAND || packOptions.MACHROU3}>
+    <PackGate allowedPacks={[packOptions.DAMREJ, packOptions.AJEJA, packOptions.BRAND, packOptions.MACHROU3]}>
       <div className="z-10 space-y-4 p-4 pt-6 md:p-6 ">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center space-x-2 text-3xl font-bold">

@@ -170,14 +170,16 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
     // Process each supplier group in parallel
     const pickupPromises = Object.keys(supplierGroups).map(async (supplierId) => {
       const subOrdersForSupplier = supplierGroups[supplierId];
-      subOrdersForSupplier.forEach(async (subOrder: any, index: number) => {
+
+      // Process subOrders sequentially to ensure proper linking
+      for (const subOrder of subOrdersForSupplier) {
         let ref1;
         if (subOrder.order.subOrders.length > 1) {
           ref1 =
             'Sous commande : ' +
             subOrder.code +
             ' ' +
-            index +
+            subOrdersForSupplier.indexOf(subOrder) +
             '/' +
             subOrder.order.subOrders.length +
             ' de ' +
@@ -246,28 +248,33 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
           `/dashboard/seller/orders/${subOrder.id}`,
           `#${subOrder.code}`,
         );
+      }
 
-        const now = new Date();
-        let pickupDate = new Date(now);
+      const now = new Date();
+      let pickupDate = new Date(now);
 
-        if (now.getHours() < 12) {
-          pickupDate.setHours(13, 0, 0, 0);
-        } else {
-          pickupDate.setDate(now.getDate() + 1);
-          pickupDate.setHours(13, 0, 0, 0);
-        }
-        const pickup = await db.pickup.create({
-          data: {
-            pickupDate: pickupDate,
-            code: 'ENPU-' + generateCode(),
-            subOrders: {
-              connect: subOrdersForSupplier.map((subOrder) => ({ id: subOrder.id })),
-            },
+      if (now.getHours() < 12) {
+        pickupDate.setHours(13, 0, 0, 0);
+      } else {
+        pickupDate.setDate(now.getDate() + 1);
+        pickupDate.setHours(13, 0, 0, 0);
+      }
+
+      const pickup = await db.pickup.create({
+        data: {
+          pickupDate: pickupDate,
+          code: 'ENPU-' + generateCode(),
+          subOrders: {
+            connect: subOrdersForSupplier.map((subOrder) => ({ id: subOrder.id })),
           },
-        });
-        notifyAllAdmins(NotificationType.NEW_PICKUP, `/dashboard/admin/pickups`, `${formatDate(pickup.pickupDate!)}`);
+        },
       });
+
+      notifyAllAdmins(NotificationType.NEW_PICKUP, `/dashboard/admin/pickups`, `${formatDate(pickup.pickupDate!)}`);
     });
+
+    // Await all pickup requests and updates to complete
+    await Promise.all(pickupPromises);
 
     // Await all pickup requests and updates to complete
     await Promise.all(pickupPromises);

@@ -172,9 +172,7 @@ export function CoursePlayer({ course, chapters, userProgress }: CoursePlayerPro
           <h1 className="text-xl font-semibold text-foreground">
             {locale === localeOptions.EN ? course?.title_en : course?.title_fr}
           </h1>
-          <p className="text-sm text-foreground">
-            {locale === localeOptions.EN ? course?.description_en : course?.description_fr}
-          </p>
+          <p className="text-sm text-foreground">{course?.description_fr}</p>
           <div className="flex flex-col space-y-4">
             <p className="text-sm font-semibold text-foreground">{t('hosted-by')} :</p>
             <div className="flex w-full flex-row items-center space-x-4">

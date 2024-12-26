@@ -79,6 +79,7 @@ export function EditUserForm({ className, userData }: EditUserFormProps) {
     } else {
       setValue('paid', userData.paid);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPack]);
 
   const progressPercentage = Math.round((progress.completedChapters / progress.totalChapters) * 100);

@@ -5,6 +5,7 @@ import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { Toaster } from '@/components/ui/toaster';
 import NextTopLoader from 'nextjs-toploader';
 import { Analytics } from '@vercel/analytics/react';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = DM_Sans({ subsets: ['latin'] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
 
   return (
     <html lang={locale} className="scroll-smooth" suppressHydrationWarning={true}>
+      <GoogleAnalytics gaId="G-H0129EEQ3P" />
       <NextIntlClientProvider locale={locale} messages={messages}>
         <body
           className={
