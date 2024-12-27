@@ -41,7 +41,7 @@ export const sellerGetOrders = async (): Promise<ActionResponse> => {
         },
       },
     });
-    await trackOrders(orders);
+    //await trackOrders(orders);
     const ordersWithStatuses = orders.map((order) => ({
       ...order,
       statuses: order.subOrders.map((subOrder) => subOrder.status),
@@ -80,7 +80,7 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    await trackOrders(orders);
+    //await trackOrders(orders);
     const ordersWithStatuses = orders.map((order) => ({
       ...order,
       subOrders: order.subOrders.filter((subOrder) =>
@@ -125,7 +125,7 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       ...order,
       statuses: order.subOrders.map((subOrder) => subOrder.status),
     }));
-    await trackOrders(ordersWithStatuses);
+    //await trackOrders(ordersWithStatuses);
     return { success: 'orders-fetch-success', data: ordersWithStatuses };
   } catch (error) {
     return { error: 'orders-fetch-error' };
@@ -638,7 +638,6 @@ export const printLabel = async (id: string): Promise<ActionResponse> => {
       },
       body: JSON.stringify({ subOrder: subOrder }),
     });
-    console.log(response.status);
     if (!response.ok) {
       throw new Error('Failed to generate label');
     }
