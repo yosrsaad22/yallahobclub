@@ -63,6 +63,7 @@ export type DataTableHandlers = {
   onPrintPickup: (id: string) => Promise<ActionResponse>;
   onAddTransaction: (userId: string, amount: string) => Promise<ActionResponse>;
   onMarkAsPaid: (ids: string[]) => Promise<ActionResponse>;
+  onCustomRefresh: () => Promise<ActionResponse>;
 };
 
 export type MediaType = {

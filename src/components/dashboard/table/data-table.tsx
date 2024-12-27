@@ -35,6 +35,7 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   onMarkAsPaid?: DataTableHandlers['onMarkAsPaid'] | undefined;
   onPrintPickup?: DataTableHandlers['onPrintPickup'] | undefined;
   onAddTransaction?: DataTableHandlers['onAddTransaction'] | undefined;
+  onCustomRefresh?: DataTableHandlers['onCustomRefresh'] | undefined;
   redirectToDetails?: boolean;
   showActions?: boolean;
   showAddButton?: boolean;
@@ -56,6 +57,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   onRequestPickup = undefined,
   onMarkAsPaid = undefined,
   onPrintPickup = undefined,
+  onCustomRefresh = undefined,
   redirectToDetails = true,
   showActions = true,
   showAddButton = true,
@@ -161,6 +163,7 @@ export function DataTable<TData extends { id: string }, TValue>({
         onPrintPickup={onPrintPickup}
         onAddTransaction={onAddTransaction}
         onMarkAsPaid={onMarkAsPaid}
+        onCustomRefresh={onCustomRefresh}
       />
       <div className="custom-scrollbar overflow-x-auto rounded-md border bg-background">
         <div className="inline-block min-w-full align-middle">

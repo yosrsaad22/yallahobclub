@@ -41,7 +41,6 @@ export const sellerGetOrders = async (): Promise<ActionResponse> => {
         },
       },
     });
-    //await trackOrders(orders);
     const ordersWithStatuses = orders.map((order) => ({
       ...order,
       statuses: order.subOrders.map((subOrder) => subOrder.status),
@@ -80,7 +79,6 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    //await trackOrders(orders);
     const ordersWithStatuses = orders.map((order) => ({
       ...order,
       subOrders: order.subOrders.filter((subOrder) =>
@@ -125,7 +123,6 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       ...order,
       statuses: order.subOrders.map((subOrder) => subOrder.status),
     }));
-    //await trackOrders(ordersWithStatuses);
     return { success: 'orders-fetch-success', data: ordersWithStatuses };
   } catch (error) {
     return { error: 'orders-fetch-error' };
@@ -428,96 +425,130 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
   }
 };
 
-export const trackOrders = async (orders: any[]): Promise<void> => {
+export const trackOrders = async (): Promise<ActionResponse> => {
   const url = process.env.MASSAR_URL;
-  if (!url) {
-    throw new Error('URL is not defined');
-  }
-
-  // Define statuses to exclude
-  const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
-
-  // Flatten orders to get active sub-orders
-  const activeSubOrders = orders.flatMap((order) =>
-    order.subOrders.filter((subOrder: SubOrder) => subOrder.deliveryId && !excludedStatuses.includes(subOrder.status!)),
-  );
-
-  const deliveryIds: string[] = activeSubOrders.map((subOrder) => subOrder.deliveryId!);
-
-  // Early return if no active sub-orders
-  if (deliveryIds.length === 0) {
-    return;
-  }
-
-  // Fetch tracking information for each sub-order
-  for (const deliveryId of deliveryIds) {
-    const response = await fetch(`${url}/tracking/${deliveryId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+  try {
+    if (!url) {
+      throw new Error('URL is not defined');
+    }
+    const originalOrders = await db.order.findMany({
+      include: {
+        seller: true,
+        subOrders: {
+          include: {
+            pickup: true,
+            products: {
+              include: {
+                product: {
+                  include: {
+                    supplier: true,
+                  },
+                },
+              },
+            },
+            statusHistory: true,
+          },
+        },
       },
+      orderBy: { createdAt: 'desc' },
     });
+    const orders = originalOrders.map((order) => ({
+      ...order,
+      statuses: order.subOrders.map((subOrder) => subOrder.status),
+    }));
 
-    // Handle fetch errors
-    if (!response.ok) {
-      throw new Error(`Failed to track order: ${response.statusText}`);
+    // Define statuses to exclude
+    const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
+
+    // Flatten orders to get active sub-orders
+    const activeSubOrders = orders.flatMap((order) =>
+      order.subOrders.filter(
+        (subOrder: SubOrder) => subOrder.deliveryId && !excludedStatuses.includes(subOrder.status!),
+      ),
+    );
+
+    const deliveryIds: string[] = activeSubOrders.map((subOrder) => subOrder.deliveryId!);
+
+    // Early return if no active sub-orders
+    if (deliveryIds.length === 0) {
+      return { success: 'orders-track-success' };
     }
 
-    // Process response data
-    const data = await response.json();
+    // Fetch tracking information for each sub-order
+    for (const deliveryId of deliveryIds) {
+      const response = await fetch(`${url}/tracking/${deliveryId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
 
-    // Get the latest status update (first element of the `etats` array)
-    const oldStatus = activeSubOrders.find((subOrder) => subOrder.deliveryId === deliveryId)?.status;
-    const newStatus = data.colis.etat;
+      // Handle fetch errors
+      if (!response.ok) {
+        throw new Error(`Failed to track order: ${response.statusText}`);
+      }
 
-    // Update sub-order status if it has changed
-    if (newStatus && oldStatus && newStatus !== oldStatus) {
-      const statusHistoryEntry = {
-        status: newStatus,
-        createdAt: new Date(),
-      };
+      // Process response data
+      const data = await response.json();
 
-      const subOrder = activeSubOrders.find((o) => o.deliveryId === deliveryId);
-      if (subOrder) {
-        await db.subOrder.update({
-          where: { id: subOrder.id },
-          data: {
-            status: newStatus,
-            statusHistory: {
-              create: statusHistoryEntry,
+      // Get the latest status update (first element of the `etats` array)
+      const oldStatus = activeSubOrders.find((subOrder) => subOrder.deliveryId === deliveryId)?.status;
+      const newStatus = data.colis.etat;
+
+      // Update sub-order status if it has changed
+      if (newStatus && oldStatus && newStatus !== oldStatus) {
+        const statusHistoryEntry = {
+          status: newStatus,
+          createdAt: new Date(),
+        };
+
+        const subOrder = activeSubOrders.find((o) => o.deliveryId === deliveryId);
+        if (subOrder) {
+          await db.subOrder.update({
+            where: { id: subOrder.id },
+            data: {
+              status: newStatus,
+              statusHistory: {
+                create: statusHistoryEntry,
+              },
             },
-          },
-        });
+          });
 
-        // Notify the seller of the status change
-        const order = orders.find((o) => o.subOrders.some((so: SubOrder) => so.id === subOrder.id));
-        if (order) {
-          notifyUser(
-            order.sellerId!,
+          // Notify the seller of the status change
+          const order = orders.find((o) => o.subOrders.some((so: SubOrder) => so.id === subOrder.id));
+          if (order) {
+            notifyUser(
+              order.sellerId!,
+              NotificationType.ORDER_STATUS_CHANGED,
+              `/dashboard/seller/orders/${order.id}`,
+              `#${order.code}`,
+            );
+          }
+
+          // Notify unique suppliers associated with the order
+          const uniqueSuppliers = new Set(subOrder.products.map((item: any) => item.product?.supplierId));
+          for (const supplierId of uniqueSuppliers) {
+            notifyUser(
+              supplierId as string,
+              NotificationType.ORDER_STATUS_CHANGED,
+              `/dashboard/supplier/orders/${order!.id}`,
+              `#${order!.code}`,
+            );
+          }
+
+          // Notify all admins
+          notifyAllAdmins(
             NotificationType.ORDER_STATUS_CHANGED,
-            `/dashboard/seller/orders/${order.id}`,
-            `#${order.code}`,
+            `/dashboard/admin/orders/${order!.id}`,
+            `#${order!.code}`,
           );
         }
-
-        // Notify unique suppliers associated with the order
-        const uniqueSuppliers = new Set(
-          subOrder.products.map((item: OrderProduct & { product: Product }) => item.product?.supplierId),
-        );
-        for (const supplierId of uniqueSuppliers) {
-          notifyUser(
-            supplierId as string,
-            NotificationType.ORDER_STATUS_CHANGED,
-            `/dashboard/supplier/orders/${order.id}`,
-            `#${order.code}`,
-          );
-        }
-
-        // Notify all admins
-        notifyAllAdmins(NotificationType.ORDER_STATUS_CHANGED, `/dashboard/admin/orders/${order.id}`, `#${order.code}`);
       }
     }
+    return { success: 'orders-track-success' };
+  } catch (error) {
+    return { error: 'orders-track-error' };
   }
 };
 

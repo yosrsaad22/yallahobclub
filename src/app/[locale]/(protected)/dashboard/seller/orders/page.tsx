@@ -5,7 +5,7 @@ import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { SellerOrderColumns } from '@/components/dashboard/table/columns/order-columns';
-import { sellerGetOrders } from '@/actions/orders';
+import { sellerGetOrders, trackOrders } from '@/actions/orders';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'dashboard' });
@@ -17,11 +17,19 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   };
 }
 
+export const maxDuration = 60;
+
 export default async function Orders() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.orders'), link: '/dashboard/seller/orders' }];
   const res: ActionResponse = await sellerGetOrders();
   const ordersData: any[] = res.error ? [] : res.data;
+
+  const handleTrackOrders = async () => {
+    'use server';
+    const res = await trackOrders();
+    return res;
+  };
 
   return (
     <div className="w-full">
@@ -36,6 +44,7 @@ export default async function Orders() {
           translationPrefix="order"
           onDelete={undefined}
           onBulkDelete={undefined}
+          onCustomRefresh={handleTrackOrders}
           columns={SellerOrderColumns}
           data={ordersData}
           showActions={false}

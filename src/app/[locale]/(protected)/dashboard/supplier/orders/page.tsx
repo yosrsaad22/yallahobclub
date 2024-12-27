@@ -5,7 +5,7 @@ import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { SupplierOrderColumns } from '@/components/dashboard/table/columns/order-columns';
-import { supplierGetOrders } from '@/actions/orders';
+import { supplierGetOrders, trackOrders } from '@/actions/orders';
 import { requestPickup } from '@/actions/pickups';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
@@ -17,6 +17,8 @@ export async function generateMetadata({ params: { locale } }: { params: { local
     keywords: ['Dropshipping Tunisie', 'Formation Dropshipping', 'Platforme Dropshipping', 'E-commerce'],
   };
 }
+
+export const maxDuration = 60;
 
 export default async function Orders() {
   const t = await getTranslations('dashboard');
@@ -30,6 +32,11 @@ export default async function Orders() {
     return res;
   };
 
+  const handleTrackOrders = async () => {
+    'use server';
+    const res = await trackOrders();
+    return res;
+  };
   return (
     <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -44,6 +51,7 @@ export default async function Orders() {
           onDelete={undefined}
           onBulkDelete={undefined}
           onRequestPickup={handleRequestPickup}
+          onCustomRefresh={handleTrackOrders}
           columns={SupplierOrderColumns}
           data={ordersData}
           showActions={false}

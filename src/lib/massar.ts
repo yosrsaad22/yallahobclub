@@ -45,7 +45,7 @@ export const createShipment = ({
     tel: number,
     adresse: address,
     nom: name,
-    nombre_piece: pieces,
+    nombre_piece: '1',
     pickup_id: pickupId,
     open_parcel: openParcel,
     fragile: fragile,

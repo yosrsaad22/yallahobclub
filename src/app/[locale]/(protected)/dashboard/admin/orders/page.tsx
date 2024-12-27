@@ -5,7 +5,7 @@ import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { AdminOrderColumns, SellerOrderColumns } from '@/components/dashboard/table/columns/order-columns';
-import { adminGetOrders, markOrdersAsPaid, sellerGetOrders } from '@/actions/orders';
+import { adminGetOrders, markOrdersAsPaid, sellerGetOrders, trackOrders } from '@/actions/orders';
 import { Order } from '@prisma/client';
 import { adminRequestPickup, requestPickup } from '@/actions/pickups';
 
@@ -18,6 +18,8 @@ export async function generateMetadata({ params: { locale } }: { params: { local
     keywords: ['Dropshipping Tunisie', 'Formation Dropshipping', 'Platforme Dropshipping', 'E-commerce'],
   };
 }
+
+export const maxDuration = 60;
 
 export default async function Orders() {
   const t = await getTranslations('dashboard');
@@ -33,6 +35,12 @@ export default async function Orders() {
   const handleRequestPickup = async (ids: string[]) => {
     'use server';
     const res = await adminRequestPickup(ids);
+    return res;
+  };
+
+  const handleTrackOrders = async () => {
+    'use server';
+    const res = await trackOrders();
     return res;
   };
 
@@ -57,6 +65,7 @@ export default async function Orders() {
           onBulkDelete={undefined}
           onRequestPickup={handleRequestPickup}
           onMarkAsPaid={handleMarkAsPaid}
+          onCustomRefresh={handleTrackOrders}
           columns={AdminOrderColumns}
           data={ordersData}
           showActions={false}

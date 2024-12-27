@@ -17,6 +17,8 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   };
 }
 
+export const maxDuration = 60;
+
 export default async function Pickups() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.pickups'), link: '/dashboard/admin/pickups' }];
