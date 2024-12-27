@@ -6,10 +6,7 @@
         }
     ],
     "functions": {
-        "src/actions/orders.ts": {
-            "maxDuration": 30
-        },
-        "src/actions/pickups.ts": {
+        "src/actions/*.ts": {
             "maxDuration": 30
         }
     }
