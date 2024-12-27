@@ -6,7 +6,7 @@
         }
     ],
     "functions": {
-        "src/actions/*.ts": {
+        "src/actions/*.js": {
             "maxDuration": 30
         }
     }
