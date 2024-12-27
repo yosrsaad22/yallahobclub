@@ -8,10 +8,5 @@
             "path": "/api/track-orders",
             "schedule": "*/30 * * * *"
         }
-    ],
-    "functions": {
-        "app/api/*/*": {
-            "maxDuration": 60
-        }
-    }
+    ]
 }
