@@ -5,7 +5,7 @@
             "schedule": "0 6 * * *"
         }
     ],
-    "function": {
+    "functions": {
         "src/actions/orders.ts": {
             "maxDuration": 30
         },
