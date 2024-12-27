@@ -32,11 +32,6 @@ export default async function Orders() {
     return res;
   };
 
-  const handleTrackOrders = async () => {
-    'use server';
-    const res = await trackOrders();
-    return res;
-  };
   return (
     <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -51,7 +46,6 @@ export default async function Orders() {
           onDelete={undefined}
           onBulkDelete={undefined}
           onRequestPickup={handleRequestPickup}
-          onCustomRefresh={handleTrackOrders}
           columns={SupplierOrderColumns}
           data={ordersData}
           showActions={false}

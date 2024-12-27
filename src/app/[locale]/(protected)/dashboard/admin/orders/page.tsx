@@ -38,12 +38,6 @@ export default async function Orders() {
     return res;
   };
 
-  const handleTrackOrders = async () => {
-    'use server';
-    const res = await trackOrders();
-    return res;
-  };
-
   const handleMarkAsPaid = async (ids: string[]) => {
     'use server';
     const res = await markOrdersAsPaid(ids);
@@ -65,7 +59,6 @@ export default async function Orders() {
           onBulkDelete={undefined}
           onRequestPickup={handleRequestPickup}
           onMarkAsPaid={handleMarkAsPaid}
-          onCustomRefresh={handleTrackOrders}
           columns={AdminOrderColumns}
           data={ordersData}
           showActions={false}

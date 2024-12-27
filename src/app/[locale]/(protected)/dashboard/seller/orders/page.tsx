@@ -25,12 +25,6 @@ export default async function Orders() {
   const res: ActionResponse = await sellerGetOrders();
   const ordersData: any[] = res.error ? [] : res.data;
 
-  const handleTrackOrders = async () => {
-    'use server';
-    const res = await trackOrders();
-    return res;
-  };
-
   return (
     <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -44,7 +38,6 @@ export default async function Orders() {
           translationPrefix="order"
           onDelete={undefined}
           onBulkDelete={undefined}
-          onCustomRefresh={handleTrackOrders}
           columns={SellerOrderColumns}
           data={ordersData}
           showActions={false}

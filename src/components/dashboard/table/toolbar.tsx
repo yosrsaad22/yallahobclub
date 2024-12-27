@@ -34,7 +34,6 @@ interface DataTableToolbarProps<TData> {
   onRequestPickup: DataTableHandlers['onRequestPickup'] | undefined;
   onPrintPickup: DataTableHandlers['onPrintPickup'] | undefined;
   onMarkAsPaid: DataTableHandlers['onMarkAsPaid'] | undefined;
-  onCustomRefresh?: DataTableHandlers['onCustomRefresh'] | undefined;
   onAddTransaction: DataTableHandlers['onAddTransaction'] | undefined;
   showAddTransactionButton?: boolean;
   showAddButton: boolean;
@@ -53,7 +52,6 @@ export function DataTableToolbar<TData extends { id: string }>({
   onPrintPickup,
   onAddTransaction,
   onMarkAsPaid,
-  onCustomRefresh,
   showAddButton = true,
   showBulkDeleteButton = true,
   showCreatePickupButton = false,
@@ -377,20 +375,11 @@ export function DataTableToolbar<TData extends { id: string }>({
           <Button
             onClick={() => {
               setIsRefreshing(true);
-              if (onCustomRefresh) {
-                onCustomRefresh()
-                  .then(() => {
-                    router.refresh();
-                  })
-                  .finally(() => {
-                    setIsRefreshing(false);
-                  });
-              } else {
-                router.refresh();
-                setTimeout(() => {
-                  setIsRefreshing(false);
-                }, 1500);
-              }
+
+              router.refresh();
+              setTimeout(() => {
+                setIsRefreshing(false);
+              }, 1500);
             }}
             className=" relative"
             variant={'outline'}
