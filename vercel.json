@@ -1,17 +1,13 @@
 {
     "crons": [
         {
-            "path": "/api/cleanup-files",
-            "schedule": "0 5 * * *"
-        },
-        {
-            "path": "/api/track-orders",
-            "schedule": "*/30 * * * *"
+            "path": "/api/cron",
+            "schedule": "0 6 * * *"
         }
     ],
     "functions": {
-        "src/api/*/*.*": {
-            "maxDuration": 180
+        "app/api/*/*": {
+            "maxDuration": 60
         }
     }
 }
