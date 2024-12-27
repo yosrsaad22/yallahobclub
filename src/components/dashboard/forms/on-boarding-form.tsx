@@ -179,7 +179,6 @@ export function OnBoardingForm({ className }: OnBoardingFormProps) {
                       onClientUploadComplete={(res) => {
                         session.update();
                         setIsBackUploaded(true);
-                        console.log(res[0].key);
                         setValue('CIN2', res[0].key);
                       }}
                       onUploadError={(error: Error) => {

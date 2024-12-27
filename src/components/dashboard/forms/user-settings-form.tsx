@@ -55,7 +55,6 @@ export function UserSettingsForm({ className }: UserSettingsFormProps) {
   const onSubmit: SubmitHandler<schemaType> = async (data, event) => {
     event?.preventDefault();
     if (Object.keys(errors).length > 0) {
-      console.log('Form errors:', errors);
       return;
     }
     startTransition(() => {

@@ -300,14 +300,7 @@ export function AddUserForm({ defaultRole, className }: AddUserFormProps) {
             </div>
           </div>
           <div className="mx-auto flex w-full max-w-[25rem] justify-center pb-8 pt-16">
-            <Button
-              type="submit"
-              className="h-12"
-              size="default"
-              onClick={() => {
-                console.log(getValues());
-              }}
-              disabled={isLoading}>
+            <Button type="submit" className="h-12" size="default" disabled={isLoading}>
               {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
               {!isLoading && <IconDeviceFloppy className="mr-2 h-5 w-5 " />}
               {t('save-button')}
