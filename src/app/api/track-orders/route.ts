@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
   }
   const res = await trackOrders();
   if (res.success) {
-    console.log(res.data + ' orders tracked successfully');
     return NextResponse.json({ success: 'Orders tracked successfully' }, { status: 200 });
   } else {
     return NextResponse.json({ error: 'Error while tracking orders' }, { status: 501 });

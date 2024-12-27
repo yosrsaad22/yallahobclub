@@ -546,7 +546,9 @@ export const trackOrders = async (): Promise<ActionResponse> => {
         }
       }
     }
-    return { success: 'orders-track-success', data: activeSubOrders.length };
+    console.log(activeSubOrders.length + ' orders tracked successfully');
+
+    return { success: 'orders-track-success' };
   } catch (error) {
     return { error: 'orders-track-error' };
   }
