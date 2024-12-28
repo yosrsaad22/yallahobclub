@@ -287,6 +287,8 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
         fullName: `${values.firstName} ${values.lastName}`,
         email: values.email,
         number: values.number,
+        comment: values.comment,
+        openable: values.openable,
         city: values.city,
         state: values.state,
         address: values.address,
@@ -663,13 +665,20 @@ export const printLabel = async (id: string): Promise<ActionResponse> => {
     }
 
     const url = process.env.PDF_API_URL + '/pdf/generateLabel';
+
+    const modifiedSubOrder = {
+      ...subOrder,
+      comment: subOrder.order?.comment,
+      openable: subOrder.order?.openable,
+    };
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.PDF_API_ACCESS_TOKEN}`,
       },
-      body: JSON.stringify({ subOrder: subOrder }),
+      body: JSON.stringify({ subOrder: modifiedSubOrder }),
     });
     if (!response.ok) {
       throw new Error('Failed to generate label');

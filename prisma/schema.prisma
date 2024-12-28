@@ -336,6 +336,8 @@ model Order {
   city      String
   state     String?
   address   String
+  comment   String?
+  openable  Boolean @default(false)
 
   seller       User?         @relation("SellerOrders", fields: [sellerId], references: [id], onDelete: Cascade)
   sellerId     String?

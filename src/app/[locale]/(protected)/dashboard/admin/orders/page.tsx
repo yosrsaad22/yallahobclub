@@ -45,7 +45,7 @@ export default async function Orders() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" suppressHydrationWarning={true}>
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center space-x-2 text-3xl font-bold">

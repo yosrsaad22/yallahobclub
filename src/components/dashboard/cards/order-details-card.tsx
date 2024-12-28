@@ -194,12 +194,20 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                   )}
                 </div>
               </div>
+              <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                <p className="text-muted-foreground">{tFields('order-code')} :</p>
+                <p>{order.code}</p>
+              </div>
+              <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                <p className="text-muted-foreground">{tFields('order-comment')} :</p>
+                <p>{order?.comment ? order?.comment : 'N/A'}</p>
+              </div>
+              <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                <p className="text-muted-foreground">{tFields('order-openable')} :</p>
+                <p>{order?.openable ? t('yes') : t('no')}</p>
+              </div>
               {role === roleOptions.ADMIN && (
                 <>
-                  <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
-                    <p className="text-muted-foreground">{tFields('order-code')} :</p>
-                    <p>{order.code}</p>
-                  </div>
                   <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
                     <p className="text-muted-foreground">{tFields('order-seller')} :</p>
                     <div className="flex flex-row items-center gap-x-3">

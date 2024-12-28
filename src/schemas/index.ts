@@ -6,6 +6,7 @@ import {
   roleOptions,
   sizeOptions,
 } from '@/lib/constants';
+import { comment } from 'postcss';
 import { z } from 'zod';
 
 export const EnrollSchema = z.object({
@@ -291,6 +292,8 @@ export const OrderSchema = z.object({
   state: z.string(),
   address: z.string().min(3),
   total: z.number(),
+  comment: z.string().optional(),
+  openable: z.boolean(),
   products: z.array(OrderProductSchema),
   sellerId: z.string(),
 });

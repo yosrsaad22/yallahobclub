@@ -72,7 +72,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
         <DateRangePicker onChange={(range) => setDateRange(range)} />
         <Button disabled={isFetching} className="px-4" onClick={() => handleRefetch()} variant={'outline'}>
           {isFetching ? <IconLoader2 className="mr-2 h-5 w-5 animate-spin" /> : <IconCheck className="mr-2 h-5 w-5" />}
-          Apply
+          {tStats('apply')}
         </Button>
       </div>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">

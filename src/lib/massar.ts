@@ -7,7 +7,6 @@ export type ShipmentParams = {
   number: string;
   address: string;
   name: string;
-  pieces: string;
   pickupId: number;
   openParcel: string;
   fragile: string;
@@ -23,7 +22,6 @@ export const createShipment = ({
   number,
   address,
   name,
-  pieces,
   pickupId,
   openParcel,
   fragile,

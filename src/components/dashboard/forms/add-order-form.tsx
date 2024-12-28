@@ -40,6 +40,7 @@ interface Product extends PrismaProduct {
   media: MediaType[];
 }
 import { UserCombobox } from '../comboboxes/user-combobox';
+import { Switch } from '@/components/ui/switch';
 
 interface AddOrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -68,6 +69,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
   const defaultValues = {
     sellerId: role === roleOptions.SELLER ? userId : undefined,
     state: state,
+    openable: false,
   };
 
   const {
@@ -434,6 +436,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
                 />
                 {errors.address && <span className="text-xs text-red-400">{tValidation('order-address-error')}</span>}
               </LabelInputContainer>
+
               <LabelInputContainer>
                 <Label htmlFor="email">{tFields('order-email')}</Label>
                 <Input
@@ -444,6 +447,30 @@ export function AddOrderForm({}: AddOrderFormProps) {
                   type="email"
                 />
                 {errors.email && <span className="text-xs text-red-400">{tValidation('order-email-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="comment">{tFields('order-comment')}</Label>
+                <Input
+                  {...register('comment')}
+                  id="comment"
+                  disabled={isLoading}
+                  placeholder={tFields('order-comment')}
+                  type="text"
+                />
+                {errors.comment && <span className="text-xs text-red-400">{tValidation('order-comment-error')}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="openable">{tFields('order-openable')}</Label>
+                <div className="flex h-11 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-4 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                  <div className="font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    {t('openable-note')}
+                  </div>
+                  <Switch
+                    defaultChecked={false}
+                    onCheckedChange={(checked) => setValue('openable', checked)}
+                    id="openable"
+                  />
+                </div>
               </LabelInputContainer>
               {role === roleOptions.ADMIN && (
                 <LabelInputContainer>

@@ -189,7 +189,7 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
         }
 
         const shipment = createShipment({
-          ref1: ref1,
+          ref1: subOrder.order.comment ? subOrder.order.comment : '',
           products: subOrder.products
             .map(
               (item: any) =>
@@ -202,9 +202,8 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
           number: subOrder.order?.number!,
           address: subOrder.order?.address!,
           name: subOrder.order?.fullName!,
-          pieces: subOrder.products.length.toString(),
           pickupId: parseInt(subOrder.products[0].product?.supplier?.pickupId!),
-          openParcel: '0',
+          openParcel: subOrder.order.openable ? '1' : '0',
           fragile: '0',
           exchangeContent: '',
         });
@@ -346,7 +345,7 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
           ref1 = 'Commande' + subOrder!.order!.code;
         }
         const shipment = createShipment({
-          ref1: ref1,
+          ref1: subOrder.order?.comment ? subOrder.order?.comment : '',
           products: subOrder.products
             .map(
               (item) =>
@@ -359,9 +358,8 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
           number: subOrder.order?.number!,
           address: subOrder.order?.address!,
           name: subOrder.order?.fullName!,
-          pieces: subOrder.products.length.toString(),
           pickupId: parseInt(subOrder.products[0].product?.supplier?.pickupId!),
-          openParcel: '0',
+          openParcel: subOrder.order?.openable ? '1' : '0',
           fragile: '0',
           exchangeContent: '',
         });
