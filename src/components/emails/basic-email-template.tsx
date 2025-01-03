@@ -13,7 +13,6 @@ import {
   Text,
   Button,
 } from '@react-email/components';
-import { getTranslations } from 'next-intl/server';
 import * as React from 'react';
 
 interface BasicEmailTemplateProps {
