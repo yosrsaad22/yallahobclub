@@ -501,6 +501,12 @@ export const trackOrders = async (): Promise<ActionResponse> => {
           }
 
           const data = await response.json();
+
+          if (!data?.colis) {
+            console.log(`Skipping deliveryId ${deliveryId} as colis is undefined or null`);
+            continue;
+          }
+
           const oldStatus = activeSubOrders.find((subOrder) => subOrder.deliveryId === deliveryId)?.status;
           const newStatus = data.colis.etat;
 
