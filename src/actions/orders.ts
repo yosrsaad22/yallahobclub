@@ -427,132 +427,145 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
   }
 };
 
+let isJobRunning = false;
+
 export const trackOrders = async (): Promise<ActionResponse> => {
   const url = process.env.MASSAR_URL;
+  if (!url) {
+    throw new Error('URL is not defined');
+  }
+
+  if (isJobRunning) return { success: 'Job already running' };
+
+  isJobRunning = true;
+
   try {
-    if (!url) {
-      throw new Error('URL is not defined');
-    }
-    const originalOrders = await db.order.findMany({
-      include: {
-        seller: true,
-        subOrders: {
-          include: {
-            pickup: true,
-            products: {
-              include: {
-                product: {
-                  include: {
-                    supplier: true,
+    const pageSize = 25; // Limit number of orders processed in each batch
+    let page = 0;
+
+    while (true) {
+      const originalOrders = await db.order.findMany({
+        skip: page * pageSize,
+        take: pageSize,
+        include: {
+          seller: true,
+          subOrders: {
+            include: {
+              pickup: true,
+              products: {
+                include: {
+                  product: {
+                    include: {
+                      supplier: true,
+                    },
                   },
                 },
               },
+              statusHistory: true,
             },
-            statusHistory: true,
           },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-    const orders = originalOrders.map((order) => ({
-      ...order,
-      statuses: order.subOrders.map((subOrder) => subOrder.status),
-    }));
-
-    // Define statuses to exclude
-    const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
-
-    // Flatten orders to get active sub-orders
-    const activeSubOrders = orders.flatMap((order) =>
-      order.subOrders.filter(
-        (subOrder: SubOrder) => subOrder.deliveryId && !excludedStatuses.includes(subOrder.status!),
-      ),
-    );
-
-    const deliveryIds: string[] = activeSubOrders.map((subOrder) => subOrder.deliveryId!);
-
-    // Early return if no active sub-orders
-    if (deliveryIds.length === 0) {
-      return { success: 'orders-track-success' };
-    }
-
-    // Fetch tracking information for each sub-order
-    for (const deliveryId of deliveryIds) {
-      const response = await fetch(`${url}/tracking/${deliveryId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        orderBy: { createdAt: 'desc' },
       });
 
-      // Handle fetch errors
-      if (!response.ok) {
-        throw new Error(`Failed to track order: ${response.statusText}`);
-      }
+      if (originalOrders.length === 0) break; // Exit if no more orders
 
-      // Process response data
-      const data = await response.json();
+      const orders = originalOrders.map((order) => ({
+        ...order,
+        statuses: order.subOrders.map((subOrder) => subOrder.status),
+      }));
 
-      // Get the latest status update (first element of the `etats` array)
-      const oldStatus = activeSubOrders.find((subOrder) => subOrder.deliveryId === deliveryId)?.status;
-      const newStatus = data.colis.etat;
+      const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
+      const activeSubOrders = orders.flatMap((order) =>
+        order.subOrders.filter((subOrder) => subOrder.deliveryId && !excludedStatuses.includes(subOrder.status!)),
+      );
 
-      // Update sub-order status if it has changed
-      if (newStatus && oldStatus && newStatus !== oldStatus) {
-        const statusHistoryEntry = {
-          status: newStatus,
-          createdAt: new Date(),
-        };
+      const deliveryIds = activeSubOrders.map((subOrder) => subOrder.deliveryId!);
+      if (deliveryIds.length === 0) continue;
 
-        const subOrder = activeSubOrders.find((o) => o.deliveryId === deliveryId);
-        if (subOrder) {
-          await db.subOrder.update({
-            where: { id: subOrder.id },
-            data: {
-              status: newStatus,
-              statusHistory: {
-                create: statusHistoryEntry,
-              },
+      const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      for (const deliveryId of deliveryIds) {
+        try {
+          const response = await fetch(`${url}/tracking/${deliveryId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
             },
           });
 
-          // Notify the seller of the status change
-          const order = orders.find((o) => o.subOrders.some((so: SubOrder) => so.id === subOrder.id));
-          if (order) {
-            notifyUser(
-              order.sellerId!,
-              NotificationType.ORDER_STATUS_CHANGED,
-              `/dashboard/seller/orders/${order.id}`,
-              `#${order.code}`,
-            );
+          if (!response.ok) {
+            console.error(`Failed to track deliveryId ${deliveryId}: ${response.statusText}`);
+            continue;
           }
 
-          // Notify unique suppliers associated with the order
-          const uniqueSuppliers = new Set(subOrder.products.map((item: any) => item.product?.supplierId));
-          for (const supplierId of uniqueSuppliers) {
-            notifyUser(
-              supplierId as string,
-              NotificationType.ORDER_STATUS_CHANGED,
-              `/dashboard/supplier/orders/${order!.id}`,
-              `#${order!.code}`,
-            );
+          const data = await response.json();
+          const oldStatus = activeSubOrders.find((subOrder) => subOrder.deliveryId === deliveryId)?.status;
+          const newStatus = data.colis.etat;
+
+          if (newStatus && oldStatus && newStatus !== oldStatus) {
+            const statusHistoryEntry = {
+              status: newStatus,
+              createdAt: new Date(),
+            };
+
+            const subOrder = activeSubOrders.find((o) => o.deliveryId === deliveryId);
+            if (subOrder) {
+              await db.subOrder.update({
+                where: { id: subOrder.id },
+                data: {
+                  status: newStatus,
+                  statusHistory: {
+                    create: statusHistoryEntry,
+                  },
+                },
+              });
+
+              const order = orders.find((o) => o.subOrders.some((so) => so.id === subOrder.id));
+              if (order) {
+                notifyUser(
+                  order.sellerId!,
+                  NotificationType.ORDER_STATUS_CHANGED,
+                  `/dashboard/seller/orders/${order.id}`,
+                  `#${order.code}`,
+                );
+
+                const uniqueSuppliers = new Set(subOrder.products.map((item) => item.product?.supplierId));
+                for (const supplierId of uniqueSuppliers) {
+                  notifyUser(
+                    supplierId!,
+                    NotificationType.ORDER_STATUS_CHANGED,
+                    `/dashboard/supplier/orders/${order.id}`,
+                    `#${order.code}`,
+                  );
+                }
+
+                notifyAllAdmins(
+                  NotificationType.ORDER_STATUS_CHANGED,
+                  `/dashboard/admin/orders/${order.id}`,
+                  `#${order.code}`,
+                );
+              }
+            }
           }
 
-          // Notify all admins
-          notifyAllAdmins(
-            NotificationType.ORDER_STATUS_CHANGED,
-            `/dashboard/admin/orders/${order!.id}`,
-            `#${order!.code}`,
-          );
+          await delay(100); // Throttle API requests
+        } catch (error) {
+          console.error(`Error processing deliveryId ${deliveryId}:`, error);
         }
       }
-    }
-    console.log(activeSubOrders.length + ' orders tracked successfully');
 
+      page++;
+    }
+
+    console.log('Orders tracked successfully');
     return { success: 'orders-track-success' };
   } catch (error) {
+    console.error('Error in trackOrders:', error);
     return { error: 'orders-track-error' };
+  } finally {
+    isJobRunning = false;
   }
 };
 
