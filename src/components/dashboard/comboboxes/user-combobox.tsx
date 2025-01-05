@@ -90,11 +90,7 @@ export function UserCombobox({
           aria-expanded={false}
           className="w-full justify-between px-3 font-normal">
           {multiSelect ? (
-            selectedUserIds.length > 0 ? (
-              `${selectedUserIds.length} selected`
-            ) : (
-              <p className="text-muted-foreground">{placeholder}</p>
-            )
+            <p className="text-muted-foreground">{placeholder}</p>
           ) : selectedUserId ? (
             (() => {
               const selectedUser = users.find((user) => user.id === selectedUserId);
