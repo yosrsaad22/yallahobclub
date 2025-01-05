@@ -73,18 +73,18 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
       <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* first row */}
         <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('sub-orders')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.subOrders || 0}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration1 />
           </CardContent>
         </Card>
         <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('supplier-profit')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? (
@@ -94,12 +94,12 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
               )}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration4 />
           </CardContent>
         </Card>
         <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('pickups')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? (
@@ -109,18 +109,18 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
               )}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration3 />
           </CardContent>
         </Card>
         <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('transactions')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.transactions || 0}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration2 />
           </CardContent>
         </Card>

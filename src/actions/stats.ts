@@ -131,7 +131,7 @@ async function calculateMonthlyProfit() {
             case packOptions.BRAND:
               return total + 1997;
             case packOptions.MACHROU3:
-              return total + 3297;
+              return total + 3500;
             default:
               return total;
           }
@@ -303,7 +303,7 @@ async function calculateDailyProfit() {
     } else if (course.pack === 'BRAND') {
       dailyDataMap[dateStr].profit += 1997;
     } else if (course.pack === 'MACHROU3') {
-      dailyDataMap[dateStr].profit += 3297;
+      dailyDataMap[dateStr].profit += 3500;
     } else {
       dailyDataMap[dateStr].profit += 0;
     }
@@ -704,7 +704,7 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       } else if (course.pack === packOptions.BRAND) {
         return total + 1997;
       } else if (course.pack === packOptions.MACHROU3) {
-        return total + 3297;
+        return total + 3500;
       } else {
         return total;
       }

@@ -68,14 +68,16 @@ export function MonthlySubOrdersAndCoursesChart({ data }: MonthlySubOrdersAndCou
             <span className="text-muted-foreground">{tStats('no-data')}</span>
           </div>
         ) : (
-          <ChartContainer className="-ml-8" config={chartConfig}>
+          <ChartContainer className=" -ml-8 " config={chartConfig}>
             <LineChart
+              className="pt-4"
               data={data}
               margin={{
                 left: 12,
+                top: 6,
                 right: 12,
               }}>
-              <CartesianGrid vertical={false} />
+              <CartesianGrid className="" vertical={false} />
               <XAxis
                 dataKey="month"
                 tickLine={false}

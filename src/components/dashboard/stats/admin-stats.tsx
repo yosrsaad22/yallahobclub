@@ -68,17 +68,21 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-row items-center justify-end gap-3">
+      <div className="flex flex-row flex-wrap items-center  justify-end gap-3">
         <DateRangePicker onChange={(range) => setDateRange(range)} />
         <Button disabled={isFetching} className="px-4" onClick={() => handleRefetch()} variant={'outline'}>
-          {isFetching ? <IconLoader2 className="mr-2 h-5 w-5 animate-spin" /> : <IconCheck className="mr-2 h-5 w-5" />}
-          {tStats('apply')}
+          {isFetching ? (
+            <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />
+          ) : (
+            <IconCheck className="mr-0 h-5 w-5 md:mr-2" />
+          )}
+          <p className="hidden md:block">{tStats('apply')}</p>
         </Button>
       </div>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* first row */}
         <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('platform-revenue')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? (
@@ -88,12 +92,12 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
               )}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration1 />
           </CardContent>
         </Card>
         <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('sellers-profit')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? (
@@ -103,29 +107,29 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
               )}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration4 />
           </CardContent>
         </Card>
-        <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="relative max-h-[7rem] overflow-hidden">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('sub-orders')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.subOrders || 0}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration3 />
           </CardContent>
         </Card>
         <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('transactions')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.transactions || 0}
             </div>
           </CardHeader>
-          <CardContent className="-mt-4 px-0">
+          <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration2 />
           </CardContent>
         </Card>

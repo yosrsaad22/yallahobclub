@@ -106,14 +106,14 @@ export function Combobox<T>({
         )}
       </PopoverTrigger>
       <PopoverContent
-        style={{ width: buttonWidth }}
+        style={{ width: buttonRef.current ? buttonRef.current.offsetWidth : 'auto' }}
         className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''} p-0`}>
         <Command className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''}`}>
-          <CommandInput placeholder={t('search')} className="h-9 " />
+          <CommandInput placeholder={t('search')} className="h-9" />
           <CommandEmpty>{t('no-result')}</CommandEmpty>
-          <CommandGroup className="overflow-y-auto ">
-            <CommandList className="custom-scrollbar max-h-64 overflow-y-auto ">
-              {items.length !== 0 &&
+          <CommandGroup className="overflow-y-auto">
+            <CommandList className="custom-scrollbar max-h-64 overflow-y-auto">
+              {items.length > 0 &&
                 items.map((item) => (
                   <CommandItem
                     key={itemKey(item)}
@@ -121,7 +121,9 @@ export function Combobox<T>({
                     className={`${isDark ? 'text-white' : ''} w-full`}
                     onSelect={() => {
                       onSelect(item);
-                      setOpen(false);
+                      if (!multiSelect) {
+                        setOpen(false);
+                      }
                     }}>
                     {displayValue(item)}
                     {isSelected(item) && <IconCheck className="ml-auto h-4 w-4 opacity-100" />}

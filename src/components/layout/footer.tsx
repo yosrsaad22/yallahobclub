@@ -1,13 +1,13 @@
 export const Footer = () => {
   return (
     <footer className="text-surface relative flex flex-col items-center bg-[#100e0e]/50 text-center text-gray-200 backdrop-blur-md">
-      <div className="container flex flex-row justify-between py-8">
-        <div className="flex flex-col items-start justify-center space-y-2 text-left text-xs text-foreground ">
+      <div className="container flex h-full flex-col items-center justify-center  py-6 md:flex-row md:items-start md:justify-between md:gap-0 md:py-8">
+        <div className="flex flex-col items-center justify-center space-y-2 py-2 text-left text-xs text-foreground md:items-start md:justify-center ">
           <p>Tel (+216) 24 002 024</p>
           <p>E-mail support@ecomness.com</p>
           <p>P8M8+J66, Rue de Palestine, Ezzahra 2034.</p>
         </div>
-        <div className="flex flex-row items-center justify-center space-x-2">
+        <div className="flex h-full flex-row items-center justify-center space-x-2">
           <a
             href="https://www.facebook.com/ecomness"
             type="button"

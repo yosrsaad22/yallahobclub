@@ -75,6 +75,7 @@ export function MonthlyProfitAndSubOrdersChart({ data }: MonthlyProfitAndSubOrde
               data={data}
               margin={{
                 left: 12,
+                top: 6,
                 right: 12,
               }}>
               <CartesianGrid vertical={false} />

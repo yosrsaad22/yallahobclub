@@ -1,4 +1,4 @@
-import { NavItem, OrderStatusType } from '@/types';
+import { FilterOption, NavItem, OrderStatusType } from '@/types';
 import {
   IconBoxSeam,
   IconBrandYoutube,
@@ -34,6 +34,7 @@ export enum packOptions {
   BRAND = 'BRAND',
   MACHROU3 = 'MACHROU3',
 }
+
 export enum roleOptions {
   ADMIN = 'ADMIN',
   SELLER = 'SELLER',

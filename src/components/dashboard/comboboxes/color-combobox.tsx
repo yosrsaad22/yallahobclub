@@ -31,7 +31,7 @@ export function ColorPickerCombobox({ colors, selectedColor, onSelectColor, plac
 
   const handleSelectColor = (color: string) => {
     onSelectColor(color);
-    setOpen(false);
+    //setOpen(false);
   };
 
   const isColorsEmpty = colors.length === 0;

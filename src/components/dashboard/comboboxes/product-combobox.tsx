@@ -57,7 +57,7 @@ export function ProductCombobox({ products, onSelectProduct, placeholder, loadin
     };
 
     onSelectProduct(orderProduct);
-    setOpen(false);
+    //setOpen(false);
   };
 
   return (

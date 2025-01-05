@@ -60,9 +60,10 @@ export type DataTableHandlers = {
   onDelete: (id: string) => Promise<ActionResponse>;
   onBulkDelete: (ids: string[]) => Promise<ActionResponse>;
   onRequestPickup: (ids: string[]) => Promise<ActionResponse>;
-  onPrintPickup: (id: string) => Promise<ActionResponse>;
+  onPrintPickups: (ids: string[]) => Promise<ActionResponse>;
   onAddTransaction: (userId: string, amount: string) => Promise<ActionResponse>;
   onMarkAsPaid: (ids: string[]) => Promise<ActionResponse>;
+  onPrintLabels: (ids: string[]) => Promise<ActionResponse>;
   onCustomRefresh: () => Promise<ActionResponse>;
 };
 

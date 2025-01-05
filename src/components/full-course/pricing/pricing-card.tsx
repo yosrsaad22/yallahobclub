@@ -11,6 +11,7 @@ export const PricingCard = ({
   price,
   payOnceText,
   description,
+  discount,
   buttonText,
   href,
   features,
@@ -20,16 +21,18 @@ export const PricingCard = ({
   price?: string;
   payOnceText?: string;
   description: string;
+  discount?: string;
   buttonText: string;
   href: string;
   features: string[];
 }) => {
   return (
-    <CardContainer className="inter-var relative ">
+    <CardContainer className="inter-var relative pt-2 ">
       <div className="absolute inset-8 rounded-full bg-gradient-to-r from-primary/30 to-secondary/50 opacity-50 blur-3xl"></div>
+
       <CardBody
         className={cn(
-          'group/card  feature-glass-gradient relative flex h-[540px]  w-full  flex-col rounded-[1.2rem] border border-slate-700/70 p-4 md:!w-[310px] md:p-6',
+          'group/card  feature-glass-gradient relative flex h-[570px]  w-full  flex-col rounded-[1.2rem] border border-slate-700/70 p-4 md:!w-[350px] md:p-6',
           className,
         )}>
         <div className="jusitfy-between flex h-full w-full flex-col items-center">
@@ -40,7 +43,14 @@ export const PricingCard = ({
               PACK {packName}
               {price && (
                 <div>
-                  <h2 className="text-gradient mx-auto text-5xl font-semibold">{price}</h2>
+                  <div className="flex flex-row gap-2">
+                    <h2 className="text-gradient mx-auto text-5xl font-semibold">{price}</h2>
+                    {discount && (
+                      <p className=" h-fit w-fit animate-pulse rounded-full border-2 border-red-500 px-3 py-[0.1rem] text-sm font-semibold  text-red-500 line-through">
+                        {discount}
+                      </p>
+                    )}
+                  </div>
                   <p className="mx-auto text-sm font-medium italic text-gray-400">{payOnceText}</p>
                 </div>
               )}

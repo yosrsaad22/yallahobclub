@@ -437,13 +437,15 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
   }
 };
 
-export const printPickup = async (id: string): Promise<ActionResponse> => {
+export const printPickups = async (ids: string[]): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
 
-    const pickup = await db.pickup.findUnique({
+    const pickups = await db.pickup.findMany({
       where: {
-        id: id,
+        id: {
+          in: ids,
+        },
       },
       include: {
         subOrders: {
@@ -463,7 +465,7 @@ export const printPickup = async (id: string): Promise<ActionResponse> => {
       },
     });
 
-    const url = process.env.PDF_API_URL + '/pdf/generateDecharge';
+    const url = process.env.PDF_API_URL + '/pdf/generateDecharges';
     if (!url) {
       throw new Error('PDF_API_URL is not defined');
     }
@@ -475,19 +477,21 @@ export const printPickup = async (id: string): Promise<ActionResponse> => {
         Authorization: `Bearer ${process.env.PDF_API_ACCESS_TOKEN}`,
       },
       body: JSON.stringify({
-        code: pickup!.code,
-        subOrders: pickup!.subOrders,
-        createdAt: pickup!.createdAt,
+        pickups: pickups.map((pickup) => ({
+          code: pickup.code,
+          subOrders: pickup.subOrders,
+          createdAt: pickup.createdAt,
+        })),
       }),
     });
     if (!response.ok) {
-      throw new Error('Failed to generate decharge document');
+      throw new Error('Failed to generate decharge documents');
     }
 
     const res = await response.json();
 
-    return { success: 'pickup-print-success', data: process.env.PDF_API_URL + res.data };
+    return { success: 'pickups-print-success', data: process.env.PDF_API_URL + res.data };
   } catch (error) {
-    return { error: 'pickup-print-error' };
+    return { error: 'pickups-print-error' };
   }
 };

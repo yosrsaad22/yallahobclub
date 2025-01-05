@@ -31,7 +31,7 @@ export function SizePickerCombobox({ selectedSize, onSelectSize, sizes, placehol
 
   const handleSelectSize = (size: string) => {
     onSelectSize(size);
-    setOpen(false);
+    //setOpen(false);
   };
 
   const isSizesEmpty = sizes.length === 0;

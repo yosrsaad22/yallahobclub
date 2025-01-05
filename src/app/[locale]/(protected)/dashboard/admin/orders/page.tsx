@@ -5,7 +5,7 @@ import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { AdminOrderColumns, SellerOrderColumns } from '@/components/dashboard/table/columns/order-columns';
-import { adminGetOrders, markOrdersAsPaid, sellerGetOrders, trackOrders } from '@/actions/orders';
+import { adminGetOrders, markOrdersAsPaid, printLabels, sellerGetOrders, trackOrders } from '@/actions/orders';
 import { Order } from '@prisma/client';
 import { adminRequestPickup, requestPickup } from '@/actions/pickups';
 
@@ -25,12 +25,7 @@ export default async function Orders() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.orders'), link: '/dashboard/admin/orders' }];
   const res: ActionResponse = await adminGetOrders();
-  const ordersData: any[] = res.error
-    ? []
-    : res.data.map((order: Order) => ({
-        ...order,
-        fullName: `${order.firstName} ${order.lastName}`,
-      }));
+  const ordersData: any[] = res.error ? [] : res.data;
 
   const handleRequestPickup = async (ids: string[]) => {
     'use server';
@@ -41,6 +36,12 @@ export default async function Orders() {
   const handleMarkAsPaid = async (ids: string[]) => {
     'use server';
     const res = await markOrdersAsPaid(ids);
+    return res;
+  };
+
+  const handlePrintLabels = async (ids: string[]) => {
+    'use server';
+    const res = await printLabels(ids);
     return res;
   };
 
@@ -65,6 +66,8 @@ export default async function Orders() {
           showBulkDeleteButton={false}
           showCreatePickupButton={true}
           showMarkAsPaidButton={true}
+          showPrintLabelsButton={true}
+          onPrintLabels={handlePrintLabels}
         />
       </div>
     </div>

@@ -4,7 +4,7 @@ import { ActionResponse } from '@/types';
 import { IconTruckDelivery } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
-import { supplierGetPickups, printPickup } from '@/actions/pickups';
+import { supplierGetPickups, printPickups } from '@/actions/pickups';
 import { SupplierPickupColumns } from '@/components/dashboard/table/columns/pickup-columns';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
@@ -23,9 +23,9 @@ export default async function Pickups() {
   const res: ActionResponse = await supplierGetPickups();
   const pickupsData: any[] = res.error ? [] : res.data;
 
-  const handlePrintPickup = async (id: string) => {
+  const handlePrintPickups = async (ids: string[]) => {
     'use server';
-    const res = await printPickup(id);
+    const res = await printPickups(ids);
     return res;
   };
 
@@ -49,8 +49,8 @@ export default async function Pickups() {
           redirectToDetails={false}
           showAddButton={false}
           showSelect={true}
-          showPrintPickupButton={true}
-          onPrintPickup={handlePrintPickup}
+          showPrintPickupsButton={true}
+          onPrintPickups={handlePrintPickups}
           showBulkDeleteButton={false}
           showCreatePickupButton={false}
         />

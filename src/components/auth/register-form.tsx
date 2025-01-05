@@ -321,7 +321,11 @@ export function RegisterForm({ className }: RegisterFormProps) {
                   <p className="text-sm font-medium italic text-gray-400">{tPricing('pay-once')}</p>
                 </div>
               </div>
-              <h2 className="text-gradient  ml-4 flex text-xl font-semibold">3297 DT</h2>
+
+              <div className="flex flex-row ">
+                <p className=" w-fit animate-pulse text-xl font-semibold  text-red-500 line-through">4500 DT</p>
+                <h2 className="text-gradient  ml-4 flex text-xl font-semibold">3500 DT</h2>
+              </div>
             </div>
           </div>
           <div className="flex flex-row justify-center pt-2">

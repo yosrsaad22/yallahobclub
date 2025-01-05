@@ -15,7 +15,7 @@ const StatusCell = ({ status }: { status: string }) => {
 
   if (!statusObj) return null;
   return (
-    <div className={`mr-3 inline-flex w-auto rounded-full px-3 py-1 ${statusObj.Color} whitespace-nowrap`}>
+    <div className={`mr-3 inline-flex w-fit rounded-full px-3 py-1 ${statusObj.Color} whitespace-nowrap`}>
       <p className="mx-auto">{tStatuses(statusObj.UpdateCode)}</p>
     </div>
   );
@@ -64,11 +64,6 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
       </Badge>
     </div>
   );
-};
-
-const TranslationCell = ({ translationKey }: { translationKey: string }) => {
-  const tFields = useTranslations('fields');
-  return <div className="w-full font-semibold">{tFields(translationKey)}</div>;
 };
 
 export const SellerOrderColumns: ColumnDef<Order & { fullName: string; subOrders: SubOrder[]; statuses: string[] }>[] =
@@ -147,7 +142,7 @@ export const SellerOrderColumns: ColumnDef<Order & { fullName: string; subOrders
       cell: ({ row }) => {
         const statuses = row.original.statuses;
         return (
-          <div className="flex w-fit flex-col gap-2">
+          <div className="-ml-8 flex flex-col items-center justify-center gap-2">
             {statuses.map((status, index) => (
               <StatusCell key={index} status={status} />
             ))}
@@ -246,7 +241,7 @@ export const SupplierOrderColumns: ColumnDef<
     cell: ({ row }) => {
       const statuses = row.original.statuses;
       return (
-        <div className="flex w-fit flex-col gap-2">
+        <div className="-ml-8 flex flex-col items-center justify-center gap-2">
           {statuses.map((status, index) => (
             <StatusCell key={index} status={status} />
           ))}
@@ -257,7 +252,7 @@ export const SupplierOrderColumns: ColumnDef<
 ];
 
 export const AdminOrderColumns: ColumnDef<
-  Order & { subOrders: SubOrder[]; statuses: string[]; seller: User; fullName: string }
+  Order & { subOrders: SubOrder[]; statuses: string[]; seller: User; suppliers: string[]; fullName: string }
 >[] = [
   {
     accessorKey: 'createdAt',
@@ -296,6 +291,11 @@ export const AdminOrderColumns: ColumnDef<
       columnName: 'seller',
     },
     accessorFn: (row) => row.seller.fullName + ' ' + row.seller.email + ' ' + row.seller.number + ' ' + row.seller.code,
+    filterFn: (row, columnId, filterValue) => {
+      const seller = row.original.seller; // Access the seller object directly from row.original
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      return seller && filterValues.includes(seller.id); // Check if seller.id matches any value in filterValues
+    },
     cell: ({ row }) => {
       const seller: User = row.original.seller;
 
@@ -337,15 +337,32 @@ export const AdminOrderColumns: ColumnDef<
     meta: {
       columnName: 'statuses',
     },
+    filterFn: (row, columnId, filterValue) => {
+      const statuses = row.getValue(columnId) as string[];
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      return filterValues.some((value) => statuses.includes(value));
+    },
     cell: ({ row }) => {
       const statuses = row.original.statuses;
       return (
-        <div className="flex w-fit flex-col gap-2">
+        <div className="-ml-8 flex flex-col items-center justify-center gap-2">
           {statuses.map((status, index) => (
             <StatusCell key={index} status={status} />
           ))}
         </div>
       );
     },
+  },
+  {
+    id: 'suppliers', // Unique identifier for the column
+    accessorFn: (row) => row.suppliers, // Provide the suppliers field for filtering
+    filterFn: (row, columnId, filterValue) => {
+      const suppliers = row.getValue(columnId) as string[];
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      return filterValues.some((value) => suppliers.includes(value));
+    },
+    enableHiding: true, // Prevent hiding the column through visibility toggles
+    enableSorting: false, // Disable sorting since it's for filtering only
+    cell: undefined, // Prevent rendering a cell
   },
 ];

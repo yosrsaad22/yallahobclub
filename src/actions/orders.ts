@@ -20,9 +20,7 @@ import { roleOptions } from '@/lib/constants';
 import { notifyAllAdmins, notifyUser } from './notifications';
 import { admingGetOrderById, userGetOrderById } from '@/data/order';
 import { generateCode } from '@/lib/utils';
-import { printLabelRequest, trackShipmentsRequest } from '@/lib/aramex';
 import { createTransaction } from './transactions';
-import { getTranslations } from 'next-intl/server';
 
 export const sellerGetOrders = async (): Promise<ActionResponse> => {
   try {
@@ -41,11 +39,12 @@ export const sellerGetOrders = async (): Promise<ActionResponse> => {
         },
       },
     });
-    const ordersWithStatuses = orders.map((order) => ({
+    const modifiedOrders = orders.map((order) => ({
       ...order,
+      fullName: `${order.firstName} ${order.lastName}`,
       statuses: order.subOrders.map((subOrder) => subOrder.status),
     }));
-    return { success: 'orders-fetch-success', data: ordersWithStatuses };
+    return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
     return { error: 'orders-fetch-error' };
   }
@@ -79,8 +78,9 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    const ordersWithStatuses = orders.map((order) => ({
+    const modifiedOrders = orders.map((order) => ({
       ...order,
+      fullName: `${order.firstName} ${order.lastName}`,
       subOrders: order.subOrders.filter((subOrder) =>
         subOrder.products.some((item) => item.product?.supplierId === user?.id),
       ),
@@ -88,7 +88,7 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
         .filter((subOrder) => subOrder.products[0].product?.supplierId === user?.id)
         .map((subOrder) => subOrder.status),
     }));
-    return { success: 'orders-fetch-success', data: ordersWithStatuses };
+    return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
     return { error: 'orders-fetch-error' };
   }
@@ -119,11 +119,13 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    const ordersWithStatuses = orders.map((order) => ({
+    const modifiedOrders = orders.map((order) => ({
       ...order,
+      fullName: `${order.firstName} ${order.lastName}`,
+      suppliers: order.subOrders.map((subOrder) => subOrder.products[0].product?.supplier?.id),
       statuses: order.subOrders.map((subOrder) => subOrder.status),
     }));
-    return { success: 'orders-fetch-success', data: ordersWithStatuses };
+    return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
     return { error: 'orders-fetch-error' };
   }
@@ -330,7 +332,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
       let subOrderSellerProfit = 0;
       let subOrderTotal = 0;
 
-      let deliveryFee = Object.keys(supplierGroups).length > 1 ? 7 * Object.keys(supplierGroups).length : 8;
+      let deliveryFee = Object.keys(supplierGroups).length > 1 ? 7 : 8;
 
       for (const item of products) {
         let sellerProfit =
@@ -546,12 +548,6 @@ export const trackOrders = async (): Promise<ActionResponse> => {
                     `#${order.code}`,
                   );
                 }
-
-                notifyAllAdmins(
-                  NotificationType.ORDER_STATUS_CHANGED,
-                  `/dashboard/admin/orders/${order.id}`,
-                  `#${order.code}`,
-                );
               }
             }
           }
@@ -646,9 +642,6 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
         `#${order!.code}`,
       );
     }
-
-    // Notify all admins
-    notifyAllAdmins(NotificationType.ORDER_STATUS_CHANGED, `/dashboard/admin/orders/${order!.id}`, `#${order!.code}`);
   }
 };
 
@@ -707,6 +700,60 @@ export const printLabel = async (id: string): Promise<ActionResponse> => {
   } catch (error) {
     console.log(error);
     return { error: 'print-label-error' };
+  }
+};
+
+export const printLabels = async (ids: string[]): Promise<ActionResponse> => {
+  try {
+    await roleGuard([UserRole.SUPPLIER, UserRole.ADMIN]);
+
+    const subOrders = await db.subOrder.findMany({
+      where: { orderId: { in: ids } },
+      include: {
+        products: {
+          include: {
+            product: {
+              include: {
+                supplier: true,
+              },
+            },
+          },
+        },
+        order: {
+          include: {
+            subOrders: true,
+            seller: true,
+          },
+        },
+      },
+    });
+    for (const sub of subOrders) {
+      if (sub.status === 'EC01') {
+        return { error: 'print-labels-order-cancelled-error' };
+      }
+      if (sub.deliveryId === undefined || !sub.deliveryId) {
+        return { error: 'print-labels-order-no-pickup-error' };
+      }
+    }
+
+    const url = process.env.PDF_API_URL + '/pdf/generateLabels';
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.PDF_API_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({ subOrders: subOrders }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to generate labels');
+    }
+    const res = await response.json();
+    return { success: 'print-labels-success', data: process.env.PDF_API_URL + res.data };
+  } catch (error) {
+    console.log(error);
+    return { error: 'print-labels-error' };
   }
 };
 

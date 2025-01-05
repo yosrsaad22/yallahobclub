@@ -29,7 +29,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top" className="bg-background">
-              {[5, 8, 20, 30, 40, 50].map((pageSize) => (
+              {[20, 30, 40, 50, 100, 150].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

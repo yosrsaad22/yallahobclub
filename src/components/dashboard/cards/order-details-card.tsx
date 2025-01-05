@@ -416,7 +416,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                 {role === roleOptions.SUPPLIER && (
                   <div className="flex w-full items-center justify-between font-semibold">
                     <p>TOTAL</p>
-                    <p>{subOrders[0].total?.toFixed(2)} TND</p>
+                    <p>{subOrders[0].total!.toFixed(2)} TND</p>
                   </div>
                 )}
 

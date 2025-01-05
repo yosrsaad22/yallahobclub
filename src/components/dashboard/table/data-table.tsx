@@ -33,17 +33,19 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   onBulkDelete: DataTableHandlers['onBulkDelete'] | undefined;
   onRequestPickup?: DataTableHandlers['onRequestPickup'] | undefined;
   onMarkAsPaid?: DataTableHandlers['onMarkAsPaid'] | undefined;
-  onPrintPickup?: DataTableHandlers['onPrintPickup'] | undefined;
+  onPrintPickups?: DataTableHandlers['onPrintPickups'] | undefined;
   onAddTransaction?: DataTableHandlers['onAddTransaction'] | undefined;
+  onPrintLabels?: DataTableHandlers['onPrintLabels'] | undefined;
   redirectToDetails?: boolean;
   showActions?: boolean;
   showAddButton?: boolean;
   showBulkDeleteButton?: boolean;
   showCreatePickupButton?: boolean;
-  showPrintPickupButton?: boolean;
+  showPrintPickupsButton?: boolean;
   showMarkAsPaidButton?: boolean;
   showSelect?: boolean;
   showAddTransactionButton?: boolean;
+  showPrintLabelsButton?: boolean;
 }
 
 export function DataTable<TData extends { id: string }, TValue>({
@@ -55,23 +57,26 @@ export function DataTable<TData extends { id: string }, TValue>({
   onBulkDelete,
   onRequestPickup = undefined,
   onMarkAsPaid = undefined,
-  onPrintPickup = undefined,
+  onPrintPickups = undefined,
+  onAddTransaction = undefined,
+  onPrintLabels = undefined,
   redirectToDetails = true,
   showActions = true,
   showAddButton = true,
   showSelect = true,
-  showPrintPickupButton = false,
+  showPrintPickupsButton = false,
   showBulkDeleteButton = true,
   showCreatePickupButton = false,
   showAddTransactionButton = false,
   showMarkAsPaidButton = false,
-  onAddTransaction = undefined,
+  showPrintLabelsButton = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({});
   const [isMobile, setIsMobile] = React.useState<boolean>(false);
+  const [appliedFilters, setAppliedFilters] = React.useState<Record<string, any>>({});
   const t = useTranslations('dashboard.tables');
   const tFields = useTranslations('fields');
   const role = useCurrentRole();
@@ -111,8 +116,8 @@ export function DataTable<TData extends { id: string }, TValue>({
     columns = [...columns, actionsColumn];
   }
 
-  const table = useReactTable({
-    data,
+  const table = useReactTable<TData>({
+    data: data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -151,16 +156,18 @@ export function DataTable<TData extends { id: string }, TValue>({
         showAddButton={showAddButton}
         showBulkDeleteButton={showBulkDeleteButton}
         showCreatePickupButton={showCreatePickupButton}
-        showPrintPickupButton={showPrintPickupButton}
+        showPrintPickupsButton={showPrintPickupsButton}
         showAddTransactionButton={showAddTransactionButton}
         showMarkAsPaidButton={showMarkAsPaidButton}
+        showPrintLabelsButton={showPrintLabelsButton}
         tag={tag}
         table={table}
         onBulkDelete={onBulkDelete}
         onRequestPickup={onRequestPickup}
-        onPrintPickup={onPrintPickup}
+        onPrintPickups={onPrintPickups}
         onAddTransaction={onAddTransaction}
         onMarkAsPaid={onMarkAsPaid}
+        onPrintLabels={onPrintLabels}
       />
       <div className="custom-scrollbar overflow-x-auto rounded-md border bg-background">
         <div className="inline-block min-w-full align-middle">
@@ -169,7 +176,11 @@ export function DataTable<TData extends { id: string }, TValue>({
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
+                    // Skip rendering headers for columns with enableHiding set to true
+                    if (header.column.columnDef.enableHiding) return null;
+
                     const translatedTitle = translateColumnHeader(translationPrefix, header.id, tFields);
+
                     return (
                       <TableHead key={header.id}>
                         {header.isPlaceholder ? null : header.id === 'select' ? (
@@ -197,6 +208,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                 </TableRow>
               ))}
             </TableHeader>
+
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
@@ -207,28 +219,31 @@ export function DataTable<TData extends { id: string }, TValue>({
                     onContextMenu={(e) => {
                       if (redirectToDetails) {
                         e.preventDefault(); // Prevent default context menu
-                        const url = `/dashboard/${role?.toLowerCase()}/${tag}/${row.original.id}`;
+                        const url = `/dashboard/${role?.toLowerCase()}/${tag}/${(row.original as TData).id}`;
                         window.open(url, '_blank'); // Open the link in a new tab
                       }
                     }}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        onClick={() => {
-                          if (redirectToDetails) {
-                            if (!cell.id.includes('actions') && !cell.id.includes('select')) {
-                              router.push(`/dashboard/${role?.toLowerCase()}/${tag}/${row.original.id}`);
+                    {row
+                      .getVisibleCells()
+                      .filter((cell) => !cell.column.columnDef.enableHiding)
+                      .map((cell) => (
+                        <TableCell
+                          onClick={() => {
+                            if (redirectToDetails) {
+                              if (!cell.id.includes('actions') && !cell.id.includes('select')) {
+                                router.push(`/dashboard/${role?.toLowerCase()}/${tag}/${(row.original as TData).id}`);
+                              }
                             }
-                          }
-                        }}
-                        className={cn(
-                          !cell.id.includes('actions') && !cell.id.includes('select')
-                            ? 'cursor-pointer'
-                            : 'pointer-events-auto',
-                        )}
-                        key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
+                          }}
+                          className={cn(
+                            !cell.id.includes('actions') && !cell.id.includes('select')
+                              ? 'cursor-pointer'
+                              : 'pointer-events-auto',
+                          )}
+                          key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
                   </TableRow>
                 ))
               ) : (

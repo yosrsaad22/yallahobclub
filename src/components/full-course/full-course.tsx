@@ -358,7 +358,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
           </span>
         </h1>
         <p className="text-md pt-8 text-center md:max-w-3xl ">{t('pricing.text')}</p>
-        <div className="relative flex w-full flex-col flex-wrap items-center justify-center gap-8 pt-16 md:flex-row">
+        <div className="relative flex w-full flex-col flex-wrap items-center justify-center gap-2 pt-16 md:flex-row">
           <PricingCard
             className="m-1 space-y-8"
             packName="DAMREJ"
@@ -398,7 +398,8 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
             className="m-1 space-y-8"
             href="/register"
             packName="MACHROU3"
-            price="3297 DT"
+            discount="4500 DT"
+            price="3500 DT"
             payOnceText={t('pricing.pay-once')}
             description={t('pricing.machrou3.description')}
             features={[

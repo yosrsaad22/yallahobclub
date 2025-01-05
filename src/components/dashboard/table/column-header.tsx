@@ -15,15 +15,20 @@ interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes
   column: Column<TData, TValue>;
   title: string;
 }
-
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
+  // Check if column is hidden
+  if (column.columnDef.enableHiding) {
+    return null;
+  }
+
   if (!column.getCanSort()) {
     return <div className={cn(className, 'font-semibold')}>{title}</div>;
   }
+
   return (
     <div className={cn('flex items-center space-x-2', className)}>
       <DropdownMenu>
@@ -31,7 +36,7 @@ export function DataTableColumnHeader<TData, TValue>({
           <Button
             variant="ghost"
             size="sm"
-            className="-ml-3 h-8 font-semibold text-muted-foreground data-[state=open]:bg-accent hover:scale-100">
+            className="-ml-3 h-8 font-semibold text-foreground/90 data-[state=open]:bg-accent hover:scale-100">
             <span>{title}</span>
             {column.getIsSorted() === 'desc' ? (
               <IconArrowDown className="ml-2 h-5 w-5" />

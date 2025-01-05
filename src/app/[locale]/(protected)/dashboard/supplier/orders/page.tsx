@@ -5,7 +5,7 @@ import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { SupplierOrderColumns } from '@/components/dashboard/table/columns/order-columns';
-import { supplierGetOrders, trackOrders } from '@/actions/orders';
+import { printLabels, supplierGetOrders, trackOrders } from '@/actions/orders';
 import { requestPickup } from '@/actions/pickups';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
@@ -32,6 +32,12 @@ export default async function Orders() {
     return res;
   };
 
+  const handlePrintLabels = async (ids: string[]) => {
+    'use server';
+    const res = await printLabels(ids);
+    return res;
+  };
+
   return (
     <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -46,6 +52,7 @@ export default async function Orders() {
           onDelete={undefined}
           onBulkDelete={undefined}
           onRequestPickup={handleRequestPickup}
+          onPrintLabels={handlePrintLabels}
           columns={SupplierOrderColumns}
           data={ordersData}
           showActions={false}
@@ -53,6 +60,7 @@ export default async function Orders() {
           showSelect={true}
           showBulkDeleteButton={false}
           showCreatePickupButton={true}
+          showPrintLabelsButton={true}
         />
       </div>
     </div>

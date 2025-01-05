@@ -6,7 +6,7 @@
         },
         {
             "path": "/api/track-orders",
-            "schedule": "*/30 * * * *"
+            "schedule": "0 * * * *"
         }
     ]
 }
