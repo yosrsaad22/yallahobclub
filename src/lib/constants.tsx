@@ -1,4 +1,4 @@
-import { FilterOption, NavItem, OrderStatusType } from '@/types';
+import { NavItem, OrderStatusType } from '@/types';
 import {
   IconBoxSeam,
   IconBrandYoutube,
