@@ -47,7 +47,7 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
   const tFields = useTranslations('fields');
   if (!value) {
     return (
-      <div className="flex w-[100px] items-center justify-center">
+      <div className="flex w-[120px] items-center justify-center">
         <Badge className="text-md px-3 py-1 font-normal" variant={'destructive'}>
           {tFields(falseText)}
         </Badge>
@@ -55,7 +55,7 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
     );
   }
   return (
-    <div className="flex w-[100px] items-center justify-center">
+    <div className="flex w-[120px] items-center justify-center">
       <Badge className="text-md px-3 py-1 font-normal" variant={'success'}>
         {tFields(trueText)}
       </Badge>
