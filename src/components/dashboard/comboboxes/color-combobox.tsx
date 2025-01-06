@@ -68,7 +68,7 @@ export function ColorPickerCombobox({ colors, selectedColor, onSelectColor, plac
             ) : (
               <p className="text-muted-foreground">{placeholder}</p>
             )}
-            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
           </Button>
         </PopoverTrigger>
       )}

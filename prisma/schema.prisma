@@ -311,6 +311,7 @@ model OrderProduct {
   productId      String?
   subOrder       SubOrder?  @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
   subOrderId     String?
+  createdAt      DateTime   @default(now())
 }
 
 model StatusHistory {

@@ -3,7 +3,6 @@
 import { Table } from '@tanstack/react-table';
 import { Button, LinkButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { DataTableViewOptions } from './view-options';
 import {
   IconChecklist,
   IconFilter,
@@ -317,7 +316,7 @@ export function DataTableToolbar<TData extends { id: string }>({
               onChange={(event) => table.setGlobalFilter(event.target.value)}
               className="h-11 w-full"
             />
-            {role === roleOptions.ADMIN && tag === 'orders' && (
+            {(tag === 'orders' || (tag === 'products' && role === roleOptions.ADMIN)) && (
               <Button
                 className="px-3"
                 variant={'outline'}
@@ -466,7 +465,6 @@ export function DataTableToolbar<TData extends { id: string }>({
                 </p>
               </Button>
             )}
-            {/* <DataTableViewOptions prefix={prefix} table={table} /> */}
             <Button
               onClick={() => {
                 setIsRefreshing(true);
@@ -483,7 +481,7 @@ export function DataTableToolbar<TData extends { id: string }>({
             </Button>
           </div>
         </div>
-        {role === roleOptions.ADMIN && tag === 'orders' && (
+        {(tag === 'orders' || (tag === 'products' && role === roleOptions.ADMIN)) && (
           <motion.div
             style={{ height: containerHeight }}
             animate={{ height: showAdvancedFilters ? 'auto' : 0 }}

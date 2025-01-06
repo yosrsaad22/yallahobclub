@@ -71,17 +71,17 @@ export function Combobox<T>({
             aria-expanded={open}
             className="w-full justify-between px-3 font-normal text-muted-foreground">
             {Array.isArray(selectedItems) ? (
-              placeholder
+              <p className="max-w-[90%] truncate">{placeholder}</p>
             ) : (
-              <div>
+              <div className="max-w-full overflow-hidden truncate text-ellipsis whitespace-nowrap">
                 {selectedItems ? (
                   <span className="text-foreground">{displayValue(selectedItems as T)}</span>
                 ) : (
-                  placeholder
+                  <p className="max-w-[90%] truncate">{placeholder}</p>
                 )}
               </div>
             )}
-            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
           </AceternityButton>
         ) : (
           <Button
@@ -91,17 +91,17 @@ export function Combobox<T>({
             aria-expanded={open}
             className="w-full justify-between px-3 font-normal text-muted-foreground">
             {Array.isArray(selectedItems) ? (
-              placeholder
+              <p className="max-w-[90%] truncate">{placeholder}</p>
             ) : (
               <div>
                 {selectedItems ? (
                   <span className="text-foreground">{displayValue(selectedItems as T)}</span>
                 ) : (
-                  placeholder
+                  <p className="max-w-[90%] truncate">{placeholder}</p>
                 )}
               </div>
             )}
-            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
           </Button>
         )}
       </PopoverTrigger>

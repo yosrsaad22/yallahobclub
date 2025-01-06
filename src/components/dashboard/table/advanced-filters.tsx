@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
-import { orderStatuses } from '@/lib/constants';
-import { DataTableUser } from '@/types';
+import { orderStatuses, roleOptions } from '@/lib/constants';
+import { DataTableUser, MediaType } from '@/types';
 import { IconFilter, IconFilterOff } from '@tabler/icons-react';
 import { Table } from '@tanstack/react-table';
 import { useTranslations } from 'next-intl';
 import { UserCombobox } from '../comboboxes/user-combobox';
 import { getSellers, getSuppliers } from '@/actions/users';
+import { getProducts } from '@/actions/products';
+import { ProductFilterCombobox } from '../comboboxes/product-filter-combobox';
+import { Product } from '@prisma/client';
+import { translateColumnHeader } from '@/lib/utils';
+import { DatePicker } from '@/components/ui/date-picker';
+import { useCurrentRole } from '@/hooks/use-current-role';
 
 interface AdvancedFiltersProps<TData> {
   tag: string;
@@ -19,6 +25,7 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
   const t = useTranslations('dashboard.tables');
   const tFields = useTranslations('fields');
   const tStatuses = useTranslations('dashboard.order-statuses');
+  const role = useCurrentRole();
 
   const [selectedStatuses, setSelectedStatuses] = useState<{ UpdateCode: string; Color: string }[]>([]);
   const [suppliers, setSuppliers] = useState<DataTableUser[]>([]);
@@ -29,8 +36,13 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
   const [selectedSellers, setSelectedSellers] = useState<string[]>([]);
   const [sellersLoading, setSellersLoading] = useState<boolean>(false);
 
-  // Fetch suppliers and sellers
+  const [products, setProducts] = useState<(Product & { media: MediaType[] })[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [productsLoading, setProductsLoading] = useState<boolean>(false);
+
   useEffect(() => {
+    if (role !== roleOptions.ADMIN) return;
+
     const fetchSuppliers = async () => {
       setSuppliersLoading(true);
       const response = await getSuppliers();
@@ -49,23 +61,31 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
       setSellersLoading(false);
     };
 
+    const fetchProducts = async () => {
+      setProductsLoading(true);
+      const response = await getProducts();
+      if (response.success) {
+        setProducts(response.data || []);
+      }
+      setProductsLoading(false);
+    };
+
     fetchSuppliers();
     fetchSellers();
-  }, []);
+    fetchProducts();
+  }, [role]);
 
-  // Apply filters with useEffect
   useEffect(() => {
     const columnFilters = table.getState().columnFilters || [];
     const updatedFilters = columnFilters
-      .filter((filter) => filter.id !== 'suppliers' && filter.id !== 'sellers' && filter.id !== 'statuses')
+      .filter((filter) => filter.id !== 'statuses' && filter.id !== 'sellers') // No longer handling suppliers here
       .concat(
         selectedStatuses.length ? { id: 'statuses', value: selectedStatuses.map((s) => s.UpdateCode) } : [],
-        selectedSuppliers.length ? { id: 'suppliers', value: selectedSuppliers } : [],
         selectedSellers.length ? { id: 'seller', value: selectedSellers } : [],
       );
 
     table.setColumnFilters(updatedFilters);
-  }, [selectedStatuses, selectedSuppliers, selectedSellers, table]);
+  }, [selectedStatuses, selectedSellers, table]);
 
   const handleStatusChange = (status: { UpdateCode: string; Color: string }) => {
     setSelectedStatuses((prev) =>
@@ -75,18 +95,76 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
     );
   };
 
-  const handleSupplierChange = (supplierIds: string[]) => {
-    setSelectedSuppliers(supplierIds);
+  const handleSuppliersChange = (supplierIdOrIds: string | string[]) => {
+    const supplierIds = Array.isArray(supplierIdOrIds) ? supplierIdOrIds : [supplierIdOrIds];
+    setSelectedSuppliers(tag === 'products' ? [supplierIds[0]] : supplierIds);
+
+    const columnFilters = table.getState().columnFilters || [];
+    const updatedFilters = columnFilters
+      .filter((filter) => filter.id !== (tag === 'products' ? 'supplier' : 'suppliers'))
+      .concat(supplierIds.length ? { id: tag === 'products' ? 'supplier' : 'suppliers', value: supplierIds } : []);
+
+    table.setColumnFilters(updatedFilters);
   };
 
   const handleSellerChange = (sellerIds: string[]) => {
     setSelectedSellers(sellerIds);
   };
 
+  const handleProductChange = (productIds: string[]) => {
+    setSelectedProducts(productIds);
+
+    const columnFilters = table.getState().columnFilters || [];
+    const updatedFilters = columnFilters
+      .filter((filter) => filter.id !== 'products')
+      .concat(productIds.length ? { id: 'products', value: productIds } : []);
+
+    table.setColumnFilters(updatedFilters);
+  };
+
   const clearFilters = () => {
+    table.setColumnFilters([]);
     setSelectedStatuses([]);
     setSelectedSuppliers([]);
     setSelectedSellers([]);
+    setSelectedProducts([]);
+    setSelectedDate(undefined);
+    columns.forEach((column) => {
+      if (!column.getIsVisible()) {
+        column.toggleVisibility(true);
+      }
+    });
+  };
+
+  const columns = table
+    .getAllColumns()
+    .filter(
+      (column) => typeof column.accessorFn !== 'undefined' && !column.columnDef.enableHiding && column.id !== 'media',
+    )
+    .map((column) => ({
+      ...column,
+      translatedName: translateColumnHeader(prefix, column.id, (key) => key),
+    }));
+
+  const visibleColumns = columns.filter((column) => column.getIsVisible());
+
+  const handleColumnVisibilityChange = (columnId: string) => {
+    const column = columns.find((col) => col.id === columnId);
+    if (column) {
+      column.toggleVisibility(!column.getIsVisible());
+    }
+  };
+
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
+  const handleDateChange = (date: Date | undefined) => {
+    setSelectedDate(date);
+    const columnFilters = table.getState().columnFilters || [];
+    const updatedFilters = columnFilters
+      .filter((filter) => filter.id !== 'createdAt')
+      .concat(date ? { id: 'createdAt', value: date.toISOString() } : []);
+
+    table.setColumnFilters(updatedFilters);
   };
 
   return (
@@ -106,54 +184,107 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
       </div>
 
       <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-3">
-        <div className="col-span-2 flex flex-col gap-1 md:col-span-1">
-          <Combobox
-            items={orderStatuses}
-            selectedItems={selectedStatuses}
-            onSelect={handleStatusChange}
-            placeholder={tFields('order-statuses')}
-            displayValue={(item) => tStatuses(item.UpdateCode)}
-            itemKey={(item) => item.UpdateCode}
-            multiSelect
-          />
-          {selectedStatuses.length > 0 && (
-            <p className="pl-2 text-xs text-muted-foreground">
-              {selectedStatuses.length} {t('applied-filters')}
-            </p>
-          )}
-        </div>
+        {tag === 'orders' && (
+          <div
+            className={`flex flex-col gap-1 md:col-span-1 ${role === roleOptions.ADMIN ? 'col-span-1' : 'col-span-2'}`}>
+            <Combobox
+              items={orderStatuses}
+              selectedItems={selectedStatuses}
+              onSelect={handleStatusChange}
+              placeholder={tFields('order-statuses')}
+              displayValue={(item) => tStatuses(item.UpdateCode)}
+              itemKey={(item) => item.UpdateCode}
+              multiSelect
+            />
+            {selectedStatuses.length > 0 && (
+              <p className="pl-2 text-xs text-muted-foreground">
+                {selectedStatuses.length} {t('applied-filters')}
+              </p>
+            )}
+          </div>
+        )}
+        {role === roleOptions.ADMIN && (
+          <>
+            {(tag === 'orders' || tag === 'products') && (
+              <div className="flex flex-col gap-1">
+                <UserCombobox
+                  users={suppliers}
+                  selectedUserIds={tag === 'products' ? undefined : selectedSuppliers}
+                  selectedUserId={tag === 'products' ? selectedSuppliers[0] : undefined}
+                  onSelectUsers={tag === 'orders' ? handleSuppliersChange : undefined}
+                  onSelectUser={tag === 'products' ? handleSuppliersChange : undefined}
+                  placeholder={tFields(tag === 'orders' ? 'order-suppliers' : 'product-supplier')}
+                  loading={suppliersLoading}
+                  multiSelect={tag === 'orders'}
+                />
 
-        <div className="flex flex-col gap-1">
-          <UserCombobox
-            users={suppliers}
-            selectedUserIds={selectedSuppliers}
-            onSelectUsers={handleSupplierChange}
-            placeholder={tFields('order-suppliers')}
-            loading={suppliersLoading}
-            multiSelect
-          />
-          {selectedSuppliers.length > 0 && (
-            <p className="pl-2 text-xs text-muted-foreground">
-              {selectedSuppliers.length} {t('applied-filters')}
-            </p>
-          )}
-        </div>
+                {selectedSuppliers.length > 0 && (
+                  <p className="pl-2 text-xs text-muted-foreground">
+                    {selectedSuppliers.length} {t('applied-filters')}
+                  </p>
+                )}
+              </div>
+            )}
 
-        <div className="flex flex-col gap-1">
-          <UserCombobox
-            users={sellers}
-            selectedUserIds={selectedSellers}
-            onSelectUsers={handleSellerChange}
-            placeholder={tFields('order-sellers')}
-            loading={sellersLoading}
-            multiSelect
-          />
-          {selectedSellers.length > 0 && (
-            <p className="pl-2 text-xs text-muted-foreground">
-              {selectedSellers.length} {t('applied-filters')}
-            </p>
-          )}
-        </div>
+            {tag === 'orders' && (
+              <div className="flex flex-col gap-1">
+                <UserCombobox
+                  users={sellers}
+                  selectedUserIds={selectedSellers}
+                  onSelectUsers={handleSellerChange}
+                  placeholder={tFields('order-sellers')}
+                  loading={sellersLoading}
+                  multiSelect
+                />
+                {selectedSellers.length > 0 && (
+                  <p className="pl-2 text-xs text-muted-foreground">
+                    {selectedSellers.length} {t('applied-filters')}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {tag === 'orders' && (
+              <div className="flex flex-col gap-1">
+                <ProductFilterCombobox
+                  products={products}
+                  selectedProductIds={selectedProducts}
+                  onSelectProducts={handleProductChange}
+                  onSelectProduct={(productId) => setSelectedProducts([productId])}
+                  placeholder={tFields('order-products')}
+                  loading={productsLoading}
+                  multiSelect
+                />
+
+                {selectedProducts.length > 0 && (
+                  <p className="pl-2 text-xs text-muted-foreground">
+                    {selectedProducts.length} {t('applied-filters')}
+                  </p>
+                )}
+              </div>
+            )}
+          </>
+        )}
+        {(tag === 'orders' || (tag === 'products' && role === roleOptions.ADMIN)) && (
+          <>
+            <div className="flex flex-col gap-1">
+              <Combobox
+                items={columns}
+                selectedItems={visibleColumns}
+                multiSelect
+                onSelect={(column) => handleColumnVisibilityChange(column.id)}
+                placeholder={t('select-column')}
+                displayValue={(column) => tFields(column.translatedName)}
+                itemKey={(column) => column.id}
+              />
+            </div>
+
+            <div className={`flex flex-col gap-1 md:col-span-1 ${tag === 'products' ? 'col-span-2' : 'col-span-1'}`}>
+              <DatePicker selectedDate={selectedDate} onDateChange={handleDateChange} />
+              {selectedDate && <p className="pl-2 text-xs text-muted-foreground">1 {t('applied-filters')}</p>}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

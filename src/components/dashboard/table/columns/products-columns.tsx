@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { MediaType } from '@/types';
+import { formatDate } from '@/lib/utils';
 
 const CategoryCell = ({ category }: { category: string }) => {
   const tFields = useTranslations('fields');
@@ -64,6 +65,27 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
 };
 
 export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supplier: User }>[] = [
+  {
+    accessorKey: 'createdAt',
+    meta: {
+      columnName: 'CreatedAt',
+    },
+    accessorFn: (row: any) => row.createdAt,
+    enableHiding: true,
+    enableSorting: false,
+    cell: undefined,
+    filterFn: (row, columnId, filterValue) => {
+      const rawDateValue = row.getValue(columnId);
+      const dateValue = new Date(rawDateValue as string | number | Date);
+      const filterDate = new Date(filterValue);
+
+      return (
+        dateValue.getFullYear() === filterDate.getFullYear() &&
+        dateValue.getMonth() === filterDate.getMonth() &&
+        dateValue.getDate() === filterDate.getDate()
+      );
+    },
+  },
   {
     accessorKey: 'media',
     meta: {
@@ -140,6 +162,14 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     meta: {
       columnName: 'Supplier',
     },
+    filterFn: (row, filterValue) => {
+      const supplier = row.original.supplier;
+      const supplierId = supplier?.id;
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+
+      return filterValues.includes(supplierId);
+    },
+
     cell: ({ row }) => {
       const user: User = row.getValue('supplier');
       return user ? <SupplierCell user={user} /> : null;

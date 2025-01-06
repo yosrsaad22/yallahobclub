@@ -939,7 +939,8 @@
       "rows-per-page": "Lignes par page",
       "page-total": "de",
       "apply": "Appliquer",
-      "clear": "Effacer tout",
+      "clear": "Réinitialiser",
+      "select-column": "Sélectionnez les colonnes à afficher",
       "advanced-filters-title": "Filtres Avancés",
       "advanced-filters-text": "Vous pouvez utiliser les filtres avancés pour filtrer les données en fonction de plusieurs critères",
       "applied-filters": "filtres appliqué(s)"
@@ -997,6 +998,7 @@
       "user-information": "Informations Utilisateur",
       "annoucement": "Contactez le support IT (+216) 24 002 024",
       "user-progress": "Avancement de la formation",
+      "date-picker-placeholder": "Sélectionnez une date",
       "user-email-verified-note": "L'e-mail de l'utilisateur a été vérifié",
       "user-store-name-note": "Le nom qui sera affiché sur les colis qui est par défaut ECOMNESS",
       "user-active-note": "Le compte utilisateur est activé",

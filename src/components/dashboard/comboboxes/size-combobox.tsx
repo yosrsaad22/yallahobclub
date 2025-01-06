@@ -58,7 +58,7 @@ export function SizePickerCombobox({ selectedSize, onSelectSize, sizes, placehol
             aria-expanded={open}
             className="w-full justify-between px-3 font-normal">
             {selectedSize ? selectedSize : <p className="text-muted-foreground">{placeholder}</p>}
-            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
           </Button>
         </PopoverTrigger>
       )}

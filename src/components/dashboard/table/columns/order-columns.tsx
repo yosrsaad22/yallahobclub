@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MEDIA_HOSTNAME, orderStatuses } from '@/lib/constants';
 import { IconUser } from '@tabler/icons-react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Order, SubOrder, User } from '@prisma/client';
+import { Order, Product, SubOrder, User } from '@prisma/client';
 import { useTranslations } from 'next-intl';
 import { formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -73,7 +73,18 @@ export const SellerOrderColumns: ColumnDef<Order & { fullName: string; subOrders
       meta: {
         columnName: 'CreatedAt',
       },
-      accessorFn: (row: any) => formatDate(row.createdAt),
+      accessorFn: (row: any) => row.createdAt,
+      cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
+      filterFn: (row, columnId, filterValue) => {
+        const rawDateValue = row.getValue(columnId);
+        const dateValue = new Date(rawDateValue as string | number | Date);
+        const filterDate = new Date(filterValue);
+        return (
+          dateValue.getFullYear() === filterDate.getFullYear() &&
+          dateValue.getMonth() === filterDate.getMonth() &&
+          dateValue.getDate() === filterDate.getDate()
+        );
+      },
     },
     {
       accessorKey: 'code',
@@ -139,6 +150,11 @@ export const SellerOrderColumns: ColumnDef<Order & { fullName: string; subOrders
       meta: {
         columnName: 'statuses',
       },
+      filterFn: (row, columnId, filterValue) => {
+        const statuses = row.getValue(columnId) as string[];
+        const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+        return filterValues.some((value) => statuses.includes(value));
+      },
       cell: ({ row }) => {
         const statuses = row.original.statuses;
         return (
@@ -171,7 +187,18 @@ export const SupplierOrderColumns: ColumnDef<
     meta: {
       columnName: 'CreatedAt',
     },
-    accessorFn: (row: any) => formatDate(row.createdAt),
+    accessorFn: (row: any) => row.createdAt,
+    cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
+    filterFn: (row, columnId, filterValue) => {
+      const rawDateValue = row.getValue(columnId);
+      const dateValue = new Date(rawDateValue as string | number | Date);
+      const filterDate = new Date(filterValue);
+      return (
+        dateValue.getFullYear() === filterDate.getFullYear() &&
+        dateValue.getMonth() === filterDate.getMonth() &&
+        dateValue.getDate() === filterDate.getDate()
+      );
+    },
   },
   {
     accessorKey: 'code',
@@ -238,6 +265,11 @@ export const SupplierOrderColumns: ColumnDef<
     meta: {
       columnName: 'statuses',
     },
+    filterFn: (row, columnId, filterValue) => {
+      const statuses = row.getValue(columnId) as string[];
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      return filterValues.some((value) => statuses.includes(value));
+    },
     cell: ({ row }) => {
       const statuses = row.original.statuses;
       return (
@@ -252,14 +284,32 @@ export const SupplierOrderColumns: ColumnDef<
 ];
 
 export const AdminOrderColumns: ColumnDef<
-  Order & { subOrders: SubOrder[]; statuses: string[]; seller: User; suppliers: string[]; fullName: string }
+  Order & {
+    subOrders: SubOrder[];
+    statuses: string[];
+    seller: User;
+    suppliers: string[];
+    fullName: string;
+    products: Product[];
+  }
 >[] = [
   {
     accessorKey: 'createdAt',
     meta: {
       columnName: 'CreatedAt',
     },
-    accessorFn: (row: any) => formatDate(row.createdAt),
+    accessorFn: (row: any) => row.createdAt,
+    cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
+    filterFn: (row, columnId, filterValue) => {
+      const rawDateValue = row.getValue(columnId);
+      const dateValue = new Date(rawDateValue as string | number | Date);
+      const filterDate = new Date(filterValue);
+      return (
+        dateValue.getFullYear() === filterDate.getFullYear() &&
+        dateValue.getMonth() === filterDate.getMonth() &&
+        dateValue.getDate() === filterDate.getDate()
+      );
+    },
   },
   {
     accessorKey: 'code',
@@ -292,9 +342,9 @@ export const AdminOrderColumns: ColumnDef<
     },
     accessorFn: (row) => row.seller.fullName + ' ' + row.seller.email + ' ' + row.seller.number + ' ' + row.seller.code,
     filterFn: (row, columnId, filterValue) => {
-      const seller = row.original.seller; // Access the seller object directly from row.original
+      const seller = row.original.seller;
       const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
-      return seller && filterValues.includes(seller.id); // Check if seller.id matches any value in filterValues
+      return seller && filterValues.includes(seller.id);
     },
     cell: ({ row }) => {
       const seller: User = row.original.seller;
@@ -354,15 +404,27 @@ export const AdminOrderColumns: ColumnDef<
     },
   },
   {
-    id: 'suppliers', // Unique identifier for the column
-    accessorFn: (row) => row.suppliers, // Provide the suppliers field for filtering
+    id: 'suppliers',
+    accessorFn: (row) => row.suppliers,
     filterFn: (row, columnId, filterValue) => {
       const suppliers = row.getValue(columnId) as string[];
       const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
       return filterValues.some((value) => suppliers.includes(value));
     },
-    enableHiding: true, // Prevent hiding the column through visibility toggles
-    enableSorting: false, // Disable sorting since it's for filtering only
-    cell: undefined, // Prevent rendering a cell
+    enableHiding: true,
+    enableSorting: false,
+    cell: undefined,
+  },
+  {
+    id: 'products',
+    accessorFn: (row) => row.products,
+    filterFn: (row, columnId, filterValue) => {
+      const products = row.getValue(columnId) as string[];
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      return filterValues.some((value) => products.includes(value));
+    },
+    enableHiding: true,
+    enableSorting: false,
+    cell: undefined,
   },
 ];

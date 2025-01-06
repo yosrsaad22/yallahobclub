@@ -987,7 +987,8 @@
       "page-total": "of",
       "advanced-filters-title": "Advanced Filters",
       "advanced-filters-text": "You can use the advanced filters to filter the data based on multiple criteria",
-      "applied-filters": "applied filters",
+      "select-column": "Select column(s) to display",
+      "applied-filters": "applied filter(s)",
       "apply": "Apply",
       "clear": "Clear All"
     },
@@ -995,6 +996,7 @@
       "image-button": "Change Image",
       "user-information": "User Information",
       "user-progress": "Course Progress",
+      "date-picker-placeholder": "Select a date",
       "annoucement": "Contact IT support (+216) 24 002 024",
       "user-email-verified-note": "User E-mail has been verified",
       "user-store-name-note": "The name that will be displayed on the shipments, default is ECOMNESS",

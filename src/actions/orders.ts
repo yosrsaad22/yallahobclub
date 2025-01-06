@@ -108,6 +108,7 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
               include: {
                 product: {
                   include: {
+                    media: true,
                     supplier: true,
                   },
                 },
@@ -124,7 +125,11 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       fullName: `${order.firstName} ${order.lastName}`,
       suppliers: order.subOrders.map((subOrder) => subOrder.products[0].product?.supplier?.id),
       statuses: order.subOrders.map((subOrder) => subOrder.status),
+      products: order.subOrders
+        .flatMap((subOrder) => subOrder.products) // Flatten products across subOrders
+        .map((product) => product.product!.id),
     }));
+    console.log(modifiedOrders[0].createdAt);
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
     return { error: 'orders-fetch-error' };

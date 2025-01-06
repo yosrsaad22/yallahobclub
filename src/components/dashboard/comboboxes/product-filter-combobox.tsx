@@ -1,61 +1,57 @@
-'use client';
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Command, CommandGroup, CommandItem, CommandInput, CommandList, CommandEmpty } from '@/components/ui/command';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { IconCaretUpDown, IconCheck, IconLoader2, IconUser } from '@tabler/icons-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { IconCaretUpDown, IconCheck, IconLoader2, IconPackage } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { DataTableUser } from '@/types';
-import { useTranslations } from 'next-intl';
 import { MEDIA_HOSTNAME } from '@/lib/constants';
+import Image from 'next/image';
+import { MediaType } from '@/types';
+import { Product } from '@prisma/client';
 
-interface UserComboboxProps {
-  users: DataTableUser[];
-  selectedUserIds?: string[];
-  selectedUserId?: string;
-  onSelectUsers?: (userIds: string[]) => void;
-  onSelectUser?: (userId: string) => void;
+interface ProductFilterComboboxProps {
+  products: (Product & { media: MediaType[] })[];
+  selectedProductIds?: string[];
+  selectedProductId?: string;
+  onSelectProducts?: (productIds: string[]) => void;
+  onSelectProduct?: (productId: string) => void;
   placeholder: string;
   loading: boolean;
   multiSelect?: boolean;
 }
 
-export function UserCombobox({
-  users,
-  selectedUserIds = [],
-  selectedUserId,
-  onSelectUsers,
-  onSelectUser,
+export function ProductFilterCombobox({
+  products,
+  selectedProductIds = [],
+  selectedProductId,
+  onSelectProducts,
+  onSelectProduct,
   placeholder,
   loading,
   multiSelect = false,
-}: UserComboboxProps) {
+}: ProductFilterComboboxProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState<DataTableUser[]>(users);
+  const [filteredProducts, setFilteredProducts] = useState<(Product & { media: MediaType[] })[]>(products);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [buttonWidth, setButtonWidth] = useState(0);
   const [open, setOpen] = useState(false);
 
-  const t = useTranslations('dashboard.tables');
-
-  // Update filtered users based on search term
+  // Update filtered products based on search term
   useEffect(() => {
     const lowercasedTerm = searchTerm.trim().toLowerCase();
-    setFilteredUsers(
-      lowercasedTerm ? users.filter((user) => user.fullName.toLowerCase().includes(lowercasedTerm)) : users,
+    setFilteredProducts(
+      lowercasedTerm ? products.filter((product) => product.name.toLowerCase().includes(lowercasedTerm)) : products,
     );
-  }, [searchTerm, users]);
+  }, [searchTerm, products]);
 
-  const handleSelectUser = (userId: string) => {
+  const handleSelectProduct = (productId: string) => {
     if (multiSelect) {
-      const updatedSelectedIds = selectedUserIds.includes(userId)
-        ? selectedUserIds.filter((id) => id !== userId)
-        : [...selectedUserIds, userId];
-      onSelectUsers?.(updatedSelectedIds);
+      const updatedSelectedIds = selectedProductIds.includes(productId)
+        ? selectedProductIds.filter((id) => id !== productId)
+        : [...selectedProductIds, productId];
+      onSelectProducts?.(updatedSelectedIds);
     } else {
-      onSelectUser?.(userId);
+      onSelectProduct?.(productId);
       setOpen(false);
     }
   };
@@ -91,22 +87,19 @@ export function UserCombobox({
           className="w-full justify-between px-3 font-normal">
           {multiSelect ? (
             <p className="max-w-[90%] truncate text-muted-foreground">{placeholder}</p>
-          ) : selectedUserId ? (
+          ) : selectedProductId ? (
             (() => {
-              const selectedUser = users.find((user) => user.id === selectedUserId);
-              return selectedUser ? (
+              const selectedProduct = products.find((product) => product.id === selectedProductId);
+              return selectedProduct ? (
                 <div className="flex flex-row items-center gap-x-3">
-                  <Avatar className="h-8 w-8 border border-border">
-                    <AvatarImage
-                      className="object-cover"
-                      src={`${MEDIA_HOSTNAME}${selectedUser.image}`}
-                      alt={selectedUser.fullName}
-                    />{' '}
-                    <AvatarFallback>
-                      <IconUser className="h-5 w-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>{selectedUser.fullName}</span>
+                  <Image
+                    className="rounded-md object-contain"
+                    src={`${MEDIA_HOSTNAME}${selectedProduct.media[0].key}`}
+                    alt={selectedProduct.name}
+                    width={32}
+                    height={32}
+                  />
+                  <span>{selectedProduct.name}</span>
                 </div>
               ) : (
                 <span className="max-w-[90%] truncate">{placeholder}</span>
@@ -121,7 +114,7 @@ export function UserCombobox({
       <PopoverContent style={{ width: buttonWidth }} className="p-0">
         <Command>
           <CommandInput
-            placeholder={t('search')}
+            placeholder="Search products"
             className="h-10 w-full"
             value={searchTerm}
             onValueChange={setSearchTerm}
@@ -130,31 +123,28 @@ export function UserCombobox({
             <div className="flex justify-center p-4">
               <IconLoader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
-          ) : filteredUsers.length > 0 ? (
+          ) : filteredProducts.length > 0 ? (
             <CommandList className="custom-scrollbar max-h-36 overflow-y-auto">
               <CommandGroup>
-                {filteredUsers.map((user) => (
+                {filteredProducts.map((product) => (
                   <CommandItem
-                    key={user.id}
-                    onSelect={() => handleSelectUser(user.id)}
+                    key={product.id}
+                    onSelect={() => handleSelectProduct(product.id)}
                     className={cn(
                       'flex items-center gap-3 px-4 py-2 hover:bg-muted focus:bg-muted',
                       multiSelect
-                        ? selectedUserIds.includes(user.id) && 'bg-muted'
-                        : selectedUserId === user.id && 'bg-muted',
+                        ? selectedProductIds.includes(product.id) && 'bg-muted'
+                        : selectedProductId === product.id && 'bg-muted',
                     )}>
-                    <Avatar className="h-8 w-8 border border-border">
-                      <AvatarImage
-                        className="object-cover"
-                        src={`${MEDIA_HOSTNAME}${user.image}`}
-                        alt={user.fullName}
-                      />
-                      <AvatarFallback>
-                        <IconUser className="h-5 w-5" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm">{user.fullName}</span>
-                    {(multiSelect ? selectedUserIds.includes(user.id) : selectedUserId === user.id) && (
+                    <Image
+                      className="rounded-md object-contain"
+                      src={`${MEDIA_HOSTNAME}${product.media[0].key}`}
+                      alt={product.name}
+                      width={48}
+                      height={48}
+                    />
+                    <span className="text-sm">{product.name}</span>
+                    {(multiSelect ? selectedProductIds.includes(product.id) : selectedProductId === product.id) && (
                       <IconCheck className="ml-auto h-4 w-4 text-foreground" />
                     )}
                   </CommandItem>
@@ -162,7 +152,7 @@ export function UserCombobox({
               </CommandGroup>
             </CommandList>
           ) : (
-            <CommandEmpty className="p-4 text-sm text-muted-foreground">{t('no-result')}</CommandEmpty>
+            <CommandEmpty className="p-4 text-sm text-muted-foreground">No results found</CommandEmpty>
           )}
         </Command>
       </PopoverContent>
