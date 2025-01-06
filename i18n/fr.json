@@ -342,6 +342,8 @@
     "pickup-request-error": "Erreur lors de la demande de pickup",
     "pickup-print-success": "Documents de pickup générés avec succès",
     "pickup-print-error": "Erreur lors de la génération des documents de pickup",
+    "pickups-print-success": "Documents de pickup générés avec succès",
+    "pickups-print-error": "Erreur lors de la génération des documents des pickups",
     "request-pickup-no-orders": "Sélectionnez une commande ou plus avant de demander un pickup",
     "mark-as-paid-no-orders": "Sélectionnez une ou plusieurs commandes avant de les marquer comme payées",
     "print-pickups-no-pickups": "Sélectionnez un ou plusieurs pickups avant d'imprimer les documents",
