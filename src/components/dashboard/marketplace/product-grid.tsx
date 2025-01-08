@@ -26,7 +26,7 @@ import {
 } from '@tabler/icons-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { MediaType } from '@/types';
+import { DataTableUser, MediaType } from '@/types';
 
 export default function ProductGrid() {
   const tMarketplace = useTranslations('dashboard.marketplace');
@@ -49,7 +49,10 @@ export default function ProductGrid() {
     queryFn: async () => {
       const res = await getProducts();
       if (res.error) throw new Error(res.error);
-      if (res.success) return res.data.filter((product: Product & { media: MediaType[] }) => product.published);
+      if (res.success)
+        return res.data.filter(
+          (product: Product & { media: MediaType[]; sellers: DataTableUser[] }) => product.published,
+        );
     },
   });
 
@@ -549,13 +552,14 @@ export default function ProductGrid() {
               <IconLoader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : currentItems.length > 0 ? (
-            currentItems.map((product: Product & { media: MediaType[] }) => (
+            currentItems.map((product: Product & { media: MediaType[]; sellers: DataTableUser[] }) => (
               <ProductCard
                 id={product.id}
                 imageHeight={180}
                 imageWidth={180}
                 profitMargin={product.profitMargin}
                 key={product.name}
+                sellers={product.sellers}
                 image={product.media[0].key}
                 name={product.name}
                 wholesalePrice={product.wholesalePrice}

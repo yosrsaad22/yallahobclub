@@ -15,17 +15,17 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { productCategoryData, productCategoryOptions } from '@/lib/constants';
 import { Product } from '@prisma/client';
 import { ProductCard } from '../cards/product-card';
-import { MediaType } from '@/types';
+import { DataTableUser, MediaType } from '@/types';
 
 interface MarketplaceHomeProps {
-  products: (Product & { media: MediaType[] })[];
+  products: (Product & { media: MediaType[]; sellers: DataTableUser[] })[];
 }
 
 export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) => {
   const t = useTranslations('dashboard.marketplace');
   const tFields = useTranslations('fields');
-  const featuredProducts = products.filter((product) => product.published && product.featured).slice(0, 5);
-  const newProducts = products.filter((product) => product.published).slice(0, 5);
+  const featuredProducts = products.filter((product) => product.published && product.featured).slice(0, 10);
+  const newProducts = products.filter((product) => product.published).slice(0, 10);
   const router = useRouter();
 
   return (
@@ -267,6 +267,7 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 imageHeight={200}
                 imageWidth={200}
                 key={product.name}
+                sellers={product.sellers}
                 image={product.media[0].key}
                 profitMargin={product.profitMargin}
                 name={product.name}
@@ -301,6 +302,7 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 id={product.id}
                 imageHeight={200}
                 imageWidth={200}
+                sellers={product.sellers}
                 key={product.name}
                 image={product.media[0].key}
                 profitMargin={product.profitMargin}

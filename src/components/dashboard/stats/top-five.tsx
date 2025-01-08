@@ -29,7 +29,7 @@ export function TopFive({
   useAvatars = false,
 }: TopFiveProps) {
   return (
-    <Card className="h-full">
+    <Card className="h-full ">
       <CardHeader className="p-3">
         <CardTitle>
           <div className="flex flex-col justify-center  gap-2">
@@ -62,7 +62,7 @@ export function TopFive({
             <span className="text-muted-foreground">{noDataMessage}</span>
           </div>
         ) : (
-          <ul className="w-full space-y-2 p-3">
+          <ul className="custom-scrollbar max-h-[350px] w-full space-y-2 overflow-y-auto p-3">
             {data.map((item, index) => (
               <li
                 key={item.id}

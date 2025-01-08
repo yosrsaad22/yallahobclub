@@ -2,12 +2,17 @@
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { ColorType } from '@prisma/client';
-import { colorHexMap, MEDIA_HOSTNAME, productCategoryOptions } from '@/lib/constants';
+import { colorHexMap, MEDIA_HOSTNAME, productCategoryOptions, roleOptions } from '@/lib/constants';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { useRouter } from '@/navigation';
-import { IconEye, IconTrash } from '@tabler/icons-react';
+import { Link, useRouter } from '@/navigation';
+import { IconEye, IconLoader2, IconPackage, IconPackageOff, IconTrash } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
+import { useState, useTransition } from 'react';
+import { DataTableUser } from '@/types';
+import { useCurrentUser } from '@/hooks/use-current-user';
+import { addToMyProducts, removeFromMyProducts } from '@/actions/products';
+import { toast } from '@/components/ui/use-toast';
 
 interface ProductCardProps {
   id: string;
@@ -17,6 +22,7 @@ interface ProductCardProps {
   stock: number;
   wholesalePrice: number;
   profitMargin: number;
+  sellers: DataTableUser[];
   colors: ColorType[];
   imageHeight: number;
   imageWidth: number;
@@ -34,6 +40,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   wholesalePrice,
   profitMargin,
   colors,
+  sellers,
   imageHeight,
   imageWidth,
   showDeleteIcon = false,
@@ -43,14 +50,54 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const tFields = useTranslations('fields');
   const router = useRouter();
   const tMarketplace = useTranslations('dashboard.marketplace');
+  const user = useCurrentUser();
+  const tValidation = useTranslations('validation');
+  const [isLoading, startTransition] = useTransition();
+  const [isInMyProducts, setIsInMyProducts] = useState(sellers?.some((p) => p.id === user?.id));
+
+  const handleAddToMyProducts = async (productId: string) => {
+    startTransition(async () => {
+      const res = await addToMyProducts(productId);
+      if (res.success) {
+        setIsInMyProducts(true);
+        toast({
+          variant: 'success',
+          title: tValidation('success-title'),
+          description: tValidation(res.success),
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: tValidation('error-title'),
+          description: tValidation(res.error),
+        });
+      }
+    });
+  };
+
+  const handleRemoveFromMyProducts = async (productId: string) => {
+    startTransition(async () => {
+      const res = await removeFromMyProducts(productId);
+      if (res.success) {
+        setIsInMyProducts(false);
+        toast({
+          variant: 'success',
+          title: tValidation('success-title'),
+          description: tValidation(res.success),
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: tValidation('error-title'),
+          description: tValidation(res.error),
+        });
+      }
+    });
+  };
 
   return (
-    <div
-      onClick={() => {
-        if (onClickNavigate) {
-          router.push(`/dashboard/marketplace/all-products/${id}`);
-        }
-      }}
+    <Link
+      href={`/dashboard/marketplace/all-products/${id}`}
       className={cn(
         onClickNavigate ? 'cursor-pointer hover:scale-105' : '',
         'flex-col items-start justify-start gap-1 rounded-md border border-border/70 bg-background p-2 shadow-sm transition-transform duration-300 ease-in-out',
@@ -94,17 +141,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex w-full flex-row items-center justify-between pt-1">
         <p className="text-md font-semibold md:text-lg">{wholesalePrice} TND</p>
         <Button
+          onClick={(event) => {
+            event?.preventDefault();
+
+            if (isInMyProducts) {
+              handleRemoveFromMyProducts(id);
+            } else {
+              handleAddToMyProducts(id);
+            }
+          }}
           className="h-8 px-4 font-medium md:px-4"
           size="sm"
-          variant={'primary'}
-          onClick={(e) => {
-            e.stopPropagation(); // Prevents triggering the card's onClick
-            router.push(`/dashboard/marketplace/all-products/${id}`);
-          }}>
-          <IconEye className="mr-2" />
-          {tMarketplace('view-product')}
+          variant={isInMyProducts ? 'destructive' : 'primary'}
+          disabled={user?.role !== roleOptions.SELLER || stock === 0}>
+          {isLoading ? (
+            <>
+              <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />
+              {isInMyProducts ? tMarketplace('remove') : tMarketplace('add')}
+            </>
+          ) : (
+            <>
+              {isInMyProducts ? <IconPackageOff className="mr-2 h-5 w-5" /> : <IconPackage className="mr-2 h-5 w-5" />}
+              {isInMyProducts ? tMarketplace('remove') : tMarketplace('add')}
+            </>
+          )}
         </Button>
       </div>
-    </div>
+    </Link>
   );
 };

@@ -6,7 +6,7 @@ import { Link, useRouter } from '@/navigation';
 import { Product } from '@prisma/client';
 import { getProductsBySeller, removeFromMyProducts } from '@/actions/products';
 import { useQuery } from '@tanstack/react-query';
-import { MediaType } from '@/types';
+import { DataTableUser, MediaType } from '@/types';
 import { IconInfoCircleFilled, IconLoader2, IconShoppingCart } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -39,7 +39,9 @@ export function MyProducts({ className }: MyProductsFormProps) {
     queryFn: async () => {
       const res = await getProductsBySeller();
       if (res.error) throw new Error(res.error);
-      return res.success ? res.data.filter((product: Product & { media: MediaType[] }) => product.published) : [];
+      return res.success
+        ? res.data.filter((product: Product & { media: MediaType[]; sellers: DataTableUser[] }) => product.published)
+        : [];
     },
   });
 
@@ -126,6 +128,7 @@ export function MyProducts({ className }: MyProductsFormProps) {
                   key={product.id}
                   id={product.id}
                   imageHeight={180}
+                  sellers={product.sellers}
                   imageWidth={180}
                   profitMargin={product.profitMargin}
                   image={product.media[0].key}

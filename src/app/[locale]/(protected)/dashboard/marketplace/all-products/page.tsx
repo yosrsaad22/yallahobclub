@@ -1,7 +1,7 @@
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { getProducts } from '@/actions/products';
-import { ActionResponse, MediaType } from '@/types';
+import { ActionResponse, DataTableUser, MediaType } from '@/types';
 import ProductGrid from '@/components/dashboard/marketplace/product-grid';
 import { getQueryClient } from '@/lib/query';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
@@ -25,7 +25,10 @@ export default async function AllProducts() {
     queryFn: async () => {
       const res = await getProducts();
       if (res.error) throw new Error(res.error);
-      if (res.success) return res.data.filter((product: Product & { media: MediaType[] }) => product.published);
+      if (res.success)
+        return res.data.filter(
+          (product: Product & { media: MediaType[]; sellers: DataTableUser[] }) => product.published,
+        );
     },
   });
 

@@ -129,7 +129,6 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
         .flatMap((subOrder) => subOrder.products) // Flatten products across subOrders
         .map((product) => product.product!.id),
     }));
-    console.log(modifiedOrders[0].createdAt);
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
     return { error: 'orders-fetch-error' };

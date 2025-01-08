@@ -157,7 +157,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
 
       {/* host section */}
 
-      <div className="relative flex flex-col gap-12 px-4 py-6 md:flex-row md:px-16">
+      <div className="relative flex flex-col gap-12 px-4 py-6 md:flex-row md:gap-24 md:px-16">
         <div className=" flex flex-col items-center text-center  md:items-start md:text-left">
           <div className="relative flex h-8 flex-col items-center justify-center">
             <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/60 to-secondary/60 opacity-50 blur-lg"></div>
@@ -181,9 +181,9 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
             </GradientLinkButton>
           </div>
         </div>
-        <div className="feature-glass-gradient relative flex items-end justify-center rounded-md border border-slate-700/70 backdrop-blur-sm bg-dot-gray-700/80">
+        <div className="relative flex items-end justify-center rounded-md   backdrop-blur-sm">
           <div className="absolute inset-1 rounded-full bg-gradient-to-r from-primary/90 to-secondary/90 opacity-70 blur-3xl"></div>
-          <Image src={'/img/rached.png'} className="z-[10]" height={300} width={300} alt="host" />
+          <Image src={'/img/image-course.png'} className="z-[10]" height={600} width={600} alt="host" />
         </div>
       </div>
 
@@ -430,7 +430,7 @@ export const FullCourseComponent = ({ chapters }: FullCourseComponentProps) => {
         </h1>
         <p className="text-md pt-8 text-center md:max-w-3xl ">{t('testimonials-text')}</p>
 
-        <div className="relative flex h-full w-full items-center justify-center gap-80 pt-32">
+        <div className="relative flex h-full w-full items-center justify-center gap-64 pt-32">
           <Button
             onClick={handleNextImage}
             className="border-2 border-white bg-transparent transition-transform duration-300 ease-in-out hover:scale-110 hover:bg-transparent"

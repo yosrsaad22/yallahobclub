@@ -9,25 +9,32 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { toast } from '@/components/ui/use-toast';
 import { notificationIcons, notificationMessages } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
-import { IconX } from '@tabler/icons-react';
+import { IconLoader2, IconTrash, IconX } from '@tabler/icons-react';
 
 interface NotificationsCardProps {
   notifications: Notification[];
   onDeleteNotification: (id: string) => Promise<ActionResponse>;
+  onDeleteAllNotifications: () => Promise<ActionResponse>;
 }
 
-export const NotificationsCard: React.FC<NotificationsCardProps> = ({ notifications, onDeleteNotification }) => {
+export const NotificationsCard: React.FC<NotificationsCardProps> = ({
+  notifications,
+  onDeleteNotification,
+  onDeleteAllNotifications,
+}) => {
   const t = useTranslations('dashboard.notifications');
   const tValidation = useTranslations('validation');
   const router = useRouter();
   const user = useCurrentUser();
   const locale = useLocale();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSingleDeleteLoading, setIsSingleDeleteLoading] = useState(false);
+  const [isBulkDeleteLoading, setIsBulkDeleteLoading] = useState(false);
+
   const [deletedNotifications, setDeletedNotifications] = useState<string[]>([]);
 
   const handleDelete = async (id: string) => {
-    setIsLoading(true);
+    setIsSingleDeleteLoading(true);
     try {
       const res = await onDeleteNotification(id);
       if (res.success) {
@@ -53,12 +60,51 @@ export const NotificationsCard: React.FC<NotificationsCardProps> = ({ notificati
         description: tValidation('notification-delete-error'),
       });
     } finally {
-      setIsLoading(false);
+      setIsSingleDeleteLoading(false);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    setIsBulkDeleteLoading(true);
+    try {
+      const res = await onDeleteAllNotifications();
+      if (res.success) {
+        toast({
+          variant: 'success',
+          title: tValidation('success-title'),
+          description: tValidation(res.success),
+        });
+        router.refresh();
+      } else {
+        toast({
+          variant: 'destructive',
+          title: tValidation('error-title'),
+          description: tValidation(res.error),
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: tValidation('error-title'),
+        description: tValidation('notification-delete-error'),
+      });
+    } finally {
+      setIsBulkDeleteLoading(false);
     }
   };
 
   return (
     <div className={cn('flex w-full flex-col gap-4')}>
+      <div className="flex w-full flex-row items-center justify-end">
+        <Button size="sm" variant={'destructive'} onClick={handleDeleteAll} disabled={isBulkDeleteLoading}>
+          {isBulkDeleteLoading ? (
+            <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />
+          ) : (
+            <IconTrash className="mr-2 h-5 w-5" />
+          )}
+          {t('delete-all')}
+        </Button>
+      </div>
       {notifications.length > 0 ? (
         notifications.map((notification: Notification) => {
           // Skip rendering if the notification is in deletedNotifications
@@ -101,7 +147,7 @@ export const NotificationsCard: React.FC<NotificationsCardProps> = ({ notificati
                   className="ml-4"
                   size={'icon'}
                   variant={'outline'}
-                  disabled={isLoading}
+                  disabled={isSingleDeleteLoading}
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent triggering the onClick for the parent div
                     handleDelete(notification.id);
@@ -113,7 +159,7 @@ export const NotificationsCard: React.FC<NotificationsCardProps> = ({ notificati
           );
         })
       ) : (
-        <div className="min-h-14 focus:bg-background">
+        <div className="flex min-h-24 flex-col items-center justify-center focus:bg-background">
           <div className="mx-auto space-x-4 px-2 text-muted-foreground">
             <p>{t('no-notifications')}</p>
           </div>

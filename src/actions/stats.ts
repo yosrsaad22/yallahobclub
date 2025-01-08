@@ -442,7 +442,7 @@ async function calculateSupplierDailyProfitAndSubOrders(id: string, from: Date, 
   return filledDailyData;
 }
 
-async function fetchTopFiveProducts(from: Date, to: Date) {
+async function fetchTopTenProducts(from: Date, to: Date) {
   const bestSellers = await db.orderProduct.findMany({
     where: {
       productId: { not: null },
@@ -469,7 +469,7 @@ async function fetchTopFiveProducts(from: Date, to: Date) {
   return Promise.all(
     Object.values(aggregated)
       .sort((a, b) => b.totalQuantity - a.totalQuantity)
-      .slice(0, 5)
+      .slice(0, 10)
       .map(async (item) => {
         const product = await db.product.findUnique({
           where: { id: item.productId },
@@ -485,7 +485,7 @@ async function fetchTopFiveProducts(from: Date, to: Date) {
   );
 }
 
-async function fetchSellerTopFiveProducts(id: string, from: Date, to: Date) {
+async function fetchSellerTopTenProducts(id: string, from: Date, to: Date) {
   const bestSellers = await db.orderProduct.findMany({
     where: {
       product: {
@@ -526,7 +526,7 @@ async function fetchSellerTopFiveProducts(id: string, from: Date, to: Date) {
   return Promise.all(
     Object.values(aggregated)
       .sort((a, b) => b.totalQuantity - a.totalQuantity) // Sort by quantity in descending order
-      .slice(0, 5) // Limit to top 5
+      .slice(0, 10)
       .map(async (item) => {
         const product = await db.product.findUnique({
           where: { id: item.productId },
@@ -548,7 +548,7 @@ async function fetchSellerTopFiveProducts(id: string, from: Date, to: Date) {
   );
 }
 
-async function fetchSupplierTopFiveProducts(id: string, from: Date, to: Date) {
+async function fetchSupplierTopTenProducts(id: string, from: Date, to: Date) {
   const bestSellers = await db.orderProduct.findMany({
     where: {
       product: {
@@ -587,11 +587,10 @@ async function fetchSupplierTopFiveProducts(id: string, from: Date, to: Date) {
     {} as Record<string, { productId: string; totalQuantity: number }>,
   );
 
-  // Fetch product details for the top 5 products
   return Promise.all(
     Object.values(aggregated)
       .sort((a, b) => b.totalQuantity - a.totalQuantity) // Sort by quantity in descending order
-      .slice(0, 5) // Limit to top 5
+      .slice(0, 10)
       .map(async (item) => {
         const product = await db.product.findUnique({
           where: { id: item.productId },
@@ -613,7 +612,7 @@ async function fetchSupplierTopFiveProducts(id: string, from: Date, to: Date) {
   );
 }
 
-async function fetchTopFiveSellers(from: Date, to: Date) {
+async function fetchTopTenSellers(from: Date, to: Date) {
   const sellers = await db.subOrder.findMany({
     where: {
       order: {
@@ -640,7 +639,7 @@ async function fetchTopFiveSellers(from: Date, to: Date) {
   return Promise.all(
     Object.values(sellerCounts)
       .sort((a, b) => b.subOrderCount - a.subOrderCount)
-      .slice(0, 5)
+      .slice(0, 10)
       .map(async (item) => {
         const seller = await db.user.findUnique({
           where: { id: item.sellerId },
@@ -662,8 +661,8 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       fetchBasicCounts(from, to),
       calculateMonthlyProfit(),
       calculateDailyProfit(),
-      fetchTopFiveProducts(from, to),
-      fetchTopFiveSellers(from, to),
+      fetchTopTenProducts(from, to),
+      fetchTopTenSellers(from, to),
       db.subOrder.findMany({
         where: {
           order: { createdAt: { gte: from, lte: to } },
@@ -753,7 +752,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
       fetchBasicSellerCounts(user?.id!, from, to),
       calculateSellerMonthlyProfitAndSubOrders(user?.id!),
       calculateSellerDailyProfitAndSubOrders(user?.id!, startOfDay(subDays(new Date(), 10)), endOfDay(new Date())),
-      fetchSellerTopFiveProducts(user?.id!, from, to),
+      fetchSellerTopTenProducts(user?.id!, from, to),
       db.subOrder.findMany({
         where: {
           order: {
@@ -820,7 +819,7 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
       fetchBasicSupplierCounts(user?.id!, from, to),
       calculateSupplierMonthlyProfitAndSubOrders(user?.id!),
       calculateSupplierDailyProfitAndSubOrders(user?.id!, startOfDay(subDays(new Date(), 10)), endOfDay(new Date())),
-      fetchSupplierTopFiveProducts(user?.id!, from, to),
+      fetchSupplierTopTenProducts(user?.id!, from, to),
       db.subOrder.findMany({
         where: {
           order: {

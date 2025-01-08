@@ -3,10 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import Breadcrumb from '@/components/ui/breadcrumb';
 import { IconBell } from '@tabler/icons-react';
 import { NotificationsCard } from '@/components/dashboard/cards/notifications-card';
-import { deleteNotificationById, getNotifications } from '@/actions/notifications';
-import { getNotificationsByUserId } from '@/data/notification';
+import { deleteAllNotifications, deleteNotificationById, getNotifications } from '@/actions/notifications';
 import { currentUser } from '@/lib/auth';
-import { ActionResponse } from '@/types';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'dashboard' });
@@ -32,6 +30,12 @@ export default async function Notifications() {
     return res;
   };
 
+  const handleDeleteAllNotifications = async () => {
+    'use server';
+    const res = await deleteAllNotifications();
+    return res;
+  };
+
   return (
     <div className="w-full space-y-4">
       <Breadcrumb items={breadcrumbItems} />
@@ -39,7 +43,11 @@ export default async function Notifications() {
         <IconBell className="h-7 w-7" />
         <h2 className="tracking-tight">{t('pages.notifications')}</h2>
       </div>
-      <NotificationsCard notifications={notifications} onDeleteNotification={handleDeleteNotification} />
+      <NotificationsCard
+        notifications={notifications}
+        onDeleteAllNotifications={handleDeleteAllNotifications}
+        onDeleteNotification={handleDeleteNotification}
+      />
     </div>
   );
 }
