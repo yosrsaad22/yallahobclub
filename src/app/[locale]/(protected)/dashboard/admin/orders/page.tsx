@@ -26,7 +26,7 @@ export default async function Orders() {
   const breadcrumbItems = [{ title: t('pages.orders'), link: '/dashboard/admin/orders' }];
   const res: ActionResponse = await adminGetOrders();
   const ordersData: any[] = res.error ? [] : res.data;
-
+  console.log(ordersData);
   const handleRequestPickup = async (ids: string[]) => {
     'use server';
     const res = await adminRequestPickup(ids);
