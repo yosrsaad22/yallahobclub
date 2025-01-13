@@ -43,6 +43,7 @@ export const sellerGetOrders = async (): Promise<ActionResponse> => {
       ...order,
       fullName: `${order.firstName} ${order.lastName}`,
       statuses: order.subOrders.map((subOrder) => subOrder.status),
+      products: order.subOrders.flatMap((subOrder) => subOrder.products).map((product) => product.product!.id),
     }));
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
@@ -87,6 +88,7 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
       statuses: order.subOrders
         .filter((subOrder) => subOrder.products[0].product?.supplierId === user?.id)
         .map((subOrder) => subOrder.status),
+      products: order.subOrders.flatMap((subOrder) => subOrder.products).map((product) => product.product!.id),
     }));
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
@@ -125,9 +127,7 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       fullName: `${order.firstName} ${order.lastName}`,
       suppliers: order.subOrders.map((subOrder) => subOrder.products[0].product?.supplier?.id),
       statuses: order.subOrders.map((subOrder) => subOrder.status),
-      products: order.subOrders
-        .flatMap((subOrder) => subOrder.products) // Flatten products across subOrders
-        .map((product) => product.product!.id),
+      products: order.subOrders.flatMap((subOrder) => subOrder.products).map((product) => product.product!.id),
     }));
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
@@ -433,145 +433,127 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
   }
 };
 
-let isJobRunning = false;
-
 export const trackOrders = async (): Promise<ActionResponse> => {
   const url = process.env.MASSAR_URL;
   if (!url) {
-    throw new Error('URL is not defined');
+    throw new Error('MASSAR_URL is not defined');
   }
 
-  if (isJobRunning) return { success: 'Job already running' };
-
-  isJobRunning = true;
-
   try {
-    const pageSize = 25; // Limit number of orders processed in each batch
-    let page = 0;
+    const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
 
-    while (true) {
-      const originalOrders = await db.order.findMany({
-        skip: page * pageSize,
-        take: pageSize,
-        include: {
-          seller: true,
-          subOrders: {
-            include: {
-              pickup: true,
-              products: {
-                include: {
-                  product: {
-                    include: {
-                      supplier: true,
-                    },
+    const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const fetchDeliveryStatus = async (deliveryId: string) => {
+      try {
+        const response = await fetch(`${url}/tracking/${deliveryId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Failed to fetch status for deliveryId ${deliveryId}: ${response.statusText}`);
+          return null;
+        }
+
+        const data = await response.json();
+        return data?.colis?.etat || null;
+      } catch (error) {
+        console.error(`Error fetching status for deliveryId ${deliveryId}:`, error);
+        return null;
+      }
+    };
+
+    const allOrders = await db.order.findMany({
+      include: {
+        seller: true,
+        subOrders: {
+          include: {
+            pickup: true,
+            products: {
+              include: {
+                product: {
+                  include: {
+                    supplier: true,
                   },
                 },
               },
-              statusHistory: true,
             },
+            statusHistory: true,
           },
         },
-        orderBy: { createdAt: 'desc' },
-      });
+      },
+      orderBy: { createdAt: 'desc' },
+    });
 
-      if (originalOrders.length === 0) break; // Exit if no more orders
-
-      const orders = originalOrders.map((order) => ({
-        ...order,
-        statuses: order.subOrders.map((subOrder) => subOrder.status),
-      }));
-
-      const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
-      const activeSubOrders = orders.flatMap((order) =>
-        order.subOrders.filter((subOrder) => subOrder.deliveryId && !excludedStatuses.includes(subOrder.status!)),
-      );
-
-      const deliveryIds = activeSubOrders.map((subOrder) => subOrder.deliveryId!);
-      if (deliveryIds.length === 0) continue;
-
-      const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-      for (const deliveryId of deliveryIds) {
-        try {
-          const response = await fetch(`${url}/tracking/${deliveryId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          });
-
-          if (!response.ok) {
-            console.error(`Failed to track deliveryId ${deliveryId}: ${response.statusText}`);
-            continue;
-          }
-
-          const data = await response.json();
-
-          if (!data?.colis) {
-            console.log(`Skipping deliveryId ${deliveryId} as colis is undefined or null`);
-            continue;
-          }
-
-          const oldStatus = activeSubOrders.find((subOrder) => subOrder.deliveryId === deliveryId)?.status;
-          const newStatus = data.colis.etat;
-
-          if (newStatus && oldStatus && newStatus !== oldStatus) {
-            const statusHistoryEntry = {
-              status: newStatus,
-              createdAt: new Date(),
-            };
-
-            const subOrder = activeSubOrders.find((o) => o.deliveryId === deliveryId);
-            if (subOrder) {
-              await db.subOrder.update({
-                where: { id: subOrder.id },
-                data: {
-                  status: newStatus,
-                  statusHistory: {
-                    create: statusHistoryEntry,
-                  },
-                },
-              });
-
-              const order = orders.find((o) => o.subOrders.some((so) => so.id === subOrder.id));
-              if (order) {
-                notifyUser(
-                  order.sellerId!,
-                  NotificationType.ORDER_STATUS_CHANGED,
-                  `/dashboard/seller/orders/${order.id}`,
-                  `#${order.code}`,
-                );
-
-                const uniqueSuppliers = new Set(subOrder.products.map((item) => item.product?.supplierId));
-                for (const supplierId of uniqueSuppliers) {
-                  notifyUser(
-                    supplierId!,
-                    NotificationType.ORDER_STATUS_CHANGED,
-                    `/dashboard/supplier/orders/${order.id}`,
-                    `#${order.code}`,
-                  );
-                }
-              }
-            }
-          }
-
-          await delay(100); // Throttle API requests
-        } catch (error) {
-          console.error(`Error processing deliveryId ${deliveryId}:`, error);
-        }
-      }
-
-      page++;
+    if (allOrders.length === 0) {
+      console.log('No orders to process');
+      return { success: 'No orders to track' };
     }
 
-    console.log('Orders tracked successfully');
+    const activeSubOrders = allOrders
+      .flatMap((order) => order.subOrders)
+      .filter((subOrder) => subOrder.deliveryId && !excludedStatuses.includes(subOrder.status!));
+
+    if (activeSubOrders.length === 0) {
+      console.log('No active sub-orders to track');
+      return { success: 'No active sub-orders to track' };
+    }
+
+    for (const subOrder of activeSubOrders) {
+      const deliveryId = subOrder.deliveryId!;
+      const newStatus = await fetchDeliveryStatus(deliveryId);
+
+      if (!newStatus || newStatus === subOrder.status) continue;
+
+      try {
+        const statusHistoryEntry = {
+          status: newStatus,
+          createdAt: new Date(),
+        };
+
+        await db.subOrder.update({
+          where: { id: subOrder.id },
+          data: {
+            status: newStatus,
+            statusHistory: { create: statusHistoryEntry },
+          },
+        });
+
+        const order = allOrders.find((o) => o.subOrders.some((so) => so.id === subOrder.id));
+        if (order) {
+          notifyUser(
+            order.sellerId!,
+            NotificationType.ORDER_STATUS_CHANGED,
+            `/dashboard/seller/orders/${order.id}`,
+            `#${order.code}`,
+          );
+
+          const uniqueSuppliers = new Set(subOrder.products.map((item) => item.product?.supplierId));
+          for (const supplierId of uniqueSuppliers) {
+            notifyUser(
+              supplierId!,
+              NotificationType.ORDER_STATUS_CHANGED,
+              `/dashboard/supplier/orders/${order.id}`,
+              `#${order.code}`,
+            );
+          }
+        }
+      } catch (error) {
+        console.error(`Error updating status for subOrder ID ${subOrder.id}:`, error);
+      }
+
+      await delay(100);
+    }
+
+    console.log('All orders tracked successfully');
     return { success: 'orders-track-success' };
   } catch (error) {
     console.error('Error in trackOrders:', error);
     return { error: 'orders-track-error' };
-  } finally {
-    isJobRunning = false;
   }
 };
 

@@ -69,7 +69,7 @@ export function SizePickerCombobox({ selectedSize, onSelectSize, sizes, placehol
             <CommandList className="custom-scrollbar max-h-64 overflow-y-auto">
               <CommandGroup>
                 {sizes.map((size) => (
-                  <CommandItem key={size} value={size} onSelect={() => handleSelectSize(size)}>
+                  <CommandItem key={size} onSelect={() => handleSelectSize(size)}>
                     {size}
                   </CommandItem>
                 ))}

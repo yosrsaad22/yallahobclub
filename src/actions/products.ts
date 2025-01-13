@@ -34,6 +34,25 @@ export const getProducts = async (): Promise<ActionResponse> => {
   }
 };
 
+export const getProductsBySupplier = async (): Promise<ActionResponse> => {
+  try {
+    const supplier = await currentUser();
+
+    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
+
+    const products = await db.product.findMany({
+      where: {
+        supplierId: supplier?.id,
+      },
+      include: { media: true },
+      orderBy: { createdAt: 'desc' },
+    });
+    return { success: 'products-fetch-success', data: products };
+  } catch (error) {
+    return { error: 'products-fetch-error' };
+  }
+};
+
 export const getProductsBySeller = async (): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.SELLER);
@@ -108,6 +127,18 @@ export const addToMyProducts = async (productId: string): Promise<ActionResponse
   }
 };
 
+export const getProduct = async (id: string): Promise<ActionResponse> => {
+  try {
+    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
+
+    const product = await getProductById(id);
+    if (!product) return { error: 'product-not-found-error' };
+    return { success: 'product-fetch-success', data: product };
+  } catch (error) {
+    return { error: 'product-fetch-error' };
+  }
+};
+
 export const removeFromMyProducts = async (productId: string): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.SELLER);
@@ -149,35 +180,6 @@ export const removeFromMyProducts = async (productId: string): Promise<ActionRes
   } catch (error) {
     console.error(error);
     return { error: 'products-remove-from-my-products-error' };
-  }
-};
-
-export const getProductsBySupplier = async (id: string): Promise<ActionResponse> => {
-  try {
-    await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
-
-    const products = await db.product.findMany({
-      where: {
-        supplierId: id,
-      },
-      include: { media: true },
-      orderBy: { createdAt: 'desc' },
-    });
-    return { success: 'products-fetch-success', data: products };
-  } catch (error) {
-    return { error: 'products-fetch-error' };
-  }
-};
-
-export const getProduct = async (id: string): Promise<ActionResponse> => {
-  try {
-    await roleGuard([UserRole.ADMIN, UserRole.SELLER, UserRole.SUPPLIER]);
-
-    const product = await getProductById(id);
-    if (!product) return { error: 'product-not-found-error' };
-    return { success: 'product-fetch-success', data: product };
-  } catch (error) {
-    return { error: 'product-fetch-error' };
   }
 };
 

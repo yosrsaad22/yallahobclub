@@ -22,9 +22,7 @@ export default async function Products() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.products'), link: '/dashboard/admin/products' }];
 
-  const user = await currentUser();
-  const userId = user?.id ?? '';
-  const res: ActionResponse = await getProductsBySupplier(userId);
+  const res: ActionResponse = await getProductsBySupplier();
   const productsData: any[] = res.error ? [] : res.data;
 
   const handleDelete = async (id: string) => {

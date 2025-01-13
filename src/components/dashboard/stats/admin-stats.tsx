@@ -28,7 +28,7 @@ import { ReturnRate } from './return-rate';
 import { useTranslations } from 'next-intl';
 import { DailyProfitAndSubOrdersChart } from './daily-profit-sub-orders';
 import { MonthlyProfitAndSubOrdersChart } from './monthly-profit-sub-orders';
-import { TopFive } from './top-five';
+import { TopTen } from './top-ten';
 import { MonthlyProfitChart } from './monthly-profit';
 import { DailyProfitChart } from './daily-profit';
 import { MonthlySubOrdersAndCoursesChart } from './monthly-sub-orders-courses';
@@ -235,7 +235,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
         <Card className="col-span-1  p-3 md:col-span-2 md:p-3">
-          <TopFive
+          <TopTen
             data={stats?.topFiveProducts || []}
             dateRange={dateRange!}
             isFetching={isFetching}
@@ -245,7 +245,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
           />{' '}
         </Card>
         <Card className="col-span-1  p-3 md:col-span-2 md:p-3">
-          <TopFive
+          <TopTen
             data={stats?.topFiveSellers || []}
             dateRange={dateRange!}
             isFetching={isFetching}

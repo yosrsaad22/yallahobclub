@@ -16,6 +16,7 @@ interface ComboboxProps<T> {
   displayValue: (item: T) => string;
   itemKey: (item: T) => string;
   isDark?: boolean;
+  showSearch?: boolean;
 }
 
 export function Combobox<T>({
@@ -26,6 +27,7 @@ export function Combobox<T>({
   placeholder,
   displayValue,
   itemKey,
+  showSearch = true,
   isDark = false,
 }: ComboboxProps<T>) {
   const [open, setOpen] = useState(false);
@@ -109,7 +111,7 @@ export function Combobox<T>({
         style={{ width: buttonRef.current ? buttonRef.current.offsetWidth : 'auto' }}
         className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''} p-0`}>
         <Command className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''}`}>
-          <CommandInput placeholder={t('search')} className="h-9" />
+          {showSearch && <CommandInput placeholder={t('search')} className="h-9" />}
           <CommandEmpty>{t('no-result')}</CommandEmpty>
           <CommandGroup className="overflow-y-auto">
             <CommandList className="custom-scrollbar max-h-64 overflow-y-auto">
@@ -117,7 +119,6 @@ export function Combobox<T>({
                 items.map((item) => (
                   <CommandItem
                     key={itemKey(item)}
-                    value={displayValue(item)}
                     className={`${isDark ? 'text-white' : ''} w-full`}
                     onSelect={() => {
                       onSelect(item);

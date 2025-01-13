@@ -8,12 +8,13 @@ import { Table } from '@tanstack/react-table';
 import { useTranslations } from 'next-intl';
 import { UserCombobox } from '../comboboxes/user-combobox';
 import { getSellers, getSuppliers } from '@/actions/users';
-import { getProducts } from '@/actions/products';
+import { getProducts, getProductsBySeller, getProductsBySupplier } from '@/actions/products';
 import { ProductFilterCombobox } from '../comboboxes/product-filter-combobox';
 import { Product } from '@prisma/client';
 import { translateColumnHeader } from '@/lib/utils';
 import { DatePicker } from '@/components/ui/date-picker';
 import { useCurrentRole } from '@/hooks/use-current-role';
+import { ca } from 'date-fns/locale';
 
 interface AdvancedFiltersProps<TData> {
   tag: string;
@@ -41,8 +42,6 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
   const [productsLoading, setProductsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (role !== roleOptions.ADMIN) return;
-
     const fetchSuppliers = async () => {
       setSuppliersLoading(true);
       const response = await getSuppliers();
@@ -63,8 +62,19 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
 
     const fetchProducts = async () => {
       setProductsLoading(true);
-      const response = await getProducts();
-      if (response.success) {
+      let response;
+      switch (role) {
+        case roleOptions.ADMIN:
+          response = await getProducts();
+          break;
+        case roleOptions.SUPPLIER:
+          response = await getProductsBySupplier();
+          break;
+        case roleOptions.SELLER:
+          response = await getProductsBySeller();
+          break;
+      }
+      if (response && response.success) {
         setProducts(response.data || []);
       }
       setProductsLoading(false);
@@ -78,7 +88,7 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
   useEffect(() => {
     const columnFilters = table.getState().columnFilters || [];
     const updatedFilters = columnFilters
-      .filter((filter) => filter.id !== 'statuses' && filter.id !== 'sellers') // No longer handling suppliers here
+      .filter((filter) => filter.id !== 'statuses' && filter.id !== 'sellers')
       .concat(
         selectedStatuses.length ? { id: 'statuses', value: selectedStatuses.map((s) => s.UpdateCode) } : [],
         selectedSellers.length ? { id: 'seller', value: selectedSellers } : [],
@@ -97,7 +107,7 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
 
   const handleSuppliersChange = (supplierIdOrIds: string | string[]) => {
     const supplierIds = Array.isArray(supplierIdOrIds) ? supplierIdOrIds : [supplierIdOrIds];
-    setSelectedSuppliers(tag === 'products' ? [supplierIds[0]] : supplierIds);
+    setSelectedSuppliers(supplierIds);
 
     const columnFilters = table.getState().columnFilters || [];
     const updatedFilters = columnFilters
@@ -183,10 +193,9 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
         </Button>
       </div>
 
-      <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-3">
+      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
         {tag === 'orders' && (
-          <div
-            className={`flex flex-col gap-1 md:col-span-1 ${role === roleOptions.ADMIN ? 'col-span-1' : 'col-span-2'}`}>
+          <div className={`flex flex-col  gap-1 md:col-span-1 `}>
             <Combobox
               items={orderStatuses}
               selectedItems={selectedStatuses}
@@ -209,13 +218,11 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
               <div className="flex flex-col gap-1">
                 <UserCombobox
                   users={suppliers}
-                  selectedUserIds={tag === 'products' ? undefined : selectedSuppliers}
-                  selectedUserId={tag === 'products' ? selectedSuppliers[0] : undefined}
-                  onSelectUsers={tag === 'orders' ? handleSuppliersChange : undefined}
-                  onSelectUser={tag === 'products' ? handleSuppliersChange : undefined}
+                  selectedUserIds={selectedSuppliers}
+                  onSelectUsers={handleSuppliersChange}
                   placeholder={tFields(tag === 'orders' ? 'order-suppliers' : 'product-supplier')}
                   loading={suppliersLoading}
-                  multiSelect={tag === 'orders'}
+                  multiSelect
                 />
 
                 {selectedSuppliers.length > 0 && (
@@ -243,27 +250,26 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
                 )}
               </div>
             )}
-
-            {tag === 'orders' && (
-              <div className="flex flex-col gap-1">
-                <ProductFilterCombobox
-                  products={products}
-                  selectedProductIds={selectedProducts}
-                  onSelectProducts={handleProductChange}
-                  onSelectProduct={(productId) => setSelectedProducts([productId])}
-                  placeholder={tFields('order-products')}
-                  loading={productsLoading}
-                  multiSelect
-                />
-
-                {selectedProducts.length > 0 && (
-                  <p className="pl-2 text-xs text-muted-foreground">
-                    {selectedProducts.length} {t('applied-filters')}
-                  </p>
-                )}
-              </div>
-            )}
           </>
+        )}
+        {tag === 'orders' && (
+          <div className="flex flex-col gap-1">
+            <ProductFilterCombobox
+              products={products}
+              selectedProductIds={selectedProducts}
+              onSelectProducts={handleProductChange}
+              onSelectProduct={(productId) => setSelectedProducts([productId])}
+              placeholder={tFields('order-products')}
+              loading={productsLoading}
+              multiSelect
+            />
+
+            {selectedProducts.length > 0 && (
+              <p className="pl-2 text-xs text-muted-foreground">
+                {selectedProducts.length} {t('applied-filters')}
+              </p>
+            )}
+          </div>
         )}
         {(tag === 'orders' || (tag === 'products' && role === roleOptions.ADMIN)) && (
           <>

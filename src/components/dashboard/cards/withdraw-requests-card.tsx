@@ -191,9 +191,9 @@ export const WithdrawRequestsCard: React.FC<WithdrawRequestsProps> = ({
             <IconUser className="h-4 w-4" />
           </AvatarFallback>
         </Avatar>
-        <div className="flex h-[2.5rem] max-w-[100px] items-center overflow-hidden">
+        <div className="flex h-[2.5rem] max-w-[150px] items-center overflow-hidden">
           <p
-            className="overflow-hidden text-ellipsis break-words"
+            className="overflow-hidden text-ellipsis break-words text-sm"
             style={{
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -274,30 +274,30 @@ export const WithdrawRequestsCard: React.FC<WithdrawRequestsProps> = ({
             </Button>
           </div>
         </div>
-        <div className="rounded-md border border-border">
+        <div className=" custom-scrollbar w-full overflow-x-auto rounded-md border border-border">
           {/* Table Headers */}
-          <div className="flex items-center justify-between overflow-auto border-b border-border bg-background p-3 px-8 text-muted-foreground">
-            <div className="w-1/4 text-center">
+          <div className="flex min-w-[800px] items-center  justify-between gap-14 bg-background p-2 px-6 md:min-w-full md:gap-0">
+            <div className="w-[100px] text-center">
               <p className="text-sm font-semibold">{tFields('withdraw-created-at')}</p>
             </div>
-            <div className="w-1/4 text-center">
+            <div className="w-[100px] text-center">
               <p className="text-sm font-semibold">{tFields('withdraw-amount')}</p>
             </div>
-            <div className="w-1/4 text-center">
+            <div className="w-[150px] text-center">
               <p className="text-sm font-semibold">{tFields('withdraw-status')}</p>
             </div>
             {user?.role === roleOptions.ADMIN && (
               <>
-                <div className="w-1/4 text-center">
+                <div className="w-[150px] text-center">
                   <p className="text-sm font-semibold">{tFields('withdraw-user')}</p>
                 </div>
-                <div className="w-1/4 text-center">
+                <div className="w-[200px] text-center">
                   <p className="text-sm font-semibold">Actions</p>
                 </div>
               </>
             )}
           </div>
-
+          <hr className="w-full  min-w-[800px]  border-t border-border md:min-w-full" />
           {/* Table Body */}
           {filteredRequests.length === 0 ? (
             <div className="flex h-24 w-full items-center justify-center">
@@ -305,24 +305,24 @@ export const WithdrawRequestsCard: React.FC<WithdrawRequestsProps> = ({
             </div>
           ) : (
             <div
-              className={`flex flex-col ${isExpanded ? 'max-h-96' : 'max-h-48'} custom-scrollbar overflow-auto transition-all duration-300 ease-in-out`}>
+              className={`flex flex-col ${isExpanded ? 'max-h-96' : 'max-h-48'} custom-scrollbar  transition-all duration-300 ease-in-out`}>
               {filteredRequests.map((request, index) => (
                 <div
                   key={request.id}
                   className={cn(
-                    'flex items-center justify-between bg-background p-2 px-6',
+                    'flex min-w-[800px] items-center  justify-between gap-14 bg-background p-2 px-6 md:min-w-full md:gap-0',
                     index !== filteredRequests.length - 1 && 'border-b border-border',
                   )}>
                   {/* Created At */}
-                  <div className="w-1/4 text-center">
+                  <div className="w-[100px] text-center">
                     <p className="text-sm">{formatDate(request.createdAt)}</p>
                   </div>
                   {/* Amount */}
-                  <div className="w-1/4 text-center font-semibold">
+                  <div className="w-[100px] text-center font-semibold">
                     <p className="text-sm">{request.amount} TND</p>
                   </div>
                   {/* Status */}
-                  <div className="w-1/4 text-center">
+                  <div className="w-[150px] text-center">
                     <div
                       className={`inline-flex rounded-full px-3 py-1 text-sm text-white ${
                         request.status === 'pending'
@@ -337,11 +337,11 @@ export const WithdrawRequestsCard: React.FC<WithdrawRequestsProps> = ({
                   {/* User - Admin Only */}
                   {user?.role === roleOptions.ADMIN && (
                     <>
-                      <div className="w-1/4 text-center">
+                      <div className="w-[150px] text-center">
                         <UserCell user={request.user} />
                       </div>
                       {/* Actions - Admin Only */}
-                      <div className="flex w-1/4 justify-center space-x-2">
+                      <div className="flex w-[200px] justify-center space-x-2">
                         {onApproveWithdrawRequest && (
                           <Button
                             size="sm"

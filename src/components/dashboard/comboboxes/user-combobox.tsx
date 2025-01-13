@@ -20,6 +20,7 @@ interface UserComboboxProps {
   placeholder: string;
   loading: boolean;
   multiSelect?: boolean;
+  customContentClassNames?: string;
 }
 
 export function UserCombobox({
@@ -29,6 +30,7 @@ export function UserCombobox({
   onSelectUsers,
   onSelectUser,
   placeholder,
+  customContentClassNames,
   loading,
   multiSelect = false,
 }: UserComboboxProps) {
@@ -81,7 +83,7 @@ export function UserCombobox({
   }, []);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover modal={false} open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           ref={buttonRef}
@@ -118,7 +120,7 @@ export function UserCombobox({
           <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent style={{ width: buttonWidth }} className="p-0">
+      <PopoverContent style={{ width: buttonWidth }} className={cn('p-0', customContentClassNames)}>
         <Command>
           <CommandInput
             placeholder={t('search')}

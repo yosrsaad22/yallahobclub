@@ -45,14 +45,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
             <div className="absolute inset-0 flex flex-col items-start justify-start gap-y-2 p-8 text-black/90">
               <h2 className="text-2xl font-bold">{t('furniture-banner.title')}</h2>
               <p>{t('furniture-banner.text')}</p>
-              <div
-                onClick={() => {
-                  router.push('/dashboard/marketplace/all-products?category=FURNITURE');
-                }}
+              <Link
+                href="/dashboard/marketplace/all-products?category=FURNITURE"
                 className="mt-2 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                 <p className="text-sm">{t('explore')}</p>
                 <IconChevronRight className="h-5 w-5" />
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -63,12 +61,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
               <div className="absolute inset-0 z-[6] flex w-[65%] flex-col items-start justify-start gap-y-2 p-4 text-black/90">
                 <h2 className="text-2xl font-bold">{t('decoration-banner.title')}</h2>
                 <p>{t('decoration-banner.text')}</p>
-                <div
-                  onClick={() => router.push('/dashboard/marketplace/all-products?category=DECORATION')}
+                <Link
+                  href="/dashboard/marketplace/all-products?category=DECORATION"
                   className="mt-2 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                   <p className="text-sm">{t('explore')}</p>
                   <IconChevronRight className="h-5 w-5" />
-                </div>
+                </Link>
               </div>
               <div>
                 <Image
@@ -87,12 +85,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 <div className="absolute inset-0 flex w-[75%] flex-col items-start justify-start gap-y-2 p-4 text-black/90">
                   <h2 className="text-2xl font-bold">{t('clothing-banner.title')}</h2>
                   <p>{t('clothing-banner.text')}</p>
-                  <div
-                    onClick={() => router.push('/dashboard/marketplace/all-products?category=CLOTHING')}
+                  <Link
+                    href="/dashboard/marketplace/all-products?category=CLOTHING"
                     className="mt-2 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                     <p className="text-sm">{t('explore')}</p>
                     <IconChevronRight className="h-5 w-5" />
-                  </div>
+                  </Link>
                 </div>
                 <Image
                   src="/img/clothing-banner.webp"
@@ -106,12 +104,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 <div className="absolute inset-0 flex w-[75%] flex-col items-start justify-start gap-y-2 p-4 text-black/90">
                   <h2 className="text-2xl font-bold">{t('tech-banner.title')}</h2>
                   <p>{t('tech-banner.text')}</p>
-                  <div
-                    onClick={() => router.push('/dashboard/marketplace/all-products?category=ELECTRONICS')}
+                  <Link
+                    href="/dashboard/marketplace/all-products?category=ELECTRONICS"
                     className="mt-2 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                     <p className="text-sm">{t('explore')}</p>
                     <IconChevronRight className="h-5 w-5" />
-                  </div>
+                  </Link>
                 </div>
                 <Image
                   src="/img/tech-banner.webp"
@@ -139,12 +137,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
             <div className="absolute inset-0 flex flex-col items-start justify-start gap-y-2 p-4 text-black/90">
               <h2 className="text-xl font-bold">{t('furniture-banner.title')}</h2>
               <p className="text-sm">{t('furniture-banner.text')}</p>
-              <div
-                onClick={() => router.push('/dashboard/marketplace/all-products?category=FURNITURE')}
+              <Link
+                href="/dashboard/marketplace/all-products?category=FURNITURE"
                 className="mt-1 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                 <p className="text-xs">{t('explore')}</p>
                 <IconChevronRight className="h-4 w-4" />
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -162,12 +160,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
               <div className="absolute inset-0 z-[6] flex w-[75%] flex-col items-start justify-start gap-y-2 p-3 text-black/90">
                 <h2 className="text-xl font-bold">{t('decoration-banner.title')}</h2>
                 <p className="text-sm">{t('decoration-banner.text')}</p>
-                <div
-                  onClick={() => router.push('/dashboard/marketplace/all-products?category=DECORATION')}
+                <Link
+                  href="/dashboard/marketplace/all-products?category=DECORATION"
                   className="mt-1 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                   <p className="text-xs">{t('explore')}</p>
                   <IconChevronRight className="h-4 w-4" />
-                </div>
+                </Link>
               </div>
             </div>
 
@@ -184,12 +182,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 <div className="absolute inset-0 flex w-[75%] flex-col items-start justify-start gap-y-2 p-3 text-black/90">
                   <h2 className="text-xl font-bold">{t('clothing-banner.title')}</h2>
                   <p className="text-sm">{t('clothing-banner.text')}</p>
-                  <div
-                    onClick={() => router.push('/dashboard/marketplace/all-products?category=CLOTHING')}
+                  <Link
+                    href={'/dashboard/marketplace/all-products?category=CLOTHING'}
                     className="mt-1 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                     <p className="text-xs">{t('explore')}</p>
                     <IconChevronRight className="h-4 w-4" />
-                  </div>
+                  </Link>
                 </div>
               </div>
               <div className="group  relative h-1/2 w-full overflow-hidden rounded-md bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200">
@@ -203,12 +201,12 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 <div className="absolute inset-0 flex w-[85%] flex-col items-start justify-start gap-y-2 p-3 text-black/90">
                   <h2 className="text-xl font-bold">{t('tech-banner.title')}</h2>
                   <p className="text-sm">{t('tech-banner.text')}</p>
-                  <div
-                    onClick={() => router.push('/dashboard/marketplace/all-products?category=ELECTRONICS')}
+                  <Link
+                    href={'/dashboard/marketplace/all-products?category=ELECTRONICS'}
                     className="mt-1 flex cursor-pointer flex-row items-center justify-center rounded-sm border border-black bg-transparent px-2 py-1 hover:bg-black/90 hover:text-white/90">
                     <p className="text-xs">{t('explore')}</p>
                     <IconChevronRight className="h-4 w-4" />
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>

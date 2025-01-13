@@ -92,6 +92,7 @@ export const AddTransactionDialog: React.FC<AddTransactionDialogProps> = ({ onTr
             <LabelInputContainer>
               <Label htmlFor="recipient">{tFields('transaction-user')}</Label>
               <UserCombobox
+                customContentClassNames="-mt-2"
                 users={users}
                 selectedUserId={selectedUserId}
                 onSelectUser={(userId: string) => {

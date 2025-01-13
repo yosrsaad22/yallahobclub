@@ -5,12 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { MEDIA_HOSTNAME } from '@/lib/constants';
 import { formatDate } from '@/lib/utils';
 import Image from 'next/image';
-import { DateRange, TopFiveItem } from '@/types';
+import { DateRange, TopTenItem } from '@/types';
 import { IconCalendar, IconLoader2, IconUser } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
-interface TopFiveProps {
-  data: TopFiveItem[];
+interface TopTenProps {
+  data: TopTenItem[];
   dateRange: DateRange;
   isFetching: boolean;
   title: string;
@@ -19,7 +19,7 @@ interface TopFiveProps {
   useAvatars?: boolean;
 }
 
-export function TopFive({
+export function TopTen({
   data,
   dateRange,
   isFetching,
@@ -27,7 +27,7 @@ export function TopFive({
   description,
   noDataMessage,
   useAvatars = false,
-}: TopFiveProps) {
+}: TopTenProps) {
   return (
     <Card className="h-full ">
       <CardHeader className="p-3">
@@ -66,7 +66,7 @@ export function TopFive({
             {data.map((item, index) => (
               <li
                 key={item.id}
-                className=" flex items-center gap-2 rounded-lg border p-2 text-lg duration-200 ease-in-out hover:scale-105 hover:shadow-md ">
+                className=" flex items-center gap-2 rounded-lg border p-2 text-lg duration-200 ease-in-out hover:shadow-md ">
                 <div className="h-14 w-14">
                   {useAvatars ? (
                     <div className="flex h-full w-full items-center justify-center">

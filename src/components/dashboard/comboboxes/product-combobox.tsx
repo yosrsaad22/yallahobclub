@@ -90,7 +90,6 @@ export function ProductCombobox({ products, onSelectProduct, placeholder, loadin
                     {products.map((product) => (
                       <CommandItem
                         key={product.id}
-                        value={product.name}
                         className="flex h-full min-h-16 flex-col items-center justify-between gap-6 px-6 md:flex-row"
                         onSelect={() => handleSelectProduct(product)}>
                         <div className="flex items-center gap-4">

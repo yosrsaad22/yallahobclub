@@ -26,7 +26,7 @@ export function DataTableColumnHeader<TData, TValue>({
   }
 
   if (!column.getCanSort()) {
-    return <div className={cn(className, 'font-semibold')}>{title}</div>;
+    return <div className={cn(className, 'text-foregound/90 font-semibold')}>{title}</div>;
   }
 
   return (

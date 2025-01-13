@@ -162,12 +162,12 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     meta: {
       columnName: 'Supplier',
     },
-    filterFn: (row, filterValue) => {
-      const supplier = row.original.supplier;
-      const supplierId = supplier?.id;
+    filterFn: (row, columnId, filterValue) => {
+      const supplier = row.original.supplier; // Ensure `supplier` is accessible from `row.original`
       const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
 
-      return filterValues.includes(supplierId);
+      // Return true if the supplier ID matches any of the selected filter values
+      return supplier && filterValues.includes(supplier.id);
     },
 
     cell: ({ row }) => {

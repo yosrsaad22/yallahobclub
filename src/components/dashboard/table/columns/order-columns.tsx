@@ -66,121 +66,138 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
   );
 };
 
-export const SellerOrderColumns: ColumnDef<Order & { fullName: string; subOrders: SubOrder[]; statuses: string[] }>[] =
-  [
-    {
-      accessorKey: 'createdAt',
-      meta: {
-        columnName: 'CreatedAt',
-      },
-      accessorFn: (row: any) => row.createdAt,
-      cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
-      filterFn: (row, columnId, filterValue) => {
-        const rawDateValue = row.getValue(columnId);
-        const dateValue = new Date(rawDateValue as string | number | Date);
-        const filterDate = new Date(filterValue);
-        return (
-          dateValue.getFullYear() === filterDate.getFullYear() &&
-          dateValue.getMonth() === filterDate.getMonth() &&
-          dateValue.getDate() === filterDate.getDate()
-        );
-      },
+export const SellerOrderColumns: ColumnDef<
+  Order & { fullName: string; subOrders: SubOrder[]; statuses: string[]; products: Product[] }
+>[] = [
+  {
+    accessorKey: 'createdAt',
+    meta: {
+      columnName: 'CreatedAt',
     },
-    {
-      accessorKey: 'code',
-      meta: {
-        columnName: 'code',
-      },
-      cell: ({ row }) => {
-        const code: string = row.getValue<string>('code');
-        return <div className="w-full max-w-[180px] truncate">{code}</div>;
-      },
+    accessorFn: (row: any) => row.createdAt,
+    cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
+    filterFn: (row, columnId, filterValue) => {
+      const rawDateValue = row.getValue(columnId);
+      const dateValue = new Date(rawDateValue as string | number | Date);
+      const filterDate = new Date(filterValue);
+      return (
+        dateValue.getFullYear() === filterDate.getFullYear() &&
+        dateValue.getMonth() === filterDate.getMonth() &&
+        dateValue.getDate() === filterDate.getDate()
+      );
     },
-    {
-      accessorKey: 'fullName',
-      meta: {
-        columnName: 'full-name',
-      },
-      cell: ({ row }) => {
-        const fullname: string = row.getValue<string>('fullName');
+  },
+  {
+    accessorKey: 'code',
+    meta: {
+      columnName: 'code',
+    },
+    cell: ({ row }) => {
+      const code: string = row.getValue<string>('code');
+      return <div className="w-full max-w-[180px] truncate">{code}</div>;
+    },
+  },
+  {
+    accessorKey: 'fullName',
+    meta: {
+      columnName: 'full-name',
+    },
+    cell: ({ row }) => {
+      const fullname: string = row.getValue<string>('fullName');
 
-        return <div className="w-full max-w-[180px] truncate">{fullname}</div>;
-      },
+      return <div className="w-full max-w-[180px] truncate">{fullname}</div>;
     },
-    {
-      accessorKey: 'number',
-      meta: {
-        columnName: 'number',
-      },
+  },
+  {
+    accessorKey: 'number',
+    meta: {
+      columnName: 'number',
     },
-    {
-      accessorKey: 'state',
-      meta: {
-        columnName: 'state',
-      },
+  },
+  {
+    accessorKey: 'state',
+    meta: {
+      columnName: 'state',
     },
-    {
-      accessorKey: 'subOrders',
-      enableSorting: true,
-      meta: {
-        columnName: 'subOrders',
-      },
-      accessorFn: (row: any) =>
-        Array.isArray(row.subOrders)
-          ? row.subOrders.map((subOrder: SubOrder) => subOrder.deliveryId + subOrder.code).join(', ')
-          : '',
-      cell: ({ row }) => {
-        const subOrders = row.original.subOrders.map((subOrder: SubOrder) =>
-          subOrder.deliveryId ? subOrder.code : 'N/A',
-        );
-        return (
-          <div className="flex flex-col flex-wrap gap-x-2">
-            {subOrders.map((subOrder: string, index: number) => (
-              <div key={index} className="flex flex-row gap-x-1">
-                <p>{subOrder}</p>
-              </div>
-            ))}
-          </div>
-        );
-      },
+  },
+  {
+    accessorKey: 'subOrders',
+    enableSorting: true,
+    meta: {
+      columnName: 'subOrders',
     },
-    {
-      accessorKey: 'statuses',
-      enableSorting: true,
-      meta: {
-        columnName: 'statuses',
-      },
-      filterFn: (row, columnId, filterValue) => {
-        const statuses = row.getValue(columnId) as string[];
-        const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
-        return filterValues.some((value) => statuses.includes(value));
-      },
-      cell: ({ row }) => {
-        const statuses = row.original.statuses;
-        return (
-          <div className="-ml-8 flex flex-col items-center justify-center gap-2">
-            {statuses.map((status, index) => (
-              <StatusCell key={index} status={status} />
-            ))}
-          </div>
-        );
-      },
+    accessorFn: (row: any) =>
+      Array.isArray(row.subOrders)
+        ? row.subOrders.map((subOrder: SubOrder) => subOrder.deliveryId + subOrder.code).join(', ')
+        : '',
+    cell: ({ row }) => {
+      const subOrders = row.original.subOrders.map((subOrder: SubOrder) =>
+        subOrder.deliveryId ? subOrder.code : 'N/A',
+      );
+      return (
+        <div className="flex flex-col flex-wrap gap-x-2">
+          {subOrders.map((subOrder: string, index: number) => (
+            <div key={index} className="flex flex-row gap-x-1">
+              <p>{subOrder}</p>
+            </div>
+          ))}
+        </div>
+      );
     },
-    {
-      accessorKey: 'total',
-      enableSorting: true,
-      meta: {
-        columnName: 'total',
-      },
-      cell: ({ row }) => {
-        const total = row.getValue<string>('total');
-        return <div>{total} TND</div>;
-      },
+  },
+  {
+    accessorKey: 'statuses',
+    enableSorting: true,
+    meta: {
+      columnName: 'statuses',
     },
-  ];
+    filterFn: (row, columnId, filterValue) => {
+      const statuses = row.getValue(columnId) as string[];
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      return filterValues.some((value) => statuses.includes(value));
+    },
+    cell: ({ row }) => {
+      const statuses = row.original.statuses;
+      return (
+        <div className="-ml-8 flex flex-col items-center justify-center gap-2">
+          {statuses.map((status, index) => (
+            <StatusCell key={index} status={status} />
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'total',
+    enableSorting: true,
+    meta: {
+      columnName: 'total',
+    },
+    cell: ({ row }) => {
+      const total = row.getValue<string>('total');
+      return <div>{total} TND</div>;
+    },
+  },
+  {
+    id: 'products',
+    accessorFn: (row) => row.products || [],
+    filterFn: (row, columnId, filterValue) => {
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      const products = row.getValue(columnId) as string[];
+
+      if (!products || products.length === 0 || filterValues.length === 0) {
+        return false;
+      }
+      return filterValues.some((value) => products.includes(value));
+    },
+    enableHiding: true,
+    enableSorting: false,
+    cell: undefined,
+  },
+];
 
 export const SupplierOrderColumns: ColumnDef<
-  Order & { fullName: string; subOrders: SubOrder[]; statuses: string[] }
+  Order & { fullName: string; subOrders: SubOrder[]; statuses: string[]; products: Product[] }
 >[] = [
   {
     accessorKey: 'createdAt',
@@ -280,6 +297,21 @@ export const SupplierOrderColumns: ColumnDef<
         </div>
       );
     },
+  },
+  {
+    id: 'products',
+    accessorFn: (row) => row.products || [],
+    filterFn: (row, columnId, filterValue) => {
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      const products = row.getValue(columnId) as string[];
+      if (!products || products.length === 0 || filterValues.length === 0) {
+        return false;
+      }
+      return filterValues.some((value) => products.includes(value));
+    },
+    enableHiding: true,
+    enableSorting: false,
+    cell: undefined,
   },
 ];
 
@@ -412,15 +444,17 @@ export const AdminOrderColumns: ColumnDef<
       return filterValues.some((value) => suppliers.includes(value));
     },
     enableHiding: true,
-    enableSorting: false,
     cell: undefined,
   },
   {
     id: 'products',
-    accessorFn: (row) => row.products,
+    accessorFn: (row) => row.products || [],
     filterFn: (row, columnId, filterValue) => {
-      const products = row.getValue(columnId) as string[];
       const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      const products = row.getValue(columnId) as string[];
+      if (!products || products.length === 0 || filterValues.length === 0) {
+        return false;
+      }
       return filterValues.some((value) => products.includes(value));
     },
     enableHiding: true,

@@ -9,7 +9,7 @@ import { Product } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { getProducts } from '@/actions/products';
 import { useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   IconArrowsSort,
   IconCategory2,
@@ -19,6 +19,7 @@ import {
   IconCircleCheckFilled,
   IconColorFilter,
   IconFilter,
+  IconFilterOff,
   IconLoader2,
   IconSearch,
   IconStar,
@@ -27,9 +28,13 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { DataTableUser, MediaType } from '@/types';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Combobox } from '@/components/ui/combobox';
 
 export default function ProductGrid() {
   const tMarketplace = useTranslations('dashboard.marketplace');
+  const tColors = useTranslations('dashboard.colors');
+
   const tFields = useTranslations('fields');
   const role = useCurrentRole();
   const params = useSearchParams();
@@ -39,10 +44,21 @@ export default function ProductGrid() {
   const colorsFilter = params.get('colors')?.split(',') ?? [];
   const featuredFilter = params.get('featured') ?? '';
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 16;
+  const itemsPerPage = 30;
   const [selectedColors, setSelectedColors] = useState<string[]>(colorsFilter);
   const [sortOrder, setSortOrder] = useState<string>('newest');
   const [featuredOnly, setFeaturedOnly] = useState<boolean>(featuredFilter === 'true');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [containerHeight, setContainerHeight] = useState<number | 'auto'>('auto');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sortArray = [
+    { value: 'newest', label: tMarketplace('sort-newest') },
+    { value: 'oldest', label: tMarketplace('sort-oldest') },
+    { value: 'priceLowToHigh', label: tMarketplace('price-asc') },
+    { value: 'priceHighToLow', label: tMarketplace('price-desc') },
+    { value: 'stockLowToHigh', label: tMarketplace('stock-asc') },
+    { value: 'stockHighToLow', label: tMarketplace('stock-desc') },
+  ];
 
   const { data, isLoading } = useQuery({
     queryKey: ['products'],
@@ -93,14 +109,10 @@ export default function ProductGrid() {
   const handleFeaturedClick = () => {
     const newFeaturedStatus = !featuredOnly;
     setFeaturedOnly(newFeaturedStatus);
+
     const newParams = new URLSearchParams(window.location.search);
-    if (newFeaturedStatus) {
-      newParams.set('featured', 'true');
-    } else {
-      newParams.delete('featured');
-    }
-    const newUrl = `${window.location.pathname}?${newParams.toString()}`;
-    window.history.replaceState({}, '', newUrl);
+    newFeaturedStatus ? newParams.set('featured', 'true') : newParams.delete('featured');
+    window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
   };
 
   const handleColorSelect = (color: string) => {
@@ -189,364 +201,185 @@ export default function ProductGrid() {
     }
   };
 
+  const toggleFilters = () => {
+    if (showAdvancedFilters && containerRef.current) {
+      // Measure the height before hiding
+      setContainerHeight(containerRef.current.offsetHeight);
+    }
+    setShowAdvancedFilters((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (showAdvancedFilters) {
+      // Reset height to auto when shown
+      setContainerHeight('auto');
+    }
+  }, [showAdvancedFilters]);
+
   return (
-    <div className="flex h-full w-full animate-fade-in flex-col gap-x-4 gap-y-4 md:flex-row">
-      <div className="hidden h-full w-full  flex-col space-y-0 rounded-md border border-border bg-background p-4 text-foreground/80 md:flex md:w-[25%] md:space-y-4">
-        <h2 className="flex flex-row items-center justify-start gap-x-2 pb-0  text-lg font-bold">
-          <IconFilter />
-          {tMarketplace('filter')}
-        </h2>
-        <Accordion type="single" collapsible className="w-full">
-          {/* Featured Filter */}
-
-          <AccordionItem value="item-4">
-            <AccordionTrigger>
-              <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                <IconStar className="h-5 w-5" />
-                Featured
-              </p>
-            </AccordionTrigger>
-            <AccordionContent>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${featuredOnly ? 'font-normal text-primary' : ''}`}
-                onClick={handleFeaturedClick}>
-                {tMarketplace('featured')}
-                {featuredOnly && <IconCircleCheckFilled />}
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-          <hr />
-          {/* Sort Order */}
-          <AccordionItem value="item-5">
-            <AccordionTrigger>
-              <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                <IconArrowsSort className="h-5 w-5" />
-                {tMarketplace('sort')}
-              </p>{' '}
-            </AccordionTrigger>
-            <AccordionContent>
-              <p
-                className={`flex cursor-pointer flex-row items-center  justify-between p-2 font-normal hover:text-primary ${sortOrder === 'newest' ? 'text-primary' : ''}`}
-                onClick={() => handleSortChange('newest')}>
-                {tMarketplace('sort-newest')}
-
-                {sortOrder === 'newest' && <IconCircleCheckFilled className="text-primary" />}
-              </p>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'oldest' ? 'text-primary' : ''}`}
-                onClick={() => handleSortChange('oldest')}>
-                {tMarketplace('sort-oldest')}
-                {sortOrder === 'oldest' && <IconCircleCheckFilled className="text-primary" />}
-              </p>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'priceLowToHigh' ? 'text-primary' : ''}`}
-                onClick={() => handleSortChange('priceLowToHigh')}>
-                {tMarketplace('price-asc')}
-                {sortOrder === 'priceLowToHigh' && <IconCircleCheckFilled className="text-primary" />}
-              </p>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'priceHighToLow' ? 'text-primary' : ''}`}
-                onClick={() => handleSortChange('priceHighToLow')}>
-                {tMarketplace('price-desc')}
-                {sortOrder === 'priceHighToLow' && <IconCircleCheckFilled className="text-primary" />}
-              </p>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'stockLowToHigh' ? 'text-primary' : ''}`}
-                onClick={() => handleSortChange('stockLowToHigh')}>
-                {tMarketplace('stock-asc')}
-                {sortOrder === 'stockLowToHigh' && <IconCircleCheckFilled className="text-primary" />}
-              </p>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'stockHighToLow' ? 'text-primary' : ''}`}
-                onClick={() => handleSortChange('stockHighToLow')}>
-                {tMarketplace('stock-desc')}
-                {sortOrder === 'stockHighToLow' && <IconCircleCheckFilled className="text-primary" />}
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-          <hr />
-
-          {/* Category Filter */}
-          <AccordionItem value="item-1">
-            <AccordionTrigger>
-              <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                <IconCategory2 className="h-5 w-5" />
-                {tMarketplace('categories')}
-              </p>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-row flex-wrap gap-2">
-                {Object.values(productCategoryOptions).map((cat) => (
-                  <p
-                    className={`flex cursor-pointer items-center justify-between rounded-md border border-border p-2 font-normal  hover:bg-primary hover:text-white  ${category === cat ? ' bg-primary text-white' : 'bg-background  text-foreground'}`}
-                    key={cat}
-                    onClick={() => handleCategoryClick(cat)}>
-                    {tFields(`category-${cat.toLowerCase()}`)}
-                  </p>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-          <hr />
-
-          {/* Stock Filter */}
-          <AccordionItem value="item-2">
-            <AccordionTrigger>
-              <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                <IconTruckLoading className="h-5 w-5" />
-                Stock
-              </p>
-            </AccordionTrigger>
-            <AccordionContent>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${stockFilter === 'in' ? 'font-normal text-primary' : ''}`}
-                onClick={() => handleStockClick('in')}>
-                {tFields('in-stock')}
-                {stockFilter === 'in' && <IconCircleCheckFilled />}
-              </p>
-              <p
-                className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${stockFilter === 'out' ? 'font-normal text-primary' : ''}`}
-                onClick={() => handleStockClick('out')}>
-                {tFields('out-of-stock')}
-                {stockFilter === 'out' && <IconCircleCheckFilled />}
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-          <hr />
-
-          {/* Color Filter */}
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="">
-              <p className=":text-primary flex flex-row items-center gap-x-2 text-sm font-normal">
-                <IconColorFilter className="h-5 w-5" />
-                {tMarketplace('colors')}
-              </p>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-wrap justify-center gap-3">
-                {Object.keys(colorHexMap).map((color) => (
-                  <div
-                    key={color}
-                    className={`relative h-7 w-7 cursor-pointer rounded-full border ${
-                      selectedColors.includes(color) ? 'border-2 border-dark' : 'border-border'
-                    }`}
-                    style={{ backgroundColor: colorHexMap[color as keyof typeof colorHexMap] }}
-                    onClick={() => handleColorSelect(color)}>
-                    {selectedColors.includes(color) && (
-                      <div className="absolute inset-0 flex items-center justify-center rounded-full bg-gray-600 bg-opacity-50">
-                        <IconCheck className="h-5 w-5 text-white" />
-                      </div>
+    <div className="flex h-full w-full animate-fade-in flex-col gap-x-4 gap-y-4 ">
+      <div className="flex w-full flex-col items-center justify-start space-y-4">
+        <div className="flex w-full flex-row gap-2">
+          <div className="relative w-full">
+            <Input
+              className="h-11 pl-12 text-sm"
+              placeholder={tMarketplace('search')}
+              value={search}
+              onChange={handleSearchChange}
+            />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-muted-foreground" />
+          </div>
+          <Button
+            className="px-3"
+            variant={showAdvancedFilters ? 'destructive' : 'outline'}
+            size={'default'}
+            onClick={() => {
+              if (showAdvancedFilters) {
+                // Remove all filters
+                setSelectedColors([]);
+                setSortOrder('newest');
+                setFeaturedOnly(false);
+                const newParams = new URLSearchParams(window.location.search);
+                newParams.delete('category');
+                newParams.delete('search');
+                newParams.delete('stock');
+                newParams.delete('colors');
+                newParams.delete('featured');
+                window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
+              }
+              toggleFilters();
+            }}>
+            {showAdvancedFilters ? (
+              <>
+                <IconFilterOff className="mr-2 h-5 w-5" />
+                {tMarketplace('clear')}
+              </>
+            ) : (
+              <>
+                <IconFilter className="mr-2 h-5 w-5" />
+                {tMarketplace('filter')}
+              </>
+            )}
+          </Button>
+        </div>
+        <motion.div
+          style={{ height: containerHeight, width: '100%' }}
+          animate={{ height: showAdvancedFilters ? 'auto' : 0 }}
+          transition={{ duration: 0.3 }}>
+          <AnimatePresence>
+            {showAdvancedFilters && (
+              <motion.div
+                key="advanced-filters"
+                ref={containerRef}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}>
+                <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-5">
+                  <div className="flex flex-col gap-2">
+                    <Combobox
+                      showSearch={false}
+                      items={[{ value: 'featured', label: tMarketplace('featured') }]}
+                      selectedItems={featuredOnly ? [{ value: 'featured', label: tMarketplace('featured') }] : []}
+                      onSelect={(item) => handleFeaturedClick()}
+                      displayValue={(item) => item.label}
+                      itemKey={(item) => item.value}
+                      placeholder={tMarketplace('featured')}
+                    />
+                    {featuredOnly && (
+                      <p className="pl-2 text-sm text-muted-foreground">1 {tMarketplace('filters-applied')}</p>
                     )}
                   </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-
-        <Button
-          onClick={() => {
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, '', newUrl);
-            setSelectedColors([]);
-            setFeaturedOnly(false);
-            setSortOrder('newest');
-          }}
-          className="h-8 border-destructive text-destructive hover:bg-destructive hover:text-white"
-          variant={'outline'}
-          size={'sm'}>
-          {tMarketplace('clear')}
-        </Button>
-      </div>
-
-      <div className="flex h-full  w-full flex-col space-y-0 rounded-md border border-border bg-background p-4 md:hidden ">
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-4">
-            <AccordionTrigger>
-              <h2 className="flex flex-row items-center justify-start gap-x-2 pb-0 text-xl font-bold ">
-                <IconFilter />
-                {tMarketplace('filter')}
-              </h2>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Accordion type="single" collapsible className="w-full">
-                {/* Featured Filter */}
-
-                <AccordionItem value="item-4">
-                  <AccordionTrigger>
-                    <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                      <IconStar className="h-5 w-5" />
-                      Featured
-                    </p>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${featuredOnly ? 'font-normal text-primary' : ''}`}
-                      onClick={handleFeaturedClick}>
-                      {tMarketplace('featured')}
-                      {featuredOnly && <IconCircleCheckFilled />}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                <hr />
-                {/* Sort Order */}
-                <AccordionItem value="item-5">
-                  <AccordionTrigger>
-                    <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                      <IconArrowsSort className="h-5 w-5" />
-                      {tMarketplace('sort')}
-                    </p>{' '}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center  justify-between p-2 font-normal hover:text-primary ${sortOrder === 'newest' ? 'text-primary' : ''}`}
-                      onClick={() => handleSortChange('newest')}>
-                      {tMarketplace('sort-newest')}
-
-                      {sortOrder === 'newest' && <IconCircleCheckFilled className="text-primary" />}
-                    </p>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'oldest' ? 'text-primary' : ''}`}
-                      onClick={() => handleSortChange('oldest')}>
-                      {tMarketplace('sort-oldest')}
-                      {sortOrder === 'oldest' && <IconCircleCheckFilled className="text-primary" />}
-                    </p>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'priceLowToHigh' ? 'text-primary' : ''}`}
-                      onClick={() => handleSortChange('priceLowToHigh')}>
-                      {tMarketplace('price-asc')}
-                      {sortOrder === 'priceLowToHigh' && <IconCircleCheckFilled className="text-primary" />}
-                    </p>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'priceHighToLow' ? 'text-primary' : ''}`}
-                      onClick={() => handleSortChange('priceHighToLow')}>
-                      {tMarketplace('price-desc')}
-                      {sortOrder === 'priceHighToLow' && <IconCircleCheckFilled className="text-primary" />}
-                    </p>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'stockLowToHigh' ? 'text-primary' : ''}`}
-                      onClick={() => handleSortChange('stockLowToHigh')}>
-                      {tMarketplace('stock-asc')}
-                      {sortOrder === 'stockLowToHigh' && <IconCircleCheckFilled className="text-primary" />}
-                    </p>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${sortOrder === 'stockHighToLow' ? 'text-primary' : ''}`}
-                      onClick={() => handleSortChange('stockHighToLow')}>
-                      {tMarketplace('stock-desc')}
-                      {sortOrder === 'stockHighToLow' && <IconCircleCheckFilled className="text-primary" />}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                <hr />
-
-                {/* Category Filter */}
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>
-                    <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                      <IconCategory2 className="h-5 w-5" />
-                      {tMarketplace('categories')}
-                    </p>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-row flex-wrap gap-2">
-                      {Object.values(productCategoryOptions).map((cat) => (
-                        <p
-                          className={`flex cursor-pointer items-center justify-between rounded-md border border-border p-2 font-normal  hover:bg-primary hover:text-white  ${category === cat ? ' bg-primary text-white' : 'bg-background  text-foreground'}`}
-                          key={cat}
-                          onClick={() => handleCategoryClick(cat)}>
-                          {tFields(`category-${cat.toLowerCase()}`)}
-                        </p>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-                <hr />
-
-                {/* Stock Filter */}
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>
-                    <p className="flex flex-row items-center gap-x-2 text-sm font-normal">
-                      <IconTruckLoading className="h-5 w-5" />
-                      Stock
-                    </p>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${stockFilter === 'in' ? 'font-normal text-primary' : ''}`}
-                      onClick={() => handleStockClick('in')}>
-                      {tFields('in-stock')}
-                      {stockFilter === 'in' && <IconCircleCheckFilled />}
-                    </p>
-                    <p
-                      className={`flex cursor-pointer flex-row items-center justify-between p-2 font-normal hover:text-primary ${stockFilter === 'out' ? 'font-normal text-primary' : ''}`}
-                      onClick={() => handleStockClick('out')}>
-                      {tFields('out-of-stock')}
-                      {stockFilter === 'out' && <IconCircleCheckFilled />}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                <hr />
-
-                {/* Color Filter */}
-                <AccordionItem value="item-3">
-                  <AccordionTrigger className="">
-                    <p className=":text-primary flex flex-row items-center gap-x-2 text-sm font-normal">
-                      <IconColorFilter className="h-5 w-5" />
-                      {tMarketplace('colors')}
-                    </p>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-wrap justify-center gap-3">
-                      {Object.keys(colorHexMap).map((color) => (
-                        <div
-                          key={color}
-                          className={`relative h-7 w-7 cursor-pointer rounded-full border ${
-                            selectedColors.includes(color) ? 'border-2 border-dark' : 'border-border'
-                          }`}
-                          style={{ backgroundColor: colorHexMap[color as keyof typeof colorHexMap] }}
-                          onClick={() => handleColorSelect(color)}>
-                          {selectedColors.includes(color) && (
-                            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-gray-600 bg-opacity-50">
-                              <IconCheck className="h-5 w-5 text-white" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-
-        <Button
-          onClick={() => {
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, '', newUrl);
-            setSelectedColors([]);
-            setFeaturedOnly(false);
-            setSortOrder('newest');
-          }}
-          className="h-8 border-destructive text-destructive hover:bg-destructive hover:text-white"
-          variant={'outline'}
-          size={'sm'}>
-          {tMarketplace('clear')}
-        </Button>
-      </div>
-
-      <div className="flex w-full flex-col items-center justify-start space-y-4">
-        <div className="relative w-full">
-          <Input
-            className="h-12 pl-12 text-sm"
-            placeholder={tMarketplace('search')}
-            value={search}
-            onChange={handleSearchChange}
-          />
-          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-muted-foreground" />
-        </div>
-
-        <div className="grid w-full grid-cols-2  gap-4  rounded-md md:grid-cols-3 lg:grid-cols-4">
+                  <div className="flex flex-col gap-2">
+                    <Combobox
+                      items={sortArray}
+                      selectedItems={sortArray.filter((item) => item.value === sortOrder)}
+                      placeholder={tMarketplace('sort')}
+                      itemKey={(item) => item.value}
+                      onSelect={(item) => handleSortChange(item.value)}
+                      displayValue={(item) => item.label}
+                    />
+                    {sortOrder !== 'newest' && (
+                      <p className="pl-2 text-xs text-muted-foreground">1 {tMarketplace('filters-applied')}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Combobox
+                      items={Object.values(productCategoryOptions).map((cat) => ({
+                        value: cat,
+                        label: tFields(`category-${cat.toLowerCase()}`),
+                      }))}
+                      selectedItems={
+                        category
+                          ? [
+                              {
+                                value: category,
+                                label: tFields(`category-${category.toLowerCase()}`),
+                              },
+                            ]
+                          : []
+                      }
+                      onSelect={(item) => handleCategoryClick(item.value)}
+                      displayValue={(item) => item.label}
+                      itemKey={(item) => item.value}
+                      placeholder={tMarketplace('categories')}
+                    />
+                    {category && (
+                      <p className="pl-2 text-xs text-muted-foreground">1 {tMarketplace('filters-applied')}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Combobox
+                      items={[
+                        { value: 'in', label: tFields('in-stock') },
+                        { value: 'out', label: tFields('out-of-stock') },
+                      ]}
+                      selectedItems={
+                        stockFilter
+                          ? [
+                              {
+                                value: stockFilter,
+                                label: tFields(stockFilter === 'in' ? 'in-stock' : 'out-of-stock'),
+                              },
+                            ]
+                          : []
+                      }
+                      onSelect={(item) => handleStockClick(item.value)}
+                      displayValue={(item) => item.label}
+                      itemKey={(item) => item.value}
+                      placeholder={tMarketplace('stock')}
+                    />
+                    {stockFilter && (
+                      <p className="pl-2 text-xs text-muted-foreground">1 {tMarketplace('filters-applied')}</p>
+                    )}
+                  </div>
+                  <div className="col-span-2 flex flex-col gap-2 md:col-span-1">
+                    <Combobox
+                      items={Object.keys(colorHexMap).map((color) => ({
+                        value: color,
+                        label: color,
+                      }))}
+                      selectedItems={selectedColors.map((color) => ({
+                        value: color,
+                        label: color,
+                      }))}
+                      onSelect={(item) => handleColorSelect(item.value)}
+                      displayValue={(item) => tColors(item.value)}
+                      itemKey={(item) => item.value}
+                      placeholder={tMarketplace('colors')}
+                    />
+                    {selectedColors.length > 0 && (
+                      <p className="pl-2 text-xs text-muted-foreground">
+                        {selectedColors.length} {tMarketplace('filters-applied')}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+        <div className="grid w-full grid-cols-2  gap-4  rounded-md md:grid-cols-3 lg:grid-cols-5">
           {isLoading ? (
             <div className="col-span-2 flex  h-full w-full items-center justify-center py-24 text-center text-primary md:col-span-4">
               <IconLoader2 className="h-8 w-8 animate-spin" />
@@ -558,7 +391,7 @@ export default function ProductGrid() {
                 imageHeight={180}
                 imageWidth={180}
                 profitMargin={product.profitMargin}
-                key={product.name}
+                key={product.code}
                 sellers={product.sellers}
                 image={product.media[0].key}
                 name={product.name}

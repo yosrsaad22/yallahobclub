@@ -79,11 +79,7 @@ export function ColorPickerCombobox({ colors, selectedColor, onSelectColor, plac
           <CommandList className="custom-scrollbar max-h-64 overflow-y-auto">
             <CommandGroup>
               {colors.map((color) => (
-                <CommandItem
-                  key={color}
-                  value={color}
-                  className="flex items-center gap-2"
-                  onSelect={() => handleSelectColor(color)}>
+                <CommandItem key={color} className="flex items-center gap-2" onSelect={() => handleSelectColor(color)}>
                   <span
                     className="inline-block h-4 w-4 rounded-full border border-border"
                     style={{ backgroundColor: colorHexMap[color as keyof typeof colorHexMap] }}
