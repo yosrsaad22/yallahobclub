@@ -129,8 +129,11 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       statuses: order.subOrders.map((subOrder) => subOrder.status),
       products: order.subOrders.flatMap((subOrder) => subOrder.products).map((product) => product.product!.id),
     }));
+
+    console.log(modifiedOrders);
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
+    console.log(error);
     return { error: 'orders-fetch-error' };
   }
 };
