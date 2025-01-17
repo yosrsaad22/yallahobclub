@@ -195,7 +195,7 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
 
       <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
         {tag === 'orders' && (
-          <div className={`flex flex-col  gap-1 md:col-span-1 `}>
+          <div className={`flex flex-col   gap-1 md:col-span-1 `}>
             <Combobox
               items={orderStatuses}
               selectedItems={selectedStatuses}
@@ -215,7 +215,7 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
         {role === roleOptions.ADMIN && (
           <>
             {(tag === 'orders' || tag === 'products') && (
-              <div className="flex flex-col gap-1">
+              <div className="col-span-1 flex flex-col gap-1">
                 <UserCombobox
                   users={suppliers}
                   selectedUserIds={selectedSuppliers}
@@ -285,7 +285,7 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
               />
             </div>
 
-            <div className={`flex flex-col gap-1 md:col-span-1 ${tag === 'products' ? 'col-span-2' : 'col-span-1'}`}>
+            <div className={`flex flex-col gap-1 md:col-span-1 `}>
               <DatePicker selectedDate={selectedDate} onDateChange={handleDateChange} />
               {selectedDate && <p className="pl-2 text-xs text-muted-foreground">1 {t('applied-filters')}</p>}
             </div>

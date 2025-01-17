@@ -19,8 +19,6 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   };
 }
 
-export const maxDuration = 60;
-
 export default async function Orders() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.orders'), link: '/dashboard/admin/orders' }];

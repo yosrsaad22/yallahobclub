@@ -5,7 +5,7 @@ import { IconBoxSeam } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { AdminProductColumns } from '@/components/dashboard/table/columns/products-columns';
-import { bulkDeleteProducts, deleteProduct, getProducts } from '@/actions/products';
+import { getProducts } from '@/actions/products';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'dashboard' });
@@ -23,18 +23,6 @@ export default async function Products() {
   const res: ActionResponse = await getProducts();
   const productsData: any[] = res.error ? [] : res.data;
 
-  const handleDelete = async (id: string) => {
-    'use server';
-    const res = await deleteProduct(id);
-    return res;
-  };
-
-  const handleBulkDelete = async (ids: string[]) => {
-    'use server';
-    const res = await bulkDeleteProducts(ids);
-    return res;
-  };
-
   return (
     <div className="w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -46,8 +34,11 @@ export default async function Products() {
         <DataTable
           tag="products"
           translationPrefix="product"
-          onDelete={handleDelete}
-          onBulkDelete={handleBulkDelete}
+          onDelete={undefined}
+          onBulkDelete={undefined}
+          showSelect={false}
+          showActions={false}
+          showBulkDeleteButton={false}
           columns={AdminProductColumns}
           data={productsData}
         />
