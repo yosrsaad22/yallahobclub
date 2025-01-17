@@ -122,18 +122,20 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       },
       orderBy: { createdAt: 'desc' },
     });
+
     const modifiedOrders = orders.map((order) => ({
       ...order,
       fullName: `${order.firstName} ${order.lastName}`,
-      suppliers: order.subOrders.map((subOrder) => subOrder.products[0].product?.supplier?.id),
+      suppliers: order.subOrders.map((subOrder) => subOrder.products[0]?.product?.supplier?.id),
       statuses: order.subOrders.map((subOrder) => subOrder.status),
-      products: order.subOrders.flatMap((subOrder) => subOrder.products).map((product) => product.product!.id),
+      products: order.subOrders
+        .flatMap((subOrder) => subOrder.products)
+        .filter((product) => product.product)
+        .map((product) => product.product!.id),
     }));
 
-    console.log(modifiedOrders);
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
-    console.log(error);
     return { error: 'orders-fetch-error' };
   }
 };
