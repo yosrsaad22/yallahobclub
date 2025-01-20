@@ -8,7 +8,7 @@ import NotificationDropdown from './notification';
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/hooks/use-sidebar';
 import { useState } from 'react';
-import { IconChevronsLeft, IconCoins, IconShoppingCart } from '@tabler/icons-react';
+import { IconBrandWhatsapp, IconChevronsLeft, IconCoins, IconShoppingCart } from '@tabler/icons-react';
 import { LanguageToggle } from './language-toggle';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { roleOptions } from '@/lib/constants';
@@ -30,7 +30,10 @@ export default function Header() {
   return (
     <div className="flex flex-col">
       <div className="relative flex h-7 w-full items-center justify-center overflow-hidden bg-gradient-to-r from-secondary to-primary/80 text-sm tracking-wider text-white">
-        {t('annoucement')}
+        <Link className="flex flex-row items-center " href="https://wa.me/21624002024">
+          <IconBrandWhatsapp className="mr-1 h-5 w-5" />
+          {t('annoucement')}
+        </Link>
       </div>
       <div className="flex h-16  items-center justify-between border-b bg-background">
         <nav className="flex h-16 w-full items-center justify-between overflow-hidden px-3">

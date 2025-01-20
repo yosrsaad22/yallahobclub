@@ -33,6 +33,7 @@ import { MonthlyProfitChart } from './monthly-profit';
 import { DailyProfitChart } from './daily-profit';
 import { MonthlySubOrdersAndCoursesChart } from './monthly-sub-orders-courses';
 import { DailySubOrdersAndCoursesChart } from './daily-sub-orders-courses';
+import { Badge } from '@/components/ui/badge';
 
 interface AdminStatsProps extends React.HTMLAttributes<HTMLDivElement> {
   initialStats?: AdminStats;
@@ -81,8 +82,11 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
       </div>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* first row */}
-        <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
+        <Card className="relative flex max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            {tStats('estimated')}
+          </div>
+          <CardHeader className="flex flex-col flex-wrap items-start   justify-start gap-0 space-y-0 pb-2  md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('platform-revenue')}</CardTitle>
             <div className="text-lg font-bold">
               {isFetching ? (
@@ -96,7 +100,24 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <GraphIllustration1 />
           </CardContent>
         </Card>
-        <Card className="max-h-[7rem] overflow-hidden">
+        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            {tStats('estimated')}
+          </div>
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
+            <CardTitle className="text-sm font-medium">{tStats('course-revenue')}</CardTitle>
+            <div className="text-lg font-bold">
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.courseProfit || 0}
+            </div>
+          </CardHeader>
+          <CardContent className="mt-0 px-0 md:-mt-4">
+            <GraphIllustration2 />
+          </CardContent>
+        </Card>
+        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            {tStats('estimated')}
+          </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('sellers-profit')}</CardTitle>
             <div className="text-lg font-bold">
@@ -111,7 +132,10 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <GraphIllustration4 />
           </CardContent>
         </Card>
-        <Card className="relative max-h-[7rem] overflow-hidden">
+        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            {tStats('estimated')}
+          </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('sub-orders')}</CardTitle>
             <div className="text-lg font-bold">
@@ -122,20 +146,19 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <GraphIllustration3 />
           </CardContent>
         </Card>
-        <Card className="max-h-[7rem] overflow-hidden">
-          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
-            <CardTitle className="text-sm font-medium">{tStats('transactions')}</CardTitle>
-            <div className="text-lg font-bold">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.transactions || 0}
-            </div>
-          </CardHeader>
-          <CardContent className="mt-0 px-0 md:-mt-4">
-            <GraphIllustration2 />
-          </CardContent>
-        </Card>
 
         {/* second  row */}
-
+        <Card className="max-h-[7rem] ">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('paid-sub-orders')}</CardTitle>
+            <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0 text-xl font-bold md:-mt-5">
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
+            </div>
+          </CardContent>
+        </Card>
         <Card className="max-h-[7rem]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{tStats('completed-sub-orders')}</CardTitle>
@@ -178,18 +201,6 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
               ) : (
                 stats?.returnedSubOrders || 0
               )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="max-h-[7rem] ">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{tStats('paid-sub-orders')}</CardTitle>
-            <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="mt-0 text-xl font-bold md:-mt-5">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
             </div>
           </CardContent>
         </Card>

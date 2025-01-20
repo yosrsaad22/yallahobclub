@@ -33,7 +33,15 @@ export const sellerGetOrders = async (): Promise<ActionResponse> => {
       include: {
         subOrders: {
           include: {
-            products: { include: { product: true } },
+            products: {
+              include: {
+                product: {
+                  include: {
+                    media: true,
+                  },
+                },
+              },
+            },
             statusHistory: true,
           },
         },
@@ -44,6 +52,7 @@ export const sellerGetOrders = async (): Promise<ActionResponse> => {
       fullName: `${order.firstName} ${order.lastName}`,
       statuses: order.subOrders.map((subOrder) => subOrder.status),
       products: order.subOrders.flatMap((subOrder) => subOrder.products).map((product) => product.product!.id),
+      displayProducts: order.subOrders.flatMap((subOrder) => subOrder.products).flatMap((product) => product.product),
     }));
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
@@ -72,7 +81,15 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
       include: {
         subOrders: {
           include: {
-            products: { include: { product: true } },
+            products: {
+              include: {
+                product: {
+                  include: {
+                    media: true,
+                  },
+                },
+              },
+            },
             statusHistory: true,
           },
         },
@@ -89,6 +106,7 @@ export const supplierGetOrders = async (): Promise<ActionResponse> => {
         .filter((subOrder) => subOrder.products[0].product?.supplierId === user?.id)
         .map((subOrder) => subOrder.status),
       products: order.subOrders.flatMap((subOrder) => subOrder.products).map((product) => product.product!.id),
+      displayProducts: order.subOrders.flatMap((subOrder) => subOrder.products).flatMap((product) => product.product),
     }));
     return { success: 'orders-fetch-success', data: modifiedOrders };
   } catch (error) {
@@ -128,6 +146,7 @@ export const adminGetOrders = async (): Promise<ActionResponse> => {
       fullName: `${order.firstName} ${order.lastName}`,
       suppliers: order.subOrders.map((subOrder) => subOrder.products[0]?.product?.supplier?.id),
       statuses: order.subOrders.map((subOrder) => subOrder.status),
+      displayProducts: order.subOrders.flatMap((subOrder) => subOrder.products).flatMap((product) => product.product),
       products: order.subOrders
         .flatMap((subOrder) => subOrder.products)
         .filter((product) => product.product)

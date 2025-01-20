@@ -1,5 +1,6 @@
 import { sellerGetStats, supplierGetStats } from '@/actions/stats';
 import { SellerStatsComponent } from '@/components/dashboard/stats/seller-stats';
+import { SupplierStatsComponent } from '@/components/dashboard/stats/supplier-stats';
 import { ActionResponse, AdminStats, DateRange } from '@/types';
 import { IconLayoutDashboard } from '@tabler/icons-react';
 import { getTranslations } from 'next-intl/server';
@@ -29,7 +30,7 @@ export default async function SupplierHome() {
           <IconLayoutDashboard className="h-7 w-7" />
           <h2 className="tracking-tight">{t('pages.dashboard')}</h2>
         </div>
-        <SellerStatsComponent initialStats={statsData} onRefetch={handleRefetch} />
+        <SupplierStatsComponent initialStats={statsData} onRefetch={handleRefetch} />
       </div>
     </div>
   );

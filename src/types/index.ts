@@ -131,6 +131,7 @@ export type AdminStats = {
   leads: number;
   subOrders: number;
   platformProfit: number;
+  courseProfit: number;
   transactions: number;
   sellers: number;
   suppliers: number;

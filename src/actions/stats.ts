@@ -92,11 +92,6 @@ async function calculateMonthlyProfit() {
         // Fetch orders that are relevant for the calculation
         const orders = await db.order.findMany({
           where: {
-            subOrders: {
-              some: {
-                status: 'EC02',
-              },
-            },
             createdAt: { gte: start, lte: end },
           },
           include: { subOrders: true },
@@ -162,11 +157,6 @@ async function calculateSellerMonthlyProfitAndSubOrders(id: string) {
       .map(async ({ start, end }) => {
         const orders = await db.order.findMany({
           where: {
-            subOrders: {
-              some: {
-                status: 'EC02',
-              },
-            },
             sellerId: id,
             createdAt: { gte: start, lte: end },
           },
@@ -202,7 +192,6 @@ async function calculateSupplierMonthlyProfitAndSubOrders(id: string) {
       .map(async ({ start, end }) => {
         const subOrders = await db.subOrder.findMany({
           where: {
-            status: 'EC02',
             products: {
               some: {
                 product: {
@@ -252,11 +241,10 @@ async function calculateDailyProfit() {
   // Fetch subOrders within the date range
   const dailySubOrders = await db.subOrder.findMany({
     where: {
-      status: 'EC02',
       order: { createdAt: { gte: from, lte: to } },
     },
     include: {
-      order: { select: { createdAt: true, id: true } },
+      order: true,
     },
   });
 
@@ -329,14 +317,14 @@ async function calculateDailyProfit() {
     // Increment the current date by 1
     currentDate.setDate(currentDate.getDate() + 1);
   }
+  console.log(filledDailyData);
+
   return filledDailyData;
 }
 
 async function calculateSellerDailyProfitAndSubOrders(id: string, from: Date, to: Date) {
   const dailySubOrders = await db.subOrder.findMany({
     where: {
-      status: 'EC02',
-
       order: { sellerId: id, createdAt: { gte: from, lte: to } },
     },
     include: {
@@ -377,7 +365,6 @@ async function calculateSellerDailyProfitAndSubOrders(id: string, from: Date, to
 async function calculateSupplierDailyProfitAndSubOrders(id: string, from: Date, to: Date) {
   const dailySubOrders = await db.subOrder.findMany({
     where: {
-      status: 'EC02',
       products: {
         some: {
           product: {
@@ -651,8 +638,8 @@ async function fetchTopTenSellers(from: Date, to: Date) {
 }
 
 export const adminGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  const from = dateRange.from || new Date();
-  const to = dateRange.to || new Date();
+  const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
+  const to = dateRange.to || endOfDay(from);
 
   try {
     await roleGuard(UserRole.ADMIN);
@@ -719,7 +706,8 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       data: {
         leads,
         subOrders: subOrders.length,
-        platformProfit: (platformCourseProfit + platformOrderProfit).toFixed(2),
+        platformProfit: platformOrderProfit.toFixed(2),
+        courseProfit: platformCourseProfit.toFixed(2),
         transactions,
         sellersProfit: totalSellerProfit.toFixed(2),
         completedSubOrders,
@@ -742,8 +730,8 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
 };
 
 export const sellerGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  const from = dateRange.from || new Date();
-  const to = dateRange.to || new Date();
+  const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
+  const to = dateRange.to || endOfDay(from);
 
   try {
     await roleGuard(UserRole.SELLER);
@@ -808,8 +796,8 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
 };
 
 export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  const from = dateRange.from || new Date();
-  const to = dateRange.to || new Date();
+  const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
+  const to = dateRange.to || endOfDay(from);
 
   try {
     await roleGuard(UserRole.SUPPLIER);

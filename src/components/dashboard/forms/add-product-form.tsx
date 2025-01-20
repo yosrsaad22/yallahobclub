@@ -400,7 +400,7 @@ export function AddProductForm({}: AddProductFormProps) {
             {t('product-media-note')}
           </div>
           <div className="flex w-full flex-col items-center justify-center  space-y-3">
-            {productMedia.length < 7 && (
+            {productMedia.length < 10 && (
               <UploadDropzone
                 className={cn(
                   'data-ut-button:h-11 h-full w-[15rem] rounded-md  border-gray-500/40  bg-background ut-button:rounded-md ut-button:border-none ut-button:bg-foreground ut-button:text-sm ut-button:font-semibold ut-button:text-background ut-button:ring-offset-background ut-button:focus-within:bg-foreground ut-button:hover:bg-foreground/80 ut-button:focus:bg-foreground ut-button:focus-visible:outline-none ut-button:focus-visible:ring-2 ut-button:focus-visible:ring-ring ut-button:focus-visible:ring-offset-2 ut-button:active:bg-foreground ut-uploading:pointer-events-none lg:w-full',
@@ -461,7 +461,7 @@ export function AddProductForm({}: AddProductFormProps) {
                   const currentImages = productMedia.filter((media) => media.type.startsWith('image/'));
                   const currentVideos = productMedia.filter((media) => media.type.startsWith('video/'));
 
-                  if (currentImages.length + newImages.length > 5) {
+                  if (currentImages.length + newImages.length > 8) {
                     toast({
                       variant: 'destructive',
                       title: tValidation('error-title'),

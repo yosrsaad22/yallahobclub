@@ -72,7 +72,10 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
       </div>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* first row */}
-        <Card className="max-h-[7rem] overflow-hidden">
+        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            {tStats('estimated')}
+          </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('sub-orders')}</CardTitle>
             <div className="text-lg font-bold">
@@ -83,7 +86,10 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
             <GraphIllustration1 />
           </CardContent>
         </Card>
-        <Card className="max-h-[7rem] overflow-hidden">
+        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            {tStats('estimated')}
+          </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('supplier-profit')}</CardTitle>
             <div className="text-lg font-bold">
@@ -126,7 +132,17 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
         </Card>
 
         {/* second  row */}
-
+        <Card className="max-h-[7rem] ">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('paid-sub-orders')}</CardTitle>
+            <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0 text-xl font-bold md:-mt-5">
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
+            </div>
+          </CardContent>
+        </Card>
         <Card className="max-h-[7rem]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{tStats('completed-sub-orders')}</CardTitle>
@@ -169,18 +185,6 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
               ) : (
                 stats?.returnedSubOrders || 0
               )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="max-h-[7rem] ">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{tStats('paid-sub-orders')}</CardTitle>
-            <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="mt-0 text-xl font-bold md:-mt-5">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
             </div>
           </CardContent>
         </Card>

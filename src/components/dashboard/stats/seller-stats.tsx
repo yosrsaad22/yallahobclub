@@ -124,6 +124,17 @@ export function SellerStatsComponent({ initialStats, onRefetch }: SellerStatsPro
 
         {/* second  row */}
 
+        <Card className="max-h-[7rem] ">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('paid-sub-orders')}</CardTitle>
+            <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0 text-xl font-bold md:-mt-5">
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
+            </div>
+          </CardContent>
+        </Card>
         <Card className="max-h-[7rem]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{tStats('completed-sub-orders')}</CardTitle>
@@ -166,18 +177,6 @@ export function SellerStatsComponent({ initialStats, onRefetch }: SellerStatsPro
               ) : (
                 stats?.returnedSubOrders || 0
               )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="max-h-[7rem] ">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{tStats('paid-sub-orders')}</CardTitle>
-            <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="mt-0 text-xl font-bold md:-mt-5">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
             </div>
           </CardContent>
         </Card>

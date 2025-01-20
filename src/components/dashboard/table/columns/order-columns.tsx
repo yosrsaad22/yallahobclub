@@ -3,10 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MEDIA_HOSTNAME, orderStatuses } from '@/lib/constants';
 import { IconUser } from '@tabler/icons-react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Order, Product, SubOrder, User } from '@prisma/client';
+import { Media, Order, Product, SubOrder, User } from '@prisma/client';
 import { useTranslations } from 'next-intl';
 import { formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
 
 const StatusCell = ({ status }: { status: string }) => {
   const tStatuses = useTranslations('dashboard.order-statuses');
@@ -67,7 +68,13 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
 };
 
 export const SellerOrderColumns: ColumnDef<
-  Order & { fullName: string; subOrders: SubOrder[]; statuses: string[]; products: Product[] }
+  Order & {
+    fullName: string;
+    subOrders: SubOrder[];
+    statuses: string[];
+    products: Product[];
+    displayProducts: (Product & { media: Media[] })[];
+  }
 >[] = [
   {
     accessorKey: 'createdAt',
@@ -105,7 +112,7 @@ export const SellerOrderColumns: ColumnDef<
     cell: ({ row }) => {
       const fullname: string = row.getValue<string>('fullName');
 
-      return <div className="w-full max-w-[180px] truncate">{fullname}</div>;
+      return <div className="max-w-28 truncate">{fullname}</div>;
     },
   },
   {
@@ -115,9 +122,27 @@ export const SellerOrderColumns: ColumnDef<
     },
   },
   {
-    accessorKey: 'state',
-    meta: {
-      columnName: 'state',
+    id: 'displayProducts',
+    accessorFn: (row) => row.displayProducts || [],
+    enableSorting: false,
+    cell: ({ row }) => {
+      const products = row.original.displayProducts;
+      return (
+        <div className="mr-3 flex flex-col gap-y-2 md:mr-0">
+          {products.map((product, index) => (
+            <div key={index} className="flex flex-row items-center gap-x-3">
+              <Image
+                height={50}
+                width={50}
+                className="h-8 w-8 object-cover"
+                src={`${MEDIA_HOSTNAME}${product.media[0]?.key}`}
+                alt={product.name[0] ?? ''}
+              />
+              <p className=" max-w-36 truncate">{product.name}</p>
+            </div>
+          ))}
+        </div>
+      );
     },
   },
   {
@@ -159,7 +184,7 @@ export const SellerOrderColumns: ColumnDef<
     cell: ({ row }) => {
       const statuses = row.original.statuses;
       return (
-        <div className="-ml-8 flex flex-col items-center justify-center gap-2">
+        <div className=" flex flex-col items-center justify-center gap-2">
           {statuses.map((status, index) => (
             <StatusCell key={index} status={status} />
           ))}
@@ -197,7 +222,13 @@ export const SellerOrderColumns: ColumnDef<
 ];
 
 export const SupplierOrderColumns: ColumnDef<
-  Order & { fullName: string; subOrders: SubOrder[]; statuses: string[]; products: Product[] }
+  Order & {
+    fullName: string;
+    subOrders: SubOrder[];
+    statuses: string[];
+    products: (Product & { media: Media[] })[];
+    displayProducts: (Product & { media: Media[] })[];
+  }
 >[] = [
   {
     accessorKey: 'createdAt',
@@ -235,7 +266,7 @@ export const SupplierOrderColumns: ColumnDef<
     cell: ({ row }) => {
       const fullname: string = row.getValue<string>('fullName');
 
-      return <div className="w-full max-w-[180px] truncate">{fullname}</div>;
+      return <div className="max-w-28 truncate">{fullname}</div>;
     },
   },
   {
@@ -250,26 +281,24 @@ export const SupplierOrderColumns: ColumnDef<
       columnName: 'state',
     },
   },
-
   {
-    accessorKey: 'subOrders',
-    enableSorting: true,
-    meta: {
-      columnName: 'subOrders',
-    },
-    accessorFn: (row: any) =>
-      Array.isArray(row.subOrders)
-        ? row.subOrders.map((subOrder: SubOrder) => subOrder.deliveryId + subOrder.code).join(', ')
-        : '',
+    id: 'displayProducts',
+    accessorFn: (row) => row.displayProducts || [],
+    enableSorting: false,
     cell: ({ row }) => {
-      const subOrders = row.original.subOrders.map((subOrder: SubOrder) =>
-        subOrder.deliveryId ? subOrder.code : 'N/A',
-      );
+      const products = row.original.displayProducts;
       return (
-        <div className="flex flex-col flex-wrap gap-x-2">
-          {subOrders.map((subOrder: string, index: number) => (
-            <div key={index} className="flex flex-row gap-x-1">
-              <p>{subOrder}</p>
+        <div className="mr-3 flex flex-col gap-y-2 md:mr-0">
+          {products.map((product, index) => (
+            <div key={index} className="flex flex-row items-center gap-x-3">
+              <Image
+                height={50}
+                width={50}
+                className="h-8 w-8 object-cover"
+                src={`${MEDIA_HOSTNAME}${product.media[0]?.key}`}
+                alt={product.name[0] ?? ''}
+              />
+              <p className=" max-w-36 truncate">{product.name}</p>
             </div>
           ))}
         </div>
@@ -290,7 +319,7 @@ export const SupplierOrderColumns: ColumnDef<
     cell: ({ row }) => {
       const statuses = row.original.statuses;
       return (
-        <div className="-ml-8 flex flex-col items-center justify-center gap-2">
+        <div className=" flex flex-col items-center justify-center gap-2">
           {statuses.map((status, index) => (
             <StatusCell key={index} status={status} />
           ))}
@@ -323,6 +352,7 @@ export const AdminOrderColumns: ColumnDef<
     suppliers: string[];
     fullName: string;
     products: Product[];
+    displayProducts: (Product & { media: Media[] })[];
   }
 >[] = [
   {
@@ -357,13 +387,37 @@ export const AdminOrderColumns: ColumnDef<
     cell: ({ row }) => {
       const fullname: string = row.getValue<string>('fullName');
 
-      return <div className="w-full truncate">{fullname}</div>;
+      return <div className="max-w-28 truncate">{fullname}</div>;
     },
   },
   {
     accessorKey: 'number',
     meta: {
       columnName: 'number',
+    },
+  },
+  {
+    id: 'displayProducts',
+    accessorFn: (row) => row.displayProducts || [],
+    enableSorting: false,
+    cell: ({ row }) => {
+      const products = row.original.displayProducts;
+      return (
+        <div className="flex flex-col gap-y-2">
+          {products.map((product, index) => (
+            <div key={index} className="flex flex-row items-center gap-x-3">
+              <Image
+                height={50}
+                width={50}
+                className="h-8 w-8 object-cover"
+                src={`${MEDIA_HOSTNAME}${product.media[0]?.key}`}
+                alt={product.name[0] ?? ''}
+              />
+              <p className=" max-w-36 truncate">{product.name}</p>
+            </div>
+          ))}
+        </div>
+      );
     },
   },
   {
@@ -427,7 +481,7 @@ export const AdminOrderColumns: ColumnDef<
     cell: ({ row }) => {
       const statuses = row.original.statuses;
       return (
-        <div className="-ml-8 flex flex-col items-center justify-center gap-2">
+        <div className=" flex flex-col items-center justify-center gap-2">
           {statuses.map((status, index) => (
             <StatusCell key={index} status={status} />
           ))}
