@@ -110,47 +110,41 @@ export const createTransaction = async (
     await roleGuard(UserRole.ADMIN);
 
     const user = await getUserById(userId);
-    if (!user) return { error: 'user-not-found' };
-    let transaction;
-    if (orderId) {
-      transaction = await db.transaction.create({
-        data: {
-          code: 'ENT-' + generateCode(),
-          amount: amount,
-          type: type,
-          order: {
-            connect: { id: orderId },
-          },
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-        },
-      });
-    } else {
-      transaction = await db.transaction.create({
-        data: {
-          code: 'ENT-' + generateCode(),
-          amount: amount,
-          type: type,
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-        },
-      });
+    if (!user || user.balance === undefined || user.balance === null) {
+      return { error: 'user-not-found-or-invalid-balance' };
     }
 
-    await db.user.update({
-      where: { id: userId },
-      data: { balance: user?.balance + amount },
+    const transaction = await db.$transaction(async (prisma) => {
+      const createdTransaction = await prisma.transaction.create({
+        data: {
+          code: 'ENT-' + generateCode(),
+          amount: amount,
+          type: type,
+          ...(orderId && {
+            order: { connect: { id: orderId } },
+          }),
+          user: { connect: { id: userId } },
+        },
+      });
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { balance: { increment: amount } },
+      });
+
+      return createdTransaction;
     });
 
-    notifyUser(userId, NotificationType.NEW_TRANSACTION, `/dashboard/${user?.role.toLowerCase()}/transactions`);
+    await notifyUser(
+      userId,
+      NotificationType.NEW_TRANSACTION,
+      `/dashboard/${user.role.toLowerCase()}/transactions`,
+    ).catch((err) => console.error('Notification Error:', err));
+
     revalidatePath('/dashboard/admin/transactions');
-    revalidatePath(`/dashboard/${user?.role.toLowerCase()}/transactions`);
+
+    revalidatePath(`/dashboard/${user.role.toLowerCase()}/transactions`);
+
     return { success: 'transaction-save-success', data: transaction };
   } catch (error) {
     return { error: 'transaction-save-error' };

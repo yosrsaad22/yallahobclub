@@ -859,10 +859,12 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
               },
             },
           });
+          console.log('Seller profit :', subOrder.sellerProfit);
           await createTransaction(order.sellerId!, 'order-transaction', subOrder.sellerProfit!, order.id);
-          subOrder.products.forEach((op) => {
+          subOrder.products.forEach(async (op) => {
             if (op.product?.supplierId) {
-              createTransaction(op.product.supplierId, 'order-transaction', op.supplierProfit!, order.id);
+              console.log('Supplier profit :', op.supplierProfit);
+              await createTransaction(op.product.supplierId, 'order-transaction', op.supplierProfit!, order.id);
             }
           });
         }

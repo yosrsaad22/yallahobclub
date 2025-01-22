@@ -29,8 +29,8 @@ export default function Header() {
 
   return (
     <div className="flex flex-col">
-      <div className="relative flex h-7 w-full items-center justify-center overflow-hidden bg-gradient-to-r from-secondary to-primary/80 text-sm tracking-wider text-white">
-        <Link className="flex flex-row items-center " href="https://wa.me/21624002024">
+      <div className="relative flex w-full items-center justify-center overflow-hidden bg-gradient-to-r from-secondary to-primary/80 py-1 text-sm tracking-wider text-white">
+        <Link className="flex flex-row items-center justify-center " href="https://wa.me/21624002024">
           <IconBrandWhatsapp className="mr-1 h-5 w-5" />
           {t('annoucement')}
         </Link>
