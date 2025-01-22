@@ -110,6 +110,7 @@ export const createTransaction = async (
     await roleGuard(UserRole.ADMIN);
 
     const user = await getUserById(userId);
+    if (!user) return { error: 'user-not-found' };
     let transaction;
     if (orderId) {
       transaction = await db.transaction.create({
@@ -144,7 +145,7 @@ export const createTransaction = async (
 
     await db.user.update({
       where: { id: userId },
-      data: { balance: Math.round(((user?.balance ? user?.balance : 0) + amount) * 10) / 10 },
+      data: { balance: user?.balance + amount },
     });
 
     notifyUser(userId, NotificationType.NEW_TRANSACTION, `/dashboard/${user?.role.toLowerCase()}/transactions`);

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Command, CommandGroup, CommandItem, CommandInput, CommandList, CommandEmpty } from '@/components/ui/command';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { IconCaretUpDown, IconCheck, IconLoader2, IconUser } from '@tabler/icons-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,13 +35,11 @@ export function UserCombobox({
 }: UserComboboxProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<DataTableUser[]>(users);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [buttonWidth, setButtonWidth] = useState(0);
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const t = useTranslations('dashboard.tables');
 
-  // Update filtered users based on search term
   useEffect(() => {
     const lowercasedTerm = searchTerm.trim().toLowerCase();
     setFilteredUsers(
@@ -63,33 +60,28 @@ export function UserCombobox({
   };
 
   useEffect(() => {
-    if (buttonRef.current) {
-      const width = buttonRef.current.getBoundingClientRect().width;
-      setButtonWidth(width);
-    }
-
-    const handleResize = () => {
-      if (buttonRef.current) {
-        const width = buttonRef.current.getBoundingClientRect().width;
-        setButtonWidth(width);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
       }
     };
 
-    window.addEventListener('resize', handleResize);
-
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
   return (
-    <Popover modal={false} open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+    <div className="relative">
+      <div className="w-full" role="combobox" aria-expanded={open}>
         <Button
-          ref={buttonRef}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen((prev) => !prev);
+          }}
           variant="outline"
-          role="combobox"
-          aria-expanded={false}
           className="w-full justify-between px-3 font-normal">
           {multiSelect ? (
             <p className="max-w-[90%] truncate text-muted-foreground">{placeholder}</p>
@@ -103,7 +95,7 @@ export function UserCombobox({
                       className="object-cover"
                       src={`${MEDIA_HOSTNAME}${selectedUser.image}`}
                       alt={selectedUser.fullName}
-                    />{' '}
+                    />
                     <AvatarFallback>
                       <IconUser className="h-5 w-5" />
                     </AvatarFallback>
@@ -119,55 +111,60 @@ export function UserCombobox({
           )}
           <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent style={{ width: buttonWidth }} className={cn('p-0', customContentClassNames)}>
-        <Command>
-          <CommandInput
-            placeholder={t('search')}
-            className="h-10 w-full"
-            value={searchTerm}
-            onValueChange={setSearchTerm}
-          />
-          {loading ? (
-            <div className="flex justify-center p-4">
-              <IconLoader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-            </div>
-          ) : filteredUsers.length > 0 ? (
-            <CommandList className="custom-scrollbar max-h-36 overflow-y-auto">
-              <CommandGroup>
-                {filteredUsers.map((user) => (
-                  <CommandItem
-                    key={user.id}
-                    onSelect={() => handleSelectUser(user.id)}
-                    className={cn(
-                      'flex items-center gap-3 px-4 py-2 hover:bg-muted focus:bg-muted',
-                      multiSelect
-                        ? selectedUserIds.includes(user.id) && 'bg-muted'
-                        : selectedUserId === user.id && 'bg-muted',
-                    )}>
-                    <Avatar className="h-8 w-8 border border-border">
-                      <AvatarImage
-                        className="object-cover"
-                        src={`${MEDIA_HOSTNAME}${user.image}`}
-                        alt={user.fullName}
-                      />
-                      <AvatarFallback>
-                        <IconUser className="h-5 w-5" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm">{user.fullName}</span>
-                    {(multiSelect ? selectedUserIds.includes(user.id) : selectedUserId === user.id) && (
-                      <IconCheck className="ml-auto h-4 w-4 text-foreground" />
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          ) : (
-            <CommandEmpty className="p-4 text-sm text-muted-foreground">{t('no-result')}</CommandEmpty>
-          )}
-        </Command>
-      </PopoverContent>
-    </Popover>
+      </div>
+
+      {open && (
+        <div
+          ref={dropdownRef}
+          className={cn('absolute z-10 w-full rounded border border-border shadow-md ', customContentClassNames)}>
+          <Command>
+            <CommandInput
+              placeholder={t('search')}
+              className="h-10 w-full"
+              value={searchTerm}
+              onValueChange={setSearchTerm}
+            />
+            {loading ? (
+              <div className="flex justify-center p-4">
+                <IconLoader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            ) : filteredUsers.length > 0 ? (
+              <CommandList className="custom-scrollbar max-h-36 overflow-y-auto">
+                <CommandGroup>
+                  {filteredUsers.map((user) => (
+                    <CommandItem
+                      key={user.id}
+                      onSelect={() => handleSelectUser(user.id)}
+                      className={cn(
+                        'flex items-center gap-3 px-4 py-2 hover:bg-muted focus:bg-muted',
+                        multiSelect
+                          ? selectedUserIds.includes(user.id) && 'bg-muted'
+                          : selectedUserId === user.id && 'bg-muted',
+                      )}>
+                      <Avatar className="h-8 w-8 border border-border">
+                        <AvatarImage
+                          className="object-cover"
+                          src={`${MEDIA_HOSTNAME}${user.image}`}
+                          alt={user.fullName}
+                        />
+                        <AvatarFallback>
+                          <IconUser className="h-5 w-5" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm">{user.fullName}</span>
+                      {(multiSelect ? selectedUserIds.includes(user.id) : selectedUserId === user.id) && (
+                        <IconCheck className="ml-auto h-4 w-4 text-foreground" />
+                      )}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            ) : (
+              <CommandEmpty className="p-4 text-sm text-muted-foreground">{t('no-result')}</CommandEmpty>
+            )}
+          </Command>
+        </div>
+      )}
+    </div>
   );
 }
