@@ -317,7 +317,6 @@ async function calculateDailyProfit() {
     // Increment the current date by 1
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  console.log(filledDailyData);
 
   return filledDailyData;
 }

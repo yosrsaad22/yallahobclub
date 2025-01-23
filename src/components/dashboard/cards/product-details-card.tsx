@@ -193,15 +193,15 @@ export default function ProductDetailsCard(product: ProductDetailsProps) {
             </div>
             {/* Secondary media column */}
 
-            <div className="flex w-full flex-wrap justify-center gap-2 md:gap-4 lg:w-fit lg:flex-col lg:justify-center">
-              {product.media.slice(0, 5).map((media, index) =>
+            <div className="flex w-full flex-wrap justify-center gap-2 md:gap-2 lg:w-fit lg:flex-col lg:justify-center">
+              {product.media.slice(0, 10).map((media, index) =>
                 mediaLoaded ? (
                   <button
                     key={index}
-                    className=" group  h-[70px] w-[70px] overflow-hidden rounded-lg border transition-transform duration-300 ease-in-out hover:scale-105 hover:border-primary"
+                    className=" group  h-[50px] w-[50px] overflow-hidden rounded-lg border transition-transform duration-300 ease-in-out hover:scale-105 hover:border-primary"
                     onClick={() => setMainMedia(media)}>
                     {media.type.startsWith('video') ? (
-                      <div className="relative flex h-[70px] w-[70px] items-center justify-center bg-black">
+                      <div className="relative flex h-[50px] w-[50px] items-center justify-center bg-black">
                         <ReactPlayer
                           height="100%"
                           width="100%"
@@ -216,14 +216,14 @@ export default function ProductDetailsCard(product: ProductDetailsProps) {
                       <Image
                         src={`${MEDIA_HOSTNAME}${media.key}`}
                         alt={`${index + 1}`}
-                        height={70}
-                        width={70}
-                        className=" h-[70px] w-[70px] object-cover"
+                        height={50}
+                        width={50}
+                        className=" h-[50px] w-[50px] object-cover"
                       />
                     )}
                   </button>
                 ) : (
-                  <Skeleton key={index} className=" h-[70px] w-[70px] object-contain" />
+                  <Skeleton key={index} className=" h-[50px] w-[50px] object-contain" />
                 ),
               )}
             </div>

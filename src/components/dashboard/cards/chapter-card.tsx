@@ -63,43 +63,47 @@ const ChapterCard: FC<ChapterCardProps> = ({ chapter, onEdit, onDelete }) => {
       />
 
       <div ref={setNodeRef} style={style} key={id}>
-        <div className="relative flex h-min w-full flex-row items-center justify-between gap-0 rounded-md border bg-background px-2 py-0 md:gap-3 md:py-2">
+        <div className="relative flex h-min w-full flex-row items-center  rounded-md border bg-background px-2 py-0 md:gap-3 md:py-2">
           <Badge
             variant={'primary'}
             className="absolute -right-2 -top-2 h-6 w-6 rounded-full px-2 py-1 text-sm text-white">
             {chapter.position}
           </Badge>
-          <div className="flex h-16 w-48 flex-row items-center justify-start gap-x-4 sm:w-2/3 md:w-72">
-            <Button
-              size={'icon'}
-              variant={'ghost'}
-              {...attributes}
-              {...listeners}
-              className={`w-8 ${isCursorGrabbing ? 'cursor-grabbing' : 'cursor-grab'}`}
-              aria-describedby={`DndContext-${id}`}>
-              <IconGripVertical className="h-5 w-5 text-muted-foreground" />
-            </Button>
-            <div className="aspect-video w-56 md:w-56">
-              <div className="flex h-full  w-full items-center justify-center rounded-sm border  border-border bg-gradient-to-br from-primary to-secondary text-lg font-bold text-white">
-                {chapter.position}
+          <div className="flex w-full flex-row items-center justify-between">
+            <div className="flex h-16 w-[85%] flex-row items-center justify-start gap-x-4">
+              <Button
+                size={'icon'}
+                variant={'ghost'}
+                {...attributes}
+                {...listeners}
+                className={`w-8 ${isCursorGrabbing ? 'cursor-grabbing' : 'cursor-grab'}`}
+                aria-describedby={`DndContext-${id}`}>
+                <IconGripVertical className="h-5 w-5 text-muted-foreground" />
+              </Button>
+              <div className="aspect-video w-56 p-1 md:w-56">
+                <div className="flex h-full  w-full items-center justify-center rounded-sm border  border-border bg-gradient-to-br from-primary to-secondary text-lg font-bold text-white">
+                  {chapter.position}
+                </div>
               </div>
+
+              {locale === localeOptions.EN && (
+                <div className="line-clamp-2 flex w-full text-ellipsis text-left text-xs md:text-sm">
+                  {chapter.title_en}
+                </div>
+              )}
+              {locale === localeOptions.FR && (
+                <div className="line-clamp-2 flex w-full text-left text-xs md:text-sm">{chapter.title_fr}</div>
+              )}
             </div>
 
-            {locale === localeOptions.EN && (
-              <div className="flex w-full text-left text-xs md:text-sm">{chapter.title_en}</div>
-            )}
-            {locale === localeOptions.FR && (
-              <div className="flex w-full text-left text-xs md:text-sm">{chapter.title_fr}</div>
-            )}
-          </div>
-
-          <div className="flex w-14 flex-col items-end justify-center gap-x-0 md:flex-row md:gap-x-2">
-            <Button size={'icon'} variant={'ghost'} onClick={() => setEditDialogOpen(true)}>
-              <IconEdit className="h-5 w-5" />
-            </Button>
-            <Button size={'icon'} variant={'ghost'} onClick={() => setDeleteDialogOpen(true)}>
-              <IconTrash className="h-5 w-5 text-destructive" />
-            </Button>
+            <div className="flex  w-[15%] flex-col items-end justify-center gap-x-0 md:flex-row md:gap-x-2">
+              <Button size={'icon'} variant={'ghost'} onClick={() => setEditDialogOpen(true)}>
+                <IconEdit className="h-5 w-5" />
+              </Button>
+              <Button size={'icon'} variant={'ghost'} onClick={() => setDeleteDialogOpen(true)}>
+                <IconTrash className="h-5 w-5 text-destructive" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -96,7 +96,7 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
               {isFetching ? (
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
-                `${stats?.sellersProfit || 0}`
+                `${stats?.sellersProfit || 0} TND`
               )}
             </div>
           </CardHeader>
@@ -108,11 +108,7 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
             <CardTitle className="text-sm font-medium">{tStats('pickups')}</CardTitle>
             <div className="text-lg font-bold">
-              {isFetching ? (
-                <IconLoader2 className="animate-spin text-muted-foreground" />
-              ) : (
-                `${stats?.pickups || 0} TND`
-              )}
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : `${stats?.pickups || 0}`}
             </div>
           </CardHeader>
           <CardContent className="mt-0 px-0 md:-mt-4">
