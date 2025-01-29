@@ -5,9 +5,13 @@ import { Pie, PieChart, Legend, Cell } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, ChartStyle } from '@/components/ui/chart';
 import { useTranslations } from 'next-intl';
-import { IconInfinity } from '@tabler/icons-react';
+import { IconCalendar, IconInfinity, IconLoader2 } from '@tabler/icons-react';
+import { DateRange } from '@/types';
+import { formatDate } from '@/lib/utils';
 
 interface ReturnRateProps {
+  date: DateRange;
+  loading: boolean;
   data: { name: string; value: number }[];
 }
 
@@ -23,7 +27,7 @@ const chartConfig: ChartConfig = {
   },
 };
 
-export function ReturnRate({ data }: ReturnRateProps) {
+export function ReturnRate({ data, loading, date }: ReturnRateProps) {
   const tStats = useTranslations('dashboard.stats');
 
   // Calculate the total and return rate
@@ -42,10 +46,20 @@ export function ReturnRate({ data }: ReturnRateProps) {
         <CardTitle>
           <div className="grid gap-1">
             <div className="flex flex-col justify-start gap-1">
-              <span className="flex items-center gap-1 text-sm  font-medium text-secondary">
-                <IconInfinity className=" text-secondary" />
-                {tStats('all-time')}
-              </span>{' '}
+              <div className="flex flex-row items-center gap-1 font-medium">
+                <IconCalendar className="h-5 w-5 text-secondary" />
+
+                <div className="flex w-min items-center justify-start gap-2  text-secondary">
+                  <span className="text-sm ">{formatDate(date.from!, false)}</span>
+
+                  {date.to ? (
+                    <div className="flex items-center gap-1">
+                      <span className=" text-sm ">-</span>
+                      <span className="text-sm  "> {formatDate(date.to!, false)}</span>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
               {tStats('return-rate-title')}{' '}
             </div>
           </div>
@@ -53,8 +67,12 @@ export function ReturnRate({ data }: ReturnRateProps) {
         <CardDescription>{tStats('return-rate-description')}</CardDescription>
       </CardHeader>
       <CardContent className="relative -mt-4 flex min-h-[320px] flex-1 justify-center p-3 pb-4">
-        {data[0].value === 0 && data[1].value === 0 ? (
-          <div className="flex items-center  justify-center text-muted-foreground">
+        {loading ? (
+          <div className="flex h-full w-full items-center justify-center">
+            <IconLoader2 className="animate-spin text-muted-foreground" />
+          </div>
+        ) : data[0].value === 0 && data[1].value === 0 ? (
+          <div className="flex items-center justify-center text-muted-foreground">
             <span className="text-muted-foreground">{tStats('no-data')}</span>
           </div>
         ) : (
@@ -63,14 +81,14 @@ export function ReturnRate({ data }: ReturnRateProps) {
               <div className="text-3xl font-bold text-foreground">{`${returnRate}%`}</div>
               <div className="text-muted-foreground">{tStats('return-rate')}</div>
             </div>
-            <ChartContainer id="return-rate-pie" config={chartConfig} className="mx-auto  w-full">
+            <ChartContainer id="return-rate-pie" config={chartConfig} className="mx-auto w-full">
               <PieChart>
                 <ChartTooltip
                   cursor={false}
                   content={
                     <ChartTooltipContent
                       formatter={(value, name) => (
-                        <div className="flex w-full flex-row items-center justify-between ">
+                        <div className="flex w-full flex-row items-center justify-between">
                           <div className="flex items-center gap-2">
                             <div
                               className="h-3 w-3"
@@ -86,8 +104,6 @@ export function ReturnRate({ data }: ReturnRateProps) {
                     />
                   }
                 />
-
-                {/* Pie Chart */}
                 <Pie
                   data={data}
                   dataKey="value"
@@ -101,17 +117,15 @@ export function ReturnRate({ data }: ReturnRateProps) {
                     <Cell
                       key={`cell-${index}`}
                       fill={`${(COLORS[index % COLORS.length] || 'hsl(var(--foreground)/90%)').replace('/100%', '/70%')}`}
-                      stroke={COLORS[index % COLORS.length]} // Stroke color
-                      strokeWidth={2} // Stroke width
+                      stroke={COLORS[index % COLORS.length]}
+                      strokeWidth={2}
                     />
                   ))}
                 </Pie>
-
-                {/* Legend */}
                 <Legend
                   formatter={(value: string) => {
-                    const key = value.toLowerCase() as keyof typeof chartConfig; // Match legend with chartConfig
-                    const color = chartConfig[key]?.color || 'var(--foreground)'; // Default color if not found
+                    const key = value.toLowerCase() as keyof typeof chartConfig;
+                    const color = chartConfig[key]?.color || 'var(--foreground)';
                     return (
                       <span className="text-sm" style={{ color }}>
                         {tStats(key)}

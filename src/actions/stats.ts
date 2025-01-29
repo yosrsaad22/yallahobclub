@@ -703,7 +703,7 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       return total + order.subOrders.reduce((subTotal, subOrder) => subTotal + (subOrder.sellerProfit || 0), 0);
     }, 0);
 
-    const pendingSubOrders = subOrders.length - (completedSubOrders + paidSubOrders + returnedSubOrders);
+    const pendingSubOrders = subOrders.length - (completedSubOrders + returnedSubOrders);
     return {
       success: 'stats-fetch-success',
       data: {
@@ -779,7 +779,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
       return total + order.subOrders.reduce((subTotal, subOrder) => subTotal + (subOrder.sellerProfit || 0), 0);
     }, 0);
 
-    const pendingSubOrders = subOrders.length - (completedSubOrders + paidSubOrders + returnedSubOrders);
+    const pendingSubOrders = subOrders.length - (completedSubOrders + returnedSubOrders);
     return {
       success: 'stats-fetch-success',
       data: {
@@ -886,7 +886,7 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
       );
     }, 0);
 
-    const pendingSubOrders = subOrders.length - (completedSubOrders + paidSubOrders + returnedSubOrders);
+    const pendingSubOrders = subOrders.length - (completedSubOrders + returnedSubOrders);
     return {
       success: 'stats-fetch-success',
       data: {

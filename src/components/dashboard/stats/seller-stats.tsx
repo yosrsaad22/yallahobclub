@@ -196,6 +196,8 @@ export function SellerStatsComponent({ initialStats, onRefetch }: SellerStatsPro
         </Card>
         <Card className="col-span-1 p-3 md:col-span-2 md:p-3">
           <ReturnRate
+            loading={isFetching}
+            date={dateRange!}
             data={[
               { name: 'Delivered', value: stats?.completedSubOrders || 0 },
               { name: 'Returns', value: stats?.returnedSubOrders || 0 },

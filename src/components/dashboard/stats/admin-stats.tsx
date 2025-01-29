@@ -269,6 +269,8 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
         </Card>
         <Card className="col-span-1 p-3 md:col-span-2 md:p-3">
           <ReturnRate
+            date={dateRange!}
+            loading={isFetching}
             data={[
               { name: 'Delivered', value: stats?.completedSubOrders || 0 },
               { name: 'Returns', value: stats?.returnedSubOrders || 0 },
