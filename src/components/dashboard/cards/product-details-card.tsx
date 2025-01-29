@@ -287,30 +287,14 @@ export default function ProductDetailsCard(product: ProductDetailsProps) {
                 </div>
                 {product.sizes.length > 0 ? (
                   <div className="space-2 flex w-full flex-row flex-wrap gap-2">
-                    {product.colors.map((item) => (
+                    {product.sizes.map((item) => (
                       <Badge
                         variant={'background'}
                         key={item}
-                        className="flex h-8 items-center justify-between space-x-2 text-sm font-normal hover:cursor-pointer">
+                        className="flex h-8 items-center justify-between space-x-2 px-6 text-sm font-normal hover:cursor-pointer">
                         <p className="font-medium">{item}</p>
                       </Badge>
                     ))}
-                    {product.colors.length > 0 &&
-                      product.colors.map((item) => (
-                        <Badge
-                          variant={'background'}
-                          key={item}
-                          className="flex h-8 items-center justify-between space-x-2 text-sm font-normal hover:cursor-pointer">
-                          {colorHexMap[item as keyof typeof colorHexMap] && (
-                            <span
-                              className="inline-block h-4 w-4 rounded-full border border-border"
-                              style={{
-                                backgroundColor: colorHexMap[item as keyof typeof colorHexMap],
-                              }}></span>
-                          )}
-                          <p className="font-medium">{tColors(item)}</p>
-                        </Badge>
-                      ))}
                   </div>
                 ) : (
                   <p className="text-muted-foreground">{t('product-no-attribute')}</p>

@@ -638,8 +638,7 @@ async function fetchTopTenSellers(from: Date, to: Date) {
 
 export const adminGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
   const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to || endOfDay(from);
-
+  const to = dateRange.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
   try {
     await roleGuard(UserRole.ADMIN);
 
@@ -666,7 +665,7 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     const completedSubOrders = subOrders.filter((subOrder) => subOrder.status === '23').length;
     const paidSubOrders = subOrders.filter((subOrder) => subOrder.status === 'EC02').length;
     const returnedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '28'),
+      subOrder.statusHistory.some((history) => history.status === '25'),
     ).length;
 
     const platformOrderProfit = orders.reduce((total, order) => {
@@ -763,7 +762,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
     const completedSubOrders = subOrders.filter((subOrder) => subOrder.status === '23').length;
     const paidSubOrders = subOrders.filter((subOrder) => subOrder.status === 'EC02').length;
     const returnedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '28'),
+      subOrder.statusHistory.some((history) => history.status === '25'),
     ).length;
 
     const totalSellerProfit = orders.reduce((total, order) => {
@@ -856,7 +855,7 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
     const completedSubOrders = subOrders.filter((subOrder) => subOrder.status === '23').length;
     const paidSubOrders = subOrders.filter((subOrder) => subOrder.status === 'EC02').length;
     const returnedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '28'),
+      subOrder.statusHistory.some((history) => history.status === '25'),
     ).length;
 
     const totalSupplierProfit = orders.reduce((total, order) => {

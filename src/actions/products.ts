@@ -5,7 +5,7 @@ import { ActionResponse } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { getProductById } from '@/data/product';
-import { NotificationType, UserRole } from '@prisma/client';
+import { ColorType, NotificationType, UserRole } from '@prisma/client';
 import { ProductSchema } from '@/schemas';
 import { getUserById } from '@/data/user';
 import { notifyAllAdmins, notifyUser } from './notifications';
@@ -71,11 +71,13 @@ export const getProductsBySeller = async (): Promise<ActionResponse> => {
         },
       },
     });
-    const modifiedProducts = user?.myProducts.map((product) => ({
-      ...product,
-      supplier: null,
-      supplierCode: product.supplier?.code,
-    }));
+    const modifiedProducts = user?.myProducts
+      .filter((product) => product.published)
+      .map((product) => ({
+        ...product,
+        supplier: null,
+        supplierCode: product.supplier?.code,
+      }));
     return { success: 'products-fetch-success', data: modifiedProducts };
   } catch (error) {
     return { error: 'products-fetch-error' };
@@ -211,7 +213,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
             type: mediaItem.type,
           })),
         },
-        colors: values.colors,
+        colors: values.colors?.map((color) => color as ColorType),
         sizes: values.sizes,
         supplier: {
           connect: {
@@ -279,7 +281,7 @@ export const editProduct = async (id: string, values: z.infer<typeof ProductSche
             type: mediaItem.type,
           })),
         },
-        colors: values.colors,
+        colors: values.colors?.map((color) => color as ColorType),
         sizes: values.sizes,
         supplier: {
           connect: {

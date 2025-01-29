@@ -269,7 +269,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
         <Card className="col-span-1 p-3 md:col-span-2 md:p-3">
           <ReturnRate
             data={[
-              { name: 'Delivered', value: stats?.completedSubOrders || 0 },
+              { name: 'Delivered', value: (stats?.completedSubOrders || 0) + (stats?.paidSubOrders || 0) },
               { name: 'Returns', value: stats?.returnedSubOrders || 0 },
             ]}
           />

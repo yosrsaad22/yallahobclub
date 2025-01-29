@@ -776,6 +776,7 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
       include: {
         subOrders: {
           include: {
+            statusHistory: true,
             products: {
               include: {
                 product: {
@@ -794,7 +795,7 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
       return { error: 'order-not-found-error' };
     } // Define statuses to exclude
 
-    const excludedStatuses = ['21', '22', '23'];
+    const excludedStatuses = ['21', '22', '23', '25', '26', '28'];
     for (const order of orders) {
       for (const subOrder of order.subOrders) {
         if (!excludedStatuses.includes(subOrder.status!)) {
@@ -805,8 +806,8 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
     for (const order of orders) {
       // Livraison
       for (const subOrder of order.subOrders) {
-        if (subOrder.status === '22') {
-          await createTransaction(order.sellerId!, 'order-transaction', -3);
+        if (subOrder.status === '25' || subOrder.status === '26' || subOrder.status === '28') {
+          await createTransaction(order.sellerId!, 'order-transaction', -3, order.id);
           await db.subOrder.update({
             where: { id: subOrder.id },
             data: {
