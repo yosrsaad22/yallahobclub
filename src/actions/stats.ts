@@ -662,8 +662,13 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
 
     const [leads, transactions, products, suppliers, sellers] = counts;
 
-    const completedSubOrders = subOrders.filter((subOrder) => subOrder.status === '23').length;
-    const paidSubOrders = subOrders.filter((subOrder) => subOrder.status === 'EC02').length;
+    const completedSubOrders = subOrders.filter((subOrder) =>
+      subOrder.statusHistory.some((history) => history.status === '23'),
+    ).length;
+    const paidSubOrders = subOrders.filter((subOrder) =>
+      ['23', 'EC02'].every((status) => subOrder.statusHistory.some((history) => history.status === status)),
+    ).length;
+
     const returnedSubOrders = subOrders.filter((subOrder) =>
       subOrder.statusHistory.some((history) => history.status === '25'),
     ).length;
@@ -759,8 +764,13 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
 
     const [transactions, products, pickups] = counts;
 
-    const completedSubOrders = subOrders.filter((subOrder) => subOrder.status === '23').length;
-    const paidSubOrders = subOrders.filter((subOrder) => subOrder.status === 'EC02').length;
+    const completedSubOrders = subOrders.filter((subOrder) =>
+      subOrder.statusHistory.some((history) => history.status === '23'),
+    ).length;
+    const paidSubOrders = subOrders.filter((subOrder) =>
+      ['23', 'EC02'].every((status) => subOrder.statusHistory.some((history) => history.status === status)),
+    ).length;
+
     const returnedSubOrders = subOrders.filter((subOrder) =>
       subOrder.statusHistory.some((history) => history.status === '25'),
     ).length;
@@ -852,8 +862,14 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
 
     const [transactions, products, pickups] = counts;
 
-    const completedSubOrders = subOrders.filter((subOrder) => subOrder.status === '23').length;
-    const paidSubOrders = subOrders.filter((subOrder) => subOrder.status === 'EC02').length;
+    const completedSubOrders = subOrders.filter((subOrder) =>
+      subOrder.statusHistory.some((history) => history.status === '23'),
+    ).length;
+
+    const paidSubOrders = subOrders.filter((subOrder) =>
+      ['23', 'EC02'].every((status) => subOrder.statusHistory.some((history) => history.status === status)),
+    ).length;
+
     const returnedSubOrders = subOrders.filter((subOrder) =>
       subOrder.statusHistory.some((history) => history.status === '25'),
     ).length;

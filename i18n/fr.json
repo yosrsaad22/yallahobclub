@@ -967,7 +967,7 @@
       "supplier-profit": "Profit",
       "sub-orders": "Commandes",
       "transactions": "Transactions",
-      "completed-sub-orders": "Livrés non payés",
+      "delivered-sub-orders": "Livrés",
       "pending-sub-orders": "En cours",
       "returned-sub-orders": "Retournés",
       "paid-sub-orders": "Livrés payée",

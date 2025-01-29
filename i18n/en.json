@@ -828,7 +828,7 @@
       "supplier-profit": "Profit",
       "sub-orders": "Orders",
       "transactions": "Transactions",
-      "completed-sub-orders": "Delivered Not Paid",
+      "delivered-sub-orders": "Delivered",
       "pending-sub-orders": "Pending",
       "returned-sub-orders": "Returned",
       "paid-sub-orders": "Delivered Paid",
