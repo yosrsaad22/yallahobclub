@@ -485,7 +485,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                   </div>
                   {(() => {
                     const orderStatus = orderStatuses.find((s) => s.UpdateCode === subOrder.status) ?? {
-                      UpdateCode: 'EC03',
+                      UpdateCode: 'EC04',
                       Color: 'text-white bg-gray-300',
                     };
                     return (

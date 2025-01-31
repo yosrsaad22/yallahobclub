@@ -207,6 +207,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
         stock: parseFloat(values.stock),
         category: values.category,
         published: values.published,
+        admin: user?.name!,
         media: {
           create: values.media.map((mediaItem) => ({
             key: mediaItem.key,
@@ -246,7 +247,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
 export const editProduct = async (id: string, values: z.infer<typeof ProductSchema>): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.ADMIN, UserRole.SUPPLIER]);
-
+    const user = await currentUser();
     const existingProduct = await getProductById(id);
     if (!existingProduct) {
       return { error: 'product-not-found-error' };
@@ -274,6 +275,7 @@ export const editProduct = async (id: string, values: z.infer<typeof ProductSche
         platformProfit: parseFloat(values.platformProfit),
         featured: values.featured,
         stock: parseFloat(values.stock),
+        admin: user?.name!,
         category: values.category,
         media: {
           create: values.media.map((mediaItem, index) => ({

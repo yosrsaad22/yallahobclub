@@ -699,8 +699,13 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       }
     }, 0);
 
-    const totalSellerProfit = orders.reduce((total, order) => {
+    /* const totalSellerProfit = orders.reduce((total, order) => {
       return total + order.subOrders.reduce((subTotal, subOrder) => subTotal + (subOrder.sellerProfit || 0), 0);
+    }, 0);
+    */
+
+    const totalRevenue = orders.reduce((total, order) => {
+      return total + order.total;
     }, 0);
 
     const pendingSubOrders = subOrders.length - (completedSubOrders + returnedSubOrders);
@@ -712,7 +717,7 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
         platformProfit: platformOrderProfit.toFixed(2),
         courseProfit: platformCourseProfit.toFixed(2),
         transactions,
-        sellersProfit: totalSellerProfit.toFixed(2),
+        revenue: totalRevenue,
         completedSubOrders,
         pendingSubOrders,
         returnedSubOrders,

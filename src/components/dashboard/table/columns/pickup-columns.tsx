@@ -10,7 +10,7 @@ import { formatDate } from '@/lib/utils';
 const StatusCell = ({ status }: { status: string }) => {
   const tStatuses = useTranslations('dashboard.order-statuses');
   const statusObj =
-    orderStatuses.find((s) => s.UpdateCode === status) ?? orderStatuses.find((s) => s.UpdateCode === 'EC03');
+    orderStatuses.find((s) => s.UpdateCode === status) ?? orderStatuses.find((s) => s.UpdateCode === 'EC04');
 
   if (!statusObj) return null;
   <div className={`mr-3 inline-flex w-auto rounded-full px-3 py-1 ${statusObj.Color}`}>

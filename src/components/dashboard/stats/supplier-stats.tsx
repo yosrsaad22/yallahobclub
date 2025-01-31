@@ -194,8 +194,8 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
             data={stats?.topFiveProducts || []}
             dateRange={dateRange!}
             isFetching={isFetching}
-            title={tStats('seller-top-five-products-title')}
-            description={tStats('seller-top-five-products-description')}
+            title={tStats('seller-top-ten-products-title')}
+            description={tStats('seller-top-ten-products-description')}
             noDataMessage={tStats('no-data')}
           />{' '}
         </Card>

@@ -290,6 +290,7 @@ model Product {
   sizes          SizeType[]
   colors         ColorType[]
   orders         OrderProduct[]
+  admin          String?
 
   supplier   User?   @relation("SuppliedProducts", fields: [supplierId], references: [id], onDelete: Cascade)
   supplierId String?
@@ -382,8 +383,8 @@ model Transaction {
   amount    Float
   type      String?
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  admin     String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   order   Order?  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   userId  String

@@ -35,7 +35,7 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
   );
 };
 
-export const SupplierColumns: ColumnDef<DataTableUser>[] = [
+export const SupplierColumns: ColumnDef<DataTableUser & { returnRate: number }>[] = [
   {
     id: 'image',
     meta: {
@@ -85,12 +85,6 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
     },
   },
   {
-    accessorKey: 'state',
-    meta: {
-      columnName: 'state',
-    },
-  },
-  {
     accessorKey: 'city',
     meta: {
       columnName: 'city',
@@ -108,6 +102,20 @@ export const SupplierColumns: ColumnDef<DataTableUser>[] = [
           <p className={` font-semibold ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>
             {balance.toFixed(2)} TND
           </p>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'returnRate',
+    meta: {
+      columnName: 'returnRate',
+    },
+    cell: ({ row }) => {
+      const returnRate: number = row.getValue('returnRate');
+      return (
+        <div className="flex w-full justify-center">
+          <p className={` font-semibold`}>{returnRate.toFixed(0)} %</p>
         </div>
       );
     },

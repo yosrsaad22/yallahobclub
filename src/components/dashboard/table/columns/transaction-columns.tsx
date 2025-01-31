@@ -164,4 +164,15 @@ export const AdminTransactionColumns: ColumnDef<Transaction & { user: User; orde
       return <div className="">{order ? order.code : 'N/A'}</div>;
     },
   },
+  {
+    accessorKey: 'admin',
+    meta: {
+      columnName: 'admin',
+    },
+    cell: ({ row }) => {
+      const admin: string | null = row.original.admin;
+
+      return <div className="">{admin ? admin : 'N/A'}</div>;
+    },
+  },
 ];

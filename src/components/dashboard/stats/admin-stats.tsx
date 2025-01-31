@@ -82,6 +82,24 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
       </div>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* first row */}
+        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            {tStats('estimated')}
+          </div>
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
+            <CardTitle className="text-sm font-medium">{tStats('revenue')}</CardTitle>
+            <div className="text-lg font-bold">
+              {isFetching ? (
+                <IconLoader2 className="animate-spin text-muted-foreground" />
+              ) : (
+                `${stats?.revenue.toFixed(1) || 0} TND`
+              )}
+            </div>
+          </CardHeader>
+          <CardContent className="mt-0 px-0 md:-mt-4">
+            <GraphIllustration4 />
+          </CardContent>
+        </Card>
         <Card className="relative flex max-h-[7rem] flex-col overflow-hidden">
           <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
             {tStats('estimated')}
@@ -114,24 +132,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             <GraphIllustration2 />
           </CardContent>
         </Card>
-        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
-          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
-            {tStats('estimated')}
-          </div>
-          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
-            <CardTitle className="text-sm font-medium">{tStats('sellers-profit')}</CardTitle>
-            <div className="text-lg font-bold">
-              {isFetching ? (
-                <IconLoader2 className="animate-spin text-muted-foreground" />
-              ) : (
-                `${stats?.sellersProfit || 0} TND`
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="mt-0 px-0 md:-mt-4">
-            <GraphIllustration4 />
-          </CardContent>
-        </Card>
+
         <Card className="relative max-h-[7rem] flex-col overflow-hidden">
           <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
             {tStats('estimated')}
@@ -251,8 +252,8 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             data={stats?.topFiveProducts || []}
             dateRange={dateRange!}
             isFetching={isFetching}
-            title={tStats('top-five-products-title')}
-            description={tStats('top-five-products-description')}
+            title={tStats('top-ten-products-title')}
+            description={tStats('top-ten-products-description')}
             noDataMessage={tStats('no-data')}
           />{' '}
         </Card>
@@ -261,8 +262,8 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             data={stats?.topFiveSellers || []}
             dateRange={dateRange!}
             isFetching={isFetching}
-            title={tStats('top-five-sellers-title')}
-            description={tStats('top-five-sellers-description')}
+            title={tStats('top-ten-sellers-title')}
+            description={tStats('top-ten-sellers-description')}
             noDataMessage={tStats('no-data')}
             useAvatars
           />{' '}

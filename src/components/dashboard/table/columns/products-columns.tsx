@@ -98,12 +98,6 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     },
   },
   {
-    accessorKey: 'code',
-    meta: {
-      columnName: 'code',
-    },
-  },
-  {
     accessorKey: 'name',
     meta: {
       columnName: 'Name',
@@ -142,18 +136,18 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     },
     cell: ({ row }) => {
       const stock = row.getValue<number>('stock');
-      return <div className="w-1/2 text-right">{stock}</div>;
+      return <div className="">{stock}</div>;
     },
   },
-
   {
-    accessorKey: 'published',
+    accessorKey: 'admin',
     meta: {
-      columnName: 'Published',
+      columnName: 'admin',
     },
     cell: ({ row }) => {
-      const published = row.getValue<boolean>('published');
-      return <BooleanCell value={published} trueText="product-approved" falseText="product-not-approved" />;
+      const admin: string | null = row.original.admin;
+
+      return <div className="">{admin ? admin : 'N/A'}</div>;
     },
   },
   {
@@ -173,6 +167,16 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     cell: ({ row }) => {
       const user: User = row.getValue('supplier');
       return user ? <SupplierCell user={user} /> : null;
+    },
+  },
+  {
+    accessorKey: 'published',
+    meta: {
+      columnName: 'Published',
+    },
+    cell: ({ row }) => {
+      const published = row.getValue<boolean>('published');
+      return <BooleanCell value={published} trueText="product-approved" falseText="product-not-approved" />;
     },
   },
 ];

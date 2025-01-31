@@ -136,7 +136,7 @@ export type AdminStats = {
   sellers: number;
   suppliers: number;
   products: number;
-  sellersProfit: number;
+  revenue: number;
   pickups: number;
   completedSubOrders: number;
   pendingSubOrders: number;

@@ -1,6 +1,6 @@
 'use server';
 import { db } from '@/lib/db';
-import { roleGuard } from '@/lib/auth';
+import { currentUser, roleGuard } from '@/lib/auth';
 import { ActionResponse } from '@/types';
 import { z } from 'zod';
 import { NotificationType, UserRole } from '@prisma/client';
@@ -108,6 +108,7 @@ export const createTransaction = async (
 ): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
+    const admin = await currentUser();
 
     const user = await getUserById(userId);
     if (!user || user.balance === undefined || user.balance === null) {
@@ -120,6 +121,7 @@ export const createTransaction = async (
           code: 'ENT-' + generateCode(),
           amount: amount,
           type: type,
+          admin: admin?.name,
           ...(orderId && {
             order: { connect: { id: orderId } },
           }),
@@ -212,7 +214,7 @@ export const createWithdrawRequest = async (values: z.infer<typeof WithdrawReque
 export const approveWithdrawRequest = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
-
+    const user = await currentUser();
     const fetchedRequest = await db.withdrawRequest.findUnique({ where: { id }, include: { user: true } });
     const request = await db.withdrawRequest.update({
       where: { id },

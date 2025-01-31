@@ -366,6 +366,10 @@ export const orderStatuses = [
   },
   {
     UpdateCode: 'EC03',
+    Color: 'bg-destructive text-white',
+  },
+  {
+    UpdateCode: 'EC04',
     Color: 'bg-gray-300 text-white',
   },
   {

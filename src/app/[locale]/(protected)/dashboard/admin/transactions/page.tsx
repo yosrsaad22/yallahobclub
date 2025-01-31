@@ -8,7 +8,6 @@ import { getTranslations } from 'next-intl/server';
 import {
   approveWithdrawRequest,
   createTransaction,
-  createWithdrawRequest,
   declineWithdrawRequest,
   getTransactions,
   getWithdrawRequests,

@@ -464,7 +464,7 @@ export const trackOrders = async (): Promise<ActionResponse> => {
   }
 
   try {
-    const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
+    const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', 'EC03', ''];
 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -588,7 +588,7 @@ export const trackOrder = async (subOrder: any): Promise<void> => {
   }
 
   // Define statuses to exclude
-  const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', ''];
+  const excludedStatuses = ['21', '22', '23', 'EC01', 'EC02', 'EC03', ''];
 
   // Check if the order status is excluded
   if (!subOrder.deliveryId || excludedStatuses.includes(subOrder.status)) {
@@ -770,7 +770,6 @@ export const printLabels = async (ids: string[]): Promise<ActionResponse> => {
 export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
-
     const orders = await db.order.findMany({
       where: { id: { in: ids } },
       include: {
@@ -795,7 +794,7 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
       return { error: 'order-not-found-error' };
     } // Define statuses to exclude
 
-    const excludedStatuses = ['21', '22', '23', '25', '26', '28'];
+    const excludedStatuses = ['21', '22', '23', '22', '25', '26', '27', '28'];
     for (const order of orders) {
       for (const subOrder of order.subOrders) {
         if (!excludedStatuses.includes(subOrder.status!)) {
@@ -806,12 +805,18 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
     for (const order of orders) {
       // Livraison
       for (const subOrder of order.subOrders) {
-        if (subOrder.status === '25' || subOrder.status === '26' || subOrder.status === '28') {
+        if (
+          subOrder.status === '22' ||
+          subOrder.status === '25' ||
+          subOrder.status === '26' ||
+          subOrder.status === '27' ||
+          subOrder.status === '28'
+        ) {
           await createTransaction(order.sellerId!, 'order-transaction', -3, order.id);
           await db.subOrder.update({
             where: { id: subOrder.id },
             data: {
-              status: 'EC02',
+              status: 'EC03',
               platformProfit: 2.5,
               sellerProfit: -3,
               products: {
@@ -822,7 +827,7 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
               },
               statusHistory: {
                 create: {
-                  status: 'EC02',
+                  status: 'EC03',
                   createdAt: new Date(),
                 },
               },

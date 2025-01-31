@@ -41,8 +41,30 @@ export const getSellers = async (): Promise<ActionResponse> => {
         role: UserRole.SELLER,
       },
       orderBy: { createdAt: 'desc' },
+      include: {
+        soldOrders: {
+          include: {
+            subOrders: {
+              include: {
+                statusHistory: true,
+              },
+            },
+          },
+        },
+      },
     });
-    return { success: 'sellers-fetch-success', data: sellers };
+
+    const sellersWithReturnRate = sellers.map((seller) => {
+      const returnedSubOrders = seller.soldOrders.flatMap((order) =>
+        order.subOrders.filter((subOrder) => subOrder.statusHistory.some((history) => history.status === '25')),
+      ).length;
+
+      const totalSubOrders = seller.soldOrders.flatMap((order) => order.subOrders).length;
+      const returnRate = totalSubOrders > 0 ? (returnedSubOrders / totalSubOrders) * 100 : 0;
+      return { ...seller, returnRate };
+    });
+
+    return { success: 'sellers-fetch-success', data: sellersWithReturnRate };
   } catch (error) {
     return { error: 'sellers-fetch-error' };
   }
@@ -57,8 +79,42 @@ export const getSuppliers = async (): Promise<ActionResponse> => {
         role: UserRole.SUPPLIER,
       },
       orderBy: { createdAt: 'desc' },
+      include: {
+        products: {
+          include: {
+            orders: {
+              include: {
+                subOrder: {
+                  include: {
+                    statusHistory: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
-    return { success: 'suppliers-fetch-success', data: suppliers };
+
+    const suppliersWithReturnRate = suppliers.map((supplier) => {
+      const returnedSubOrders = supplier.products.flatMap((product) =>
+        product.orders.flatMap((orderProduct) =>
+          orderProduct.subOrder?.statusHistory.some((history) => history.status === '25')
+            ? [orderProduct.subOrder]
+            : [],
+        ),
+      ).length;
+
+      const totalSubOrders = supplier.products.flatMap((product) =>
+        product.orders.flatMap((orderProduct) => (orderProduct.subOrder ? [orderProduct.subOrder] : [])),
+      ).length;
+
+      const returnRate = totalSubOrders > 0 ? (returnedSubOrders / totalSubOrders) * 100 : 0;
+
+      return { ...supplier, returnRate };
+    });
+
+    return { success: 'suppliers-fetch-success', data: suppliersWithReturnRate };
   } catch (error) {
     return { error: 'suppliers-fetch-error' };
   }

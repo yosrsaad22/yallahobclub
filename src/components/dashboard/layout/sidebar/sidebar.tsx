@@ -62,7 +62,7 @@ export default function Sidebar({ className }: SidebarProps) {
                 </div>
 
                 <div className="flex flex-col items-center ">
-                  <h1 className="text-lg font-bold">{user?.name}</h1>
+                  <h1 className="text-center text-lg font-bold">{user?.name}</h1>
                   <p className="text-sm font-medium text-white">{t(user?.role.toLocaleLowerCase())}</p>
                 </div>
               </div>

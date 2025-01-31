@@ -12,7 +12,7 @@ import Image from 'next/image';
 const StatusCell = ({ status }: { status: string }) => {
   const tStatuses = useTranslations('dashboard.order-statuses');
   const statusObj =
-    orderStatuses.find((s) => s.UpdateCode === status) ?? orderStatuses.find((s) => s.UpdateCode === 'EC03');
+    orderStatuses.find((s) => s.UpdateCode === status) ?? orderStatuses.find((s) => s.UpdateCode === 'EC04');
 
   if (!statusObj) return null;
   return (
