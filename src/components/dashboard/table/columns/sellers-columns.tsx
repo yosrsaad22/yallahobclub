@@ -35,7 +35,7 @@ const BooleanCell = ({ value, trueText, falseText }: { value: boolean; trueText:
   );
 };
 
-export const SellerColumns: ColumnDef<DataTableUser & { returnRate: number }>[] = [
+export const SellerColumns: ColumnDef<DataTableUser & { returnRate?: number }>[] = [
   {
     id: 'image',
     meta: {
@@ -113,7 +113,7 @@ export const SellerColumns: ColumnDef<DataTableUser & { returnRate: number }>[] 
       columnName: 'returnRate',
     },
     cell: ({ row }) => {
-      const returnRate: number = row.getValue('returnRate');
+      const returnRate = row.getValue<number>('returnRate') ?? 0;
       return (
         <div className="flex w-full justify-center">
           <p className={` font-semibold`}>{returnRate.toFixed(0)} %</p>

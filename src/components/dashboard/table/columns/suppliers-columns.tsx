@@ -112,7 +112,7 @@ export const SupplierColumns: ColumnDef<DataTableUser & { returnRate: number }>[
       columnName: 'returnRate',
     },
     cell: ({ row }) => {
-      const returnRate: number = row.getValue('returnRate');
+      const returnRate = row.getValue<number>('returnRate') ?? 0;
       return (
         <div className="flex w-full justify-center">
           <p className={` font-semibold`}>{returnRate.toFixed(0)} %</p>
