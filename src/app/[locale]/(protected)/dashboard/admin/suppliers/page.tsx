@@ -21,7 +21,7 @@ export default async function Sellers() {
   const t = await getTranslations('dashboard');
   const breadcrumbItems = [{ title: t('pages.suppliers'), link: '/dashboard/admin/suppliers' }];
   const res: ActionResponse = await getSuppliers();
-  const suppliersData: DataTableUser[] = res.error ? [] : res.data;
+  const suppliersData: (DataTableUser & { returnRate: number })[] = res.error ? [] : res.data;
 
   const handleDelete = async (id: string) => {
     'use server';
