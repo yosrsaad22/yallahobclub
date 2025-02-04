@@ -1,0 +1,418 @@
+{
+  "emails": {
+    "email-verification": {
+      "subject": "Veuillez vérifier votre e-mail",
+      "preview": "Vérification de l'e-mail requise",
+      "title": "Vérifiez votre adresse e-mail",
+      "greetings": "Bonjour ",
+      "text": "veuillez cliquer sur le bouton ci-dessous pour confirmer votre e-mail et accéder à votre compte.",
+      "button": "Vérifiez votre e-mail",
+      "note": "Si vous n'avez pas demandé cet e-mail, il n'y a rien à craindre, vous pouvez l'ignorer en toute sécurité."
+    },
+    "password-reset": {
+      "subject": "Réinitialisez votre mot de passe",
+      "preview": "Demande de réinitialisation du mot de passe",
+      "title": "Réinitialisez votre mot de passe",
+      "greetings": "Bonjour ",
+      "text": "veuillez cliquer sur le bouton ci-dessous pour réinitialiser votre mot de passe oublié et accéder à votre compte.",
+      "button": "Réinitialiser le mot de passe",
+      "note": "Si vous n'avez pas demandé cet e-mail, il n'y a rien à craindre, vous pouvez l'ignorer en toute sécurité."
+    }
+  },
+  "fields": {
+    "lead-select": "",
+    "lead-full-name": "Nom complet",
+    "lead-number": "Numéro",
+    "lead-email": "Adresse e-mail",
+    "lead-video-progress": "Progression de la vidéo",
+    "lead-enroll-number": "Inscriptions",
+    "lead-created-at": "Date d'inscription",
+    "user-full-name": "Nom complet",
+    "user-number": "Numéro",
+    "user-email": "Adresse e-mail",
+    "user-email-verified": "E-mail vérifié",
+    "user-email-verified-description": "L'e-mail de l'utilisateur a été vérifié",
+    "user-address": "Adresse",
+    "user-password": "Mot de passe",
+    "user-confirm-password": "Confirmer le mot de passe",
+    "user-current-password": "Mot de passe actuel",
+    "user-new-password": "Nouveau mot de passe",
+    "user-pack": "Pack",
+    "user-rib": "RIB de compte bancaire",
+    "user-created-at": "Membre depuis",
+    "user-active": "Actif",
+    "user-active-description": "Le compte utilisateur est activé",
+    "user-role": "Rôle",
+    "user-seller": "Vendeur",
+    "user-supplier": "Fournisseur",
+    "user-paid": "Payé",
+    "user-paid-description": "Le paiement de l'utilisateur est réussi",
+    "user-select": "",
+    "user-image": "",
+    "user-actions": "",
+    "company-rib": "RIB de compte bancaire",
+    "company-fiscal-id": "Identifiant fiscal",
+    "company-tva": "Pourcentage de TVA",
+    "course-title-en": "Titre de la formation (Anglais)",
+    "course-title-fr": "Titre de la formation (Français)",
+    "course-description-en": "Description de la formation (Anglais)",
+    "course-description-fr": "Description de la formation (Français)",
+    "chapter-title-en": "Titre du chapitre (Anglais)",
+    "chapter-title-fr": "Titre du chapitre (Français)",
+    "chapter-description-en": "Description du chapitre (Anglais)",
+    "chapter-description-fr": "Description du chapitre (Français)",
+    "chapter-video": "Vidéo du chapitre"
+  },
+  "validation": {
+    "success-title": "Succès",
+    "error-title": "Erreur",
+    "fullname-error": "Le nom complet est requis",
+    "email-error": "Un e-mail valide est requis",
+    "number-error": "Le numéro de téléphone est requis et doit contenir 8 chiffres",
+    "address-error": "L'adresse est requise",
+    "password-error": "Le mot de passe est requis et doit contenir au moins 8 caractères",
+    "confirm-password-error": "Le mot de passe et la confirmation du mot de passe doivent être identiques",
+    "current-password-error": "Mot de passe actuel invalide, veuillez réessayer ou vous déconnecter et aller à 'mot de passe oublié'",
+    "pack-error": "Veuillez sélectionner un pack de tarification",
+    "role-error": "Veuillez sélectionner un rôle",
+    "rib-error": "Le RIB est requis et doit contenir 20 chiffres",
+    "fiscal-id-error": "L'identifiant fiscal est requis et doit contenir 13 caractères",
+    "tva-error": "La TVA est requise et doit contenir 2 chiffres",
+    "existing-user-error": "Un utilisateur avec cet e-mail ou numéro existe déjà",
+    "bad-credentials-error": "Identifiants de compte invalides",
+    "unauthorized-error": "Permissions manquantes",
+    "email-not-verified-error": "Veuillez vérifier votre e-mail avant de vous connecter. Nous venons de vous envoyer un nouvel e-mail de vérification",
+    "email-not-found-error": "Aucun compte n'est associé à cet e-mail",
+    "user-not-active-error": "Votre compte n'a pas encore été activé. Veuillez nous contacter",
+    "payment-needed-error": "Pour obtenir ce pack, vous devez payer d'abord",
+    "user-not-found-error": "Utilisateur non trouvé",
+    "email-verification-token-unexistant-error": "Votre jeton de vérification n'existe pas, reconnectez-vous et nous vous enverrons un nouvel e-mail de vérification",
+    "email-verification-token-expired-error": "Votre jeton de vérification a expiré, reconnectez-vous et nous vous enverrons un nouvel e-mail de vérification",
+    "email-verification-token-email-changed-error": "Votre jeton de vérification n'est pas valide, reconnectez-vous et nous vous enverrons un nouvel e-mail de vérification",
+    "password-reset-token-unexistant-error": "Votre jeton de réinitialisation de mot de passe n'existe pas, reconnectez-vous et nous vous enverrons un nouvel e-mail de réinitialisation de mot de passe",
+    "password-reset-token-expired-error": "Votre jeton de réinitialisation de mot de passe a expiré, reconnectez-vous et nous vous enverrons un nouvel e-mail de réinitialisation de mot de passe",
+    "password-reset-token-email-changed-error": "Votre jeton de réinitialisation de mot de passe n'est pas valide, reconnectez-vous et nous vous enverrons un nouvel e-mail de réinitialisation de mot de passe",
+    "unknown-error": "Quelque chose a mal tourné",
+    "register-success": "Demande de compte réussie, veuillez vérifier votre e-mail avec le lien que nous vous avons envoyé",
+    "email-verification-success": "Votre e-mail a été vérifié avec succès",
+    "forgot-password-email-successful": "E-mail de réinitialisation de mot de passe envoyé avec succès, veuillez vérifier votre boîte de réception",
+    "password-reset-success": "Votre mot de passe a été réinitialisé avec succès",
+    "settings-save-success": "Les nouveaux paramètres ont été enregistrés avec succès",
+    "settings-save-error": "Erreur lors de l'enregistrement des paramètres",
+    "image-upload-success": "L'image a été téléchargée avec succès",
+    "image-upload-error": "Erreur lors du téléchargement de l'image, réessayez",
+    "leads-delete-success": "Le prospect a été supprimé avec succès",
+    "leads-delete-error": "Erreur lors de la suppression du prospect",
+    "user-save-success": "L'utilisateur a été enregistré avec succès",
+    "user-save-error": "Erreur lors de l'enregistrement de l'utilisateur",
+    "user-delete-success": "L'utilisateur a été supprimé avec succès",
+    "user-delete-error": "Erreur lors de la suppression de l'utilisateur",
+    "users-delete-success": "Les utilisateurs ont été supprimés avec succès",
+    "users-delete-error": "Erreur lors de la suppression des utilisateurs",
+    "course-title-error": "Le titre de la formation est requis",
+    "course-description-error": "La description de la formation est requise",
+    "course-not-found-error": "Aucune formation n'a été trouvé",
+    "course-save-success": "La formation a été enregistré avec succès",
+    "course-save-error": "Erreur lors de l'enregistrement de la formation",
+    "chapter-title-error": "Le titre du chapitre est requis",
+    "chapter-description-error": "La description du chapitre est requise",
+    "chapter-video-error": "Un téléchargement de vidéo est requis",
+    "chapter-not-found-error": "Chapitre non trouvé",
+    "chapter-save-success": "Le chapitre a été enregistré avec succès",
+    "chapter-save-error": "Erreur lors de l'enregistrement du chapitre",
+    "chapter-delete-success": "Le chapitre a été supprimé avec succès",
+    "chapter-delete-error": "Erreur lors de la suppression du chapitre",
+    "video-upload-success": "La vidéo a été téléchargée avec succès",
+    "video-upload-error": "Erreur lors du téléchargement de la vidéo, réessayez",
+    "chapter-completed-success": "Félicitations pour avoir terminé ce chapitre",
+    "chapter-completed-error": "Erreur lors du marquage du chapitre comme terminé",
+    "previous-chapter-incomplete-error": "Marquez le chapitre précédent comme complété pour procéder au chapitre suivant."
+  },
+  "not-found": {
+    "title": "Page non trouvée",
+    "text": "Il semble que cette page n'existe pas, veuillez revenir en arrière.",
+    "button": "Retour"
+  },
+  "unauthorized": {
+    "title": "Accès non autorisé",
+    "button": "Retour"
+  },
+  "home": {
+    "metadata": {
+      "title": "Ecomness - Dropshipping Facile",
+      "description": "Ecomness, le chemin vers la liberté financière grâce à une plateforme de dropshipping tout-en-un et une formation en ligne"
+    },
+    "navbar": {
+      "home": "Accueil",
+      "course": {
+        "title": "Formation",
+        "overview": "Aperçu",
+        "freecourse": "Formation Gratuite"
+      },
+      "platform": "Plateforme",
+      "pricing": "Tarifs",
+      "testimonials": "Témoignages",
+      "login": "Connexion",
+      "register": "Inscription",
+      "new-feature": "Nouveau"
+    },
+    "hero": {
+      "title": "Le Chemin Vers",
+      "title-gradient": "La Liberté Financière",
+      "text": "Rejoignez la communauté Ecomness, profitez au maximum de notre formation et commencez votre aventure de dropshipping avec un tableau de bord tout-en-un et nos produits gagnants sélectionnés à des prix de gros",
+      "button": "Commencez Maintenant"
+    },
+    "partners": {
+      "text1": "Propulsé par les meilleurs du secteur",
+      "text2": "Des startups de nouvelle génération aux entreprises établies"
+    },
+    "whatweoffer": {
+      "badge": "Ce Que Nous Offrons",
+      "title": "Dropshipping Facile",
+      "text": "Que vous soyez débutant désireux d'apprendre ou que vous ayez déjà de l'expérience dans le e-commerce, vous avez tout ce qu'il faut pour démarrer grâce à nos plans et offres."
+    },
+    "course": {
+      "badge": "Formation En Ligne",
+      "title1": "Pas D'expérience ?",
+      "title2": "Pas De Problème.",
+      "text": "Une formation en ligne à 100% réalisé par des experts en e-commerce et dropshipping, c'est tout ce dont vous avez besoin pour commencer à gagner de l'argent en ligne.",
+      "button": "Obtenez la formation",
+      "grid": {
+        "branding": {
+          "title": "Formation en Branding",
+          "text": "Apprenez étape par étape à créer votre propre marque et à la faire prospérer"
+        },
+        "marketing": {
+          "title": "Formation en Marketing",
+          "text": "Campagnes, stratégies et meilleures pratiques avec l'aide d'experts"
+        },
+        "ecommerce": {
+          "title": "Formation en E-commerce",
+          "text": "Comment collaborer avec un fournisseur, trouver le bon produit et fixer le bon prix"
+        },
+        "community": {
+          "title": "Accès à notre communauté",
+          "text": "Un réseau de professionnels où vous pouvez échanger des idées et poser des questions"
+        }
+      },
+      "title3": "Regardez notre",
+      "title4": "Mini Formation Gratuitement"
+    },
+    "platform": {
+      "badge": "Plateforme de Dropshipping",
+      "title": "Une Plateforme Qui Vous Épargne Tous Les Ennuis",
+      "text": "Vous apportez des commandes, nous nous occupons du reste. De l'emballage et des ramassages à la livraison, nous nous en chargeons.",
+      "button": "Rejoignez Notre Plateforme",
+      "bento1": {
+        "title": "Synchronisation Avec La Société De Livraison",
+        "text": "Suivi des commandes en temps réel et synchronisation pour une tranquillité d'esprit.",
+        "order": "Commande",
+        "canceled": "Annulée",
+        "inprogress": "En Cours",
+        "delivered": "Livrée"
+      },
+      "bento2": {
+        "title": "Incroyablement rapide",
+        "text": "Envoyez des commandes des fournisseurs aux clients finaux avec emballage en un clic."
+      },
+      "bento3": {
+        "title": "Statistiques de ventes en temps réel",
+        "text": "Pour toujours avoir des informations et des données sur l'évolution des choses."
+      },
+      "bento4": {
+        "title": "Produits Les Plus Vendus",
+        "text": "Une variété de produits gagnants à des prix de gros.",
+        "product1": "T-shirt",
+        "category1": "Vêtements",
+        "product2": "Smartphone",
+        "category2": "Hi-Tech",
+        "product3": "Casque Audio",
+        "category3": "Gadgets"
+      },
+      "title2": "Un puissant créateur de boutique en ligne",
+      "text2": "Mettez votre boutique en ligne en service en quelques minutes sans aucune connaissance en codage.",
+      "title3": "Notre Plateforme En Chiffres",
+      "productCounter": "Produits",
+      "revenuCounter": "Revenus générés par nos utilisateurs",
+      "supplierCounter": "Fournisseurs"
+    },
+    "pricing": {
+      "badge": "Tarifs",
+      "title": "Packs Basés Sur Vos Besoins",
+      "text": "Que vous souhaitiez tout apprendre sur le e-commerce, le dropshipping, le branding et les publicités, ou simplement utiliser notre plateforme pour la liberté financière, nous avons le pack qu'il vous faut.",
+      "free": "100% Gratuit",
+      "pay-once": "Paiement unique",
+      "damrej": {
+        "description": "Vous avez déjà de l'expérience, tout ce dont vous avez besoin, ce sont des produits gagnants à des prix de gros",
+        "feature1": "Toutes les fonctionnalités de la plateforme",
+        "feature2": "Accès à nos produits",
+        "feature3": "Aucun frais de vente jusqu'à 500 DT de profit",
+        "feature4": "10% de frais sur le profit hebdomadaire",
+        "button": "Obtenez l'Offre"
+      },
+      "3jeja": {
+        "description": "Vous souhaitez apprendre des experts, bénéficier d'un suivi de 6 mois et accéder à la plateforme",
+        "feature1": "Tout dans le pack DAMREJ",
+        "feature2": "Accès au créateur de boutique",
+        "feature3": "Produits gagnants sélectionnés à la main",
+        "feature4": "Contenu marketing",
+        "feature5": "Formation de dropshipping",
+        "feature6": "6 mois de suivi",
+        "feature7": "10% de frais sur le profit hebdomadaire",
+        "button": "Obtenez l'Offre"
+      },
+      "machrou3": {
+        "description": "Vous souhaitez créer votre propre entreprise et profiter de tout ce que nous offrons",
+        "feature1": "Tout dans le pack 3JEJA",
+        "feature2": "Créer légalement votre propre entreprise",
+        "feature3": "Nous engager comme agence de marketing",
+        "feature4": "10% de frais sur le profit hebdomadaire",
+        "button": "Obtenez l'Offre"
+      }
+    },
+    "testimonials": {
+      "title": "Ce Que Nos Clients Disent",
+      "text": "Des connaisseurs en e-commerce aux étudiants qui n'ont aucune connaissance, ils disent tous la même chose.",
+      "users": {
+        "user1": {
+          "name": "Mohamed Amine",
+          "job": "Étudiant en Logistique",
+          "text": "Je n'ai jamais vu quelque chose comme ça avant, Ecomness rend tout beaucoup plus facile.",
+          "img": "/img/amine.webp"
+        },
+        "user2": {
+          "name": "Firas",
+          "job": "Retraité",
+          "text": "Grâce à Ecomness, je gagne maintenant de l'argent pendant mon temps libre.",
+          "img": "/img/firas.webp"
+        },
+        "user3": {
+          "name": "Mohamed Amine",
+          "job": "Étudiant en Logistique",
+          "text": "Je n'ai jamais vu quelque chose comme ça avant, Ecomness rend tout beaucoup plus facile.",
+          "img": "/img/amine.webp"
+        },
+        "user4": {
+          "name": "Abd Eraouf",
+          "job": "Banquier",
+          "text": "Ecomness m'a permis d'avoir un second revenu.",
+          "img": "/img/raouf.webp"
+        },
+        "user5": {
+          "name": "Mohamed Amine",
+          "job": "Étudiant en Logistique",
+          "text": "Je n'ai jamais vu quelque chose comme ça avant, Ecomness rend tout beaucoup plus facile.",
+          "img": "/img/amine.webp"
+        },
+        "user6": {
+          "name": "Firas",
+          "job": "Retraité",
+          "text": "Grâce à Ecomness, je gagne maintenant de l'argent pendant mon temps libre.",
+          "img": "/img/firas.webp"
+        }
+      }
+    },
+    "cta": {
+      "title1": "Ne vous fiez pas seulement à nos paroles",
+      "title2": "Essayez par vous-même, c'est gratuit",
+      "text": "Commencez à gagner de l'argent en ligne depuis le confort de votre domicile sans les tracas liés aux produits, fournisseurs, stocks, et ressources humaines des sociétés de livraison.",
+      "button": "Commencez Gratuitement Maintenant"
+    },
+    "faq": {
+      "title": "Questions fréquemment posées",
+      "text": "Vous trouverez ici les questions les plus posées sur nos services. Si vous ne trouvez pas votre question, n'hésitez pas à nous contacter.",
+      "question1": "Que propose Ecomness à ses vendeurs ?",
+      "answer1": "Ecomness vous offre un catalogue diversifié de produits que vous pouvez commercialiser et vendre sans avoir à gérer les stocks. Une nouvelle ère de vente commence avec Ecomness !",
+      "question2": "Comment puis-je commencer à vendre avec Ecomness ?",
+      "answer2": "Il vous suffit de vous inscrire sur Ecomness et de commencer votre excitant voyage dans le commerce électronique. C'est aussi simple que cela !",
+      "question3": "Puis-je utiliser d'autres plateformes pour vendre les produits d'Ecomness ?",
+      "answer3": "Vous êtes libre de vendre des produits via n'importe quel canal de votre choix. Il vous suffit de passer une commande sur Ecomness lorsque vous réalisez une vente.",
+      "question4": "Comment Ecomness assure-t-il l'exécution de mes commandes ?",
+      "answer4": "Vos commandes sont traitées de manière transparente par nos fournisseurs de confiance et nos partenaires de livraison fiables, garantissant que vous respectez vos engagements envers vos clients.",
+      "question5": "Comment puis-je surveiller les niveaux de stock des produits ?",
+      "answer5": "Avec Ecomness, vous avez une visibilité en temps réel sur les niveaux de stock des fournisseurs. Restez informé et planifiez vos stratégies de vente en conséquence.",
+      "question6": "Quels sont les frais encourus lors de la passation d'une commande avec Ecomness ?",
+      "answer6": "Vos dépenses avec Ecomness se limitent à de petits frais d'expédition, d'emballage et de service, optimisant ainsi votre flux de trésorerie.",
+      "question7": "Quel est le frais de service pour la gestion et la facilitation de mes transactions sur Ecomness ?",
+      "answer7": "Ecomness ne facture qu'une somme modique pour les transactions réussies, couvrant une gamme complète de services.",
+      "question8": "Quand et comment vais-je recevoir mes paiements ?",
+      "answer8": "Vous recevez vos paiements chaque semaine.",
+      "question9": "Quelles compétences dois-je avoir pour réussir sur Ecomness ?",
+      "answer9": "Une compréhension de base du commerce électronique et du marketing, associée à une volonté d'apprendre et de s'améliorer, vous aidera à réussir sur Ecomness."
+    }
+  },
+  "free-course": {
+    "metadata": {
+      "title": "Ecomness - Formation gratuite sur le dropshipping",
+      "description": "Accédez à une formation gratuite sur le dropshipping pour apprendre les bases et les fondamentaux du commerce électronique et du dropshipping et commencez à gagner de l'argent en ligne",
+      "video-title": "Formation gratuite sur le dropshipping"
+    },
+    "title": "Lancez votre propre entreprise en ligne avec notre",
+    "title-gradient": "Formation gratuite sur le dropshipping",
+    "text": "Dans cette mini-formation, vous apprendrez les fondamentaux du dropshipping et du commerce électronique, ainsi que les meilleures pratiques et stratégies pour commencer à gagner de l'argent en ligne.",
+    "form-title": "Regarder la formation",
+    "form-text": "Entrez vos informations pour regarder la formation gratuite",
+    "watch-button": "Commencer à regarder",
+    "buy-button": "Obtenez la Formation Complète",
+    "toast-title": "Merci pour votre inscription",
+    "toast-text": "Vous pouvez maintenant regarder la formation gratuite sur le dropshipping",
+    "dialog-title": "Félicitations",
+    "dialog-text": "Félicitations pour être arrivé jusqu'ici. Vous pouvez maintenant obtenir la formation complète sur le dropshipping en cliquant sur le bouton ci-dessous.",
+    "dialog-button1": "Obtenir la formation complète",
+    "dialog-button2": "Continuer à regarder"
+  },
+  "register": {
+    "metadata": {
+      "title": "Ecomness - S'inscrire",
+      "description": "Inscrivez-vous et créez votre compte"
+    },
+    "form-title": "Créer Votre Compte",
+    "text": "Entrez vos informations et choisissez un pack pour demander la création de votre compte",
+    "pricing-details": "Obtenez plus de détails sur nos tarifs et packs",
+    "register-button": "Créer un Compte",
+    "consent": "En vous inscrivant, vous acceptez notre",
+    "terms": "Conditions d'utilisation",
+    "consent2": "et",
+    "policy": "Politique de confidentialité."
+  },
+  "login": {
+    "metadata": {
+      "title": "Ecomness - Connexion",
+      "description": "Connectez-vous à votre compte Ecomness"
+    },
+    "form-title": "Se Connecter À Votre Compte",
+    "text": "Entrez vos informations pour vous connecter à votre compte",
+    "forgot-password": "Mot de passe oublié ?",
+    "login-button": "Connexion",
+    "register-link": "Vous n'avez pas de compte ?"
+  },
+  "email-verification": {
+    "metadata": {
+      "title": "Ecomness - Vérification de l'E-mail",
+      "description": "Vérifiez votre E-mail"
+    },
+    "title": "Vérification de l'E-mail",
+    "text": "Nous confirmons la vérification de votre E-mail",
+    "login-button": "Retour à la Connexion"
+  },
+  "forgot-password": {
+    "metadata": {
+      "title": "Ecomness - Mot de passe Oublié",
+      "description": "Envoyez un E-mail de Réinitialisation de Mot de Passe pour Changer votre Mot de Passe"
+    },
+    "form-title": "Mot de Passe Oublié ?",
+    "text": "Entrez l'E-mail associé à votre compte pour recevoir un E-mail de réinitialisation de mot de passe",
+    "send-button": "Envoyer l'E-mail de Réinitialisation",
+    "login-link": "Retour à la Connexion"
+  },
+  "reset-password": {
+    "metadata": {
+      "title": "Ecomness - Réinitialisation du Mot de Passe",
+      "description": "Réinitialisez votre Mot de Passe et Accédez à votre Compte"
+    },
+    "form-title": "Réinitialisez votre Mot de Passe",
+    "text": "Entrez votre nouveau mot de passe et confirmez-le pour le réinitialiser et accéder à votre compte",
+    "reset-button": "Réinitialiser le Mot de Passe",
+    "login-link": "Retour à la connexion"
+  }
+}
