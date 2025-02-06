@@ -155,6 +155,10 @@ export type AdminStats = {
 };
 
 export type SellerStats = {
+  cap: number;
+  car: number;
+  returnedRevenue: number;
+  cancelledRevenue: number;
   subOrders: number;
   transactions: number;
   products: number;
@@ -162,8 +166,12 @@ export type SellerStats = {
   pickups: number;
   completedSubOrders: number;
   pendingSubOrders: number;
+  cancelledSubOrders: number;
   returnedSubOrders: number;
   paidSubOrders: number;
+  paidOrdersProfit: number;
+  deliveredNotPaidProfit: number;
+  loss: number;
   monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
   dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
   topFiftyProducts: TopFiftyItem[];

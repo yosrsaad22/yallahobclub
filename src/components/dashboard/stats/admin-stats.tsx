@@ -90,7 +90,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
       <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* first row */}
         <Card className="relative max-h-[7rem] flex-col overflow-hidden">
-          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full  border-2 border-foreground px-2 text-sm font-semibold text-foreground">
             {tStats('total')}
           </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
@@ -104,7 +104,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
           </CardContent>
         </Card>
         <Card className="relative max-h-[7rem] flex-col overflow-hidden">
-          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border-2 border-foreground px-2 text-sm font-semibold text-foreground">
             CAP
           </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
@@ -118,7 +118,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
           </CardContent>
         </Card>
         <Card className="relative max-h-[7rem] flex-col overflow-hidden">
-          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border-2 border-foreground px-2 text-sm font-semibold  text-foreground">
             CAR
           </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
@@ -132,7 +132,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
           </CardContent>
         </Card>
         <Card className="relative flex max-h-[7rem] flex-col overflow-hidden">
-          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border-2 border-foreground px-2 text-sm font-semibold  text-foreground">
             CAE
           </div>
           <CardHeader className="flex flex-col flex-wrap items-start   justify-start gap-0 space-y-0 pb-2  md:flex-row md:flex-nowrap md:items-center md:justify-between">
