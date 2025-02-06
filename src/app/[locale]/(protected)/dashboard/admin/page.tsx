@@ -6,17 +6,20 @@ import { getTranslations } from 'next-intl/server';
 
 export default async function AdminHome() {
   const t = await getTranslations('dashboard');
+  const today = new Date();
 
-  const res: ActionResponse = await adminGetStats({
-    from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-    to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-  });
+  const defaultDateRange: DateRange = {
+    from: new Date(today.setHours(0, 0, 0, 0)),
+    to: null,
+  };
+
+  const res: ActionResponse = await adminGetStats(defaultDateRange);
   const statsData = res.error ? [] : res.data;
   const handleRefetch = async (range: DateRange) => {
     'use server';
     const res = await adminGetStats({
-      from: range.from || undefined,
-      to: range.to || undefined,
+      from: range.from,
+      to: range.to,
     });
     return res;
   };

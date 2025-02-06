@@ -25,14 +25,9 @@ export default function RootLayout({
         <body
           className={
             inter.className +
-            '  bg-[hsl(213,27%,10%)] scrollbar-thin scrollbar-track-[hsl(213,27%,10%)] scrollbar-thumb-[hsl(0,0%,14.9%)] scrollbar-track-rounded-full scrollbar-thumb-rounded-full'
+            '  bg-[hsl(0,0%,100%)] scrollbar-thin scrollbar-track-[hsl(213,27%,10%)] scrollbar-thumb-[hsl(0,0%,14.9%)] scrollbar-track-rounded-full scrollbar-thumb-rounded-full'
           }>
-          <NextTopLoader
-            showSpinner={false}
-            template={`
-          <div class="bar" role="bar" style="background: linear-gradient(to right,#2ab8bc,#e23670)">
-            <div class="peg" style="background: linear-gradient(to right,#2ab8bc,#e23670)"></div></div>`}
-          />
+          <NextTopLoader showSpinner={false} color="#2ab8bc" />
           {children}
           <Toaster />
           <SpeedInsights />

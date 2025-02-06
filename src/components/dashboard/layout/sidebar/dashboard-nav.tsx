@@ -56,14 +56,14 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                     <Link
                       href={item.href}
                       className={cn(
-                        'group relative flex items-center justify-center  gap-4 rounded-md px-[0.35rem] py-[0.35rem] text-sm font-medium hover:bg-background/95 hover:text-foreground/95 ',
+                        'group relative flex items-center justify-center  gap-4 rounded-md px-[0.35rem] py-[0.35rem] text-sm font-medium hover:bg-white/95 hover:text-black/95 ',
                         (path.split('/')[2] === 'marketplace' && items[index].title === 'marketplace') ||
                           path.split('/')[3] === items[index].title ||
                           (path.split('/')[1] === 'dashboard' &&
                             items[index].title === 'dashboard' &&
                             path.split('/')[2] !== 'marketplace' &&
                             path.split('/')[3] === undefined)
-                          ? 'bg-background/95   text-foreground/95'
+                          ? 'bg-white/95   text-black/95'
                           : '',
                         isMinimized ? '' : 'pl-2',
                       )}
@@ -78,9 +78,9 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                               items[index].title === 'dashboard' &&
                               path.split('/')[2] !== 'marketplace' &&
                               path.split('/')[3] === undefined)
-                            ? ' text-foreground/95'
+                            ? ' text-black/95'
                             : 'text-white',
-                          'group-hover:text-foreground/95',
+                          'group-hover:text-black/95',
                         )}>
                         {item.icon}
                       </div>

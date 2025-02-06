@@ -5,6 +5,8 @@ import { Command, CommandGroup, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { Button } from '../ui/button';
+import { IconWorld } from '@tabler/icons-react';
 
 const locales = [
   {
@@ -34,32 +36,23 @@ export function LanguageToggle() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Image
-          src={getSelectedLocale()!.img}
-          alt={`Flag for ${getSelectedLocale()!.value}`}
-          width={72}
-          height={64}
-          className="h-auto w-[32px] cursor-pointer object-contain"
-        />
+        <Button variant={'outline'} className="bg-transparent hover:bg-gray-700 " size={'sm'}>
+          <IconWorld className="mr-2" />
+          <p className="text-md py-2 font-bold">{getSelectedLocale()!.value.toUpperCase()}</p>
+        </Button>
       </PopoverTrigger>
-      <PopoverContent className="z-[100] mt-5 w-[50px]  rounded-[0.375rem] border-gray-400/[0.4] bg-dark/20 p-0 text-sm text-light backdrop-blur-md">
-        <Command className="bg-dark/20 backdrop-blur-md">
+      <PopoverContent className="z-[100] mt-5 w-[75px]  rounded-[0.375rem] border-gray-400/[0.4] bg-dark/20 p-0 text-sm text-light backdrop-blur-md">
+        <Command className="">
           <CommandGroup>
             {locales.map((locale) => (
               <CommandItem
                 key={locale.value}
                 value={locale.value}
                 onSelect={() => handleSelect(locale.value)}
-                className={cn('flex items-center rounded-[0.375rem] p-1 hover:bg-[hsl(0,0%,14.9%)] ')} // Highlight selected flag
+                className={cn('flex items-center justify-center rounded-[0.375rem] p-1 hover:bg-[hsl(0,0%,14.9%)] ')} // Highlight selected flag
               >
                 <Link passHref href={pathName.replace(currentLocale, locale.value)}>
-                  <Image
-                    src={locale.img}
-                    alt={`Flag for ${locale.value}`} // Descriptive alt text
-                    width={72}
-                    height={64}
-                    className="h-auto w-[72px]  object-contain"
-                  />
+                  <p className="text-md py-2 font-bold">{locale.value.toUpperCase()}</p>
                 </Link>
               </CommandItem>
             ))}

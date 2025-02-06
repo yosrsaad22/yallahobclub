@@ -220,7 +220,7 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
           if (product) {
             await db.product.update({
               where: { id: orderProduct.productId },
-              data: { stock: product.stock + parseInt(orderProduct.quantity) },
+              data: { stock: product.stock ?? 0 + parseInt(orderProduct.quantity) },
             });
           }
         }
@@ -407,7 +407,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
 
         await db.product.update({
           where: { id: item.productId },
-          data: { stock: product.stock - parseInt(item.quantity, 10) },
+          data: { stock: product.stock ?? 0 - parseInt(item.quantity, 10) },
         });
 
         if (product.sellers && product.sellers.length > 0) {
@@ -794,7 +794,7 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
       return { error: 'order-not-found-error' };
     } // Define statuses to exclude
 
-    const excludedStatuses = ['21', '22', '23', '22', '25', '26', '27', '28'];
+    const excludedStatuses = ['21', '22', '23', '25', '26', '27', '28'];
     for (const order of orders) {
       for (const subOrder of order.subOrders) {
         if (!excludedStatuses.includes(subOrder.status!)) {
@@ -847,7 +847,7 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
               if (product) {
                 await db.product.update({
                   where: { id: orderProduct.productId },
-                  data: { stock: product.stock + parseInt(orderProduct.quantity) },
+                  data: { stock: product.stock ?? 0 + parseInt(orderProduct.quantity) },
                 });
               }
             }

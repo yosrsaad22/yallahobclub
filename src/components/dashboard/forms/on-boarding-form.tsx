@@ -36,7 +36,7 @@ export function OnBoardingForm({ className }: OnBoardingFormProps) {
   type schemaType = z.infer<typeof OnBoardingSchema>;
 
   const defaultValues = {
-    storeName: user?.role === roleOptions.SELLER ? null : 'ECOMNESS',
+    storeName: user?.role === roleOptions.SELLER ? undefined : 'ECOMNESS',
   };
 
   const {
@@ -44,9 +44,11 @@ export function OnBoardingForm({ className }: OnBoardingFormProps) {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<schemaType>({ resolver: zodResolver(OnBoardingSchema) });
+    getValues,
+  } = useForm<schemaType>({ resolver: zodResolver(OnBoardingSchema), defaultValues });
 
   const onSubmit: SubmitHandler<schemaType> = async (data, event) => {
+    console.log(getValues());
     event?.preventDefault();
     startTransition(() => {
       CompleteOnBoarding(data).then((res: ActionResponse) => {
@@ -193,8 +195,15 @@ export function OnBoardingForm({ className }: OnBoardingFormProps) {
                 </div>
                 {errors.CIN2 && <span className="text-xs text-red-400">{tValidation('cin-2-error')}</span>}
               </LabelInputContainer>
-              <div className="mt-4 flex items-center justify-center">
-                <Button type="submit" variant={'primary'} size="default" disabled={isLoading}>
+              <div className="z-[100] mt-4 flex items-center justify-center">
+                <Button
+                  onClick={() => {
+                    console.log(getValues());
+                  }}
+                  type="submit"
+                  variant={'primary'}
+                  size="default"
+                  disabled={isLoading}>
                   {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
                   {!isLoading && <IconCheck className="mr-2 h-5 w-5 " />}
                   {t('get-started')}

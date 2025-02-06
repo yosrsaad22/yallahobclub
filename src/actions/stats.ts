@@ -1,15 +1,10 @@
 'use server';
 import { db } from '@/lib/db';
 import { currentUser, roleGuard } from '@/lib/auth';
-import { ActionResponse, DailyProfit, DailyProfitAndSubOrders, MonthlyProfitAndSubOrders } from '@/types';
+import { ActionResponse, DailyProfit, DailyProfitAndSubOrders, DateRange, MonthlyProfitAndSubOrders } from '@/types';
 import { UserRole } from '@prisma/client';
 import { endOfDay, endOfMonth, startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
 import { packOptions } from '@/lib/constants';
-
-interface DateRange {
-  from?: Date;
-  to?: Date;
-}
 
 async function fetchBasicCounts(from: Date, to: Date) {
   return Promise.all([
@@ -428,7 +423,7 @@ async function calculateSupplierDailyProfitAndSubOrders(id: string, from: Date, 
   return filledDailyData;
 }
 
-async function fetchTopTenProducts(from: Date, to: Date) {
+async function fetchtopFiftyProducts(from: Date, to: Date) {
   const bestSellers = await db.orderProduct.findMany({
     where: {
       productId: { not: null },
@@ -455,7 +450,7 @@ async function fetchTopTenProducts(from: Date, to: Date) {
   return Promise.all(
     Object.values(aggregated)
       .sort((a, b) => b.totalQuantity - a.totalQuantity)
-      .slice(0, 10)
+      .slice(0, 50)
       .map(async (item) => {
         const product = await db.product.findUnique({
           where: { id: item.productId },
@@ -471,7 +466,7 @@ async function fetchTopTenProducts(from: Date, to: Date) {
   );
 }
 
-async function fetchSellerTopTenProducts(id: string, from: Date, to: Date) {
+async function fetchSellertopFiftyProducts(id: string, from: Date, to: Date) {
   const bestSellers = await db.orderProduct.findMany({
     where: {
       product: {
@@ -512,7 +507,7 @@ async function fetchSellerTopTenProducts(id: string, from: Date, to: Date) {
   return Promise.all(
     Object.values(aggregated)
       .sort((a, b) => b.totalQuantity - a.totalQuantity) // Sort by quantity in descending order
-      .slice(0, 10)
+      .slice(0, 50)
       .map(async (item) => {
         const product = await db.product.findUnique({
           where: { id: item.productId },
@@ -534,7 +529,7 @@ async function fetchSellerTopTenProducts(id: string, from: Date, to: Date) {
   );
 }
 
-async function fetchSupplierTopTenProducts(id: string, from: Date, to: Date) {
+async function fetchSuppliertopFiftyProducts(id: string, from: Date, to: Date) {
   const bestSellers = await db.orderProduct.findMany({
     where: {
       product: {
@@ -576,7 +571,7 @@ async function fetchSupplierTopTenProducts(id: string, from: Date, to: Date) {
   return Promise.all(
     Object.values(aggregated)
       .sort((a, b) => b.totalQuantity - a.totalQuantity) // Sort by quantity in descending order
-      .slice(0, 10)
+      .slice(0, 50)
       .map(async (item) => {
         const product = await db.product.findUnique({
           where: { id: item.productId },
@@ -598,7 +593,7 @@ async function fetchSupplierTopTenProducts(id: string, from: Date, to: Date) {
   );
 }
 
-async function fetchTopTenSellers(from: Date, to: Date) {
+async function fetchtopFiftySellers(from: Date, to: Date) {
   const sellers = await db.subOrder.findMany({
     where: {
       order: {
@@ -625,7 +620,7 @@ async function fetchTopTenSellers(from: Date, to: Date) {
   return Promise.all(
     Object.values(sellerCounts)
       .sort((a, b) => b.subOrderCount - a.subOrderCount)
-      .slice(0, 10)
+      .slice(0, 50)
       .map(async (item) => {
         const seller = await db.user.findUnique({
           where: { id: item.sellerId },
@@ -639,15 +634,21 @@ async function fetchTopTenSellers(from: Date, to: Date) {
 export const adminGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
   const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
   const to = dateRange.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
+  console.log(dateRange.from);
+  console.log(dateRange.to);
+
+  console.log(from);
+  console.log(to);
+
   try {
     await roleGuard(UserRole.ADMIN);
 
-    const [counts, monthlyData, dailyData, topFiveProducts, topFiveSellers, subOrders, orders] = await Promise.all([
+    const [counts, monthlyData, dailyData, topFiftyProducts, topFiftySellers, subOrders, orders] = await Promise.all([
       fetchBasicCounts(from, to),
       calculateMonthlyProfit(),
       calculateDailyProfit(),
-      fetchTopTenProducts(from, to),
-      fetchTopTenSellers(from, to),
+      fetchtopFiftyProducts(from, to),
+      fetchtopFiftySellers(from, to),
       db.subOrder.findMany({
         where: {
           order: { createdAt: { gte: from, lte: to } },
@@ -656,14 +657,18 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       }),
       db.order.findMany({
         where: { createdAt: { gte: from, lte: to } },
-        include: { subOrders: true },
+        include: { subOrders: { include: { statusHistory: true } } },
       }),
     ]);
 
     const [leads, transactions, products, suppliers, sellers] = counts;
 
     const completedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '23'),
+      subOrder.statusHistory.some((history) => history.status === '7'),
+    ).length;
+
+    const cancelledSubOrders = subOrders.filter((subOrder) =>
+      subOrder.statusHistory.some((history) => history.status === 'EC01'),
     ).length;
     const paidSubOrders = subOrders.filter((subOrder) =>
       ['23', 'EC02'].every((status) => subOrder.statusHistory.some((history) => history.status === status)),
@@ -674,7 +679,16 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     ).length;
 
     const platformOrderProfit = orders.reduce((total, order) => {
-      return total + order.subOrders.reduce((subTotal, subOrder) => subTotal + (subOrder.platformProfit || 0), 0);
+      const deliveredProfit = order.subOrders.reduce((subTotal, subOrder) => {
+        const hasDeliveredStatus = subOrder.statusHistory?.some((history) => history.status === '7');
+        return hasDeliveredStatus ? subTotal + (subOrder.platformProfit || 0) : subTotal;
+      }, 0);
+
+      const returnedCount = order.subOrders.filter((subOrder) =>
+        subOrder.statusHistory?.some((history) => history.status === '25'),
+      ).length;
+
+      return total + deliveredProfit + returnedCount * 2.5;
     }, 0);
 
     const soldCourses = db.billing.findMany({
@@ -704,11 +718,55 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     }, 0);
     */
 
-    const totalRevenue = orders.reduce((total, order) => {
+    const cap = orders.reduce((total, order) => {
       return total + order.total;
     }, 0);
 
-    const pendingSubOrders = subOrders.length - (completedSubOrders + returnedSubOrders);
+    const car = orders.reduce((total, order) => {
+      const delivered = order.subOrders.some((subOrder) =>
+        subOrder.statusHistory?.some((history) => history.status === '7'),
+      );
+      return delivered ? total + order.total : total;
+    }, 0);
+    const cae = orders.reduce((total, order) => {
+      const deliveredProfit = order.subOrders.reduce((subTotal, subOrder) => {
+        const hasDeliveredStatus = subOrder.statusHistory?.some((history) => history.status === '7');
+        return hasDeliveredStatus ? subTotal + (subOrder.platformProfit || 0) : subTotal;
+      }, 0);
+
+      const returnedCount = order.subOrders.filter((subOrder) =>
+        subOrder.statusHistory?.some((history) => history.status === '25'),
+      ).length;
+
+      return total + deliveredProfit + returnedCount * 2.5;
+    }, 0);
+
+    const pendingSubOrders = subOrders.filter(
+      (subOrder) =>
+        !subOrder.statusHistory.some((history) =>
+          ['7', '25', 'EC01', '16', '21', '22', '23', '26', '28', '27', '28', 'EC02', 'EC03'].includes(history.status),
+        ),
+    ).length;
+
+    const pendingRevenue = subOrders
+      .filter(
+        (subOrder) =>
+          !subOrder.statusHistory.some((history) =>
+            ['7', '25', 'EC01', '16', '21', '22', '23', '26', '28', '27', '28', 'EC02', 'EC03'].includes(
+              history.status,
+            ),
+          ),
+      )
+      .reduce((total, subOrder) => total + (subOrder.total || 0), 0);
+
+    const cancelledRevenue = subOrders
+      .filter((subOrder) => subOrder.statusHistory.some((history) => ['EC01'].includes(history.status)))
+      .reduce((total, subOrder) => total + (subOrder.total || 0), 0);
+
+    const returnedRevenue = subOrders
+      .filter((subOrder) => subOrder.statusHistory.some((history) => ['25'].includes(history.status)))
+      .reduce((total, subOrder) => total + (subOrder.total || 0), 0);
+
     return {
       success: 'stats-fetch-success',
       data: {
@@ -717,18 +775,24 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
         platformProfit: platformOrderProfit.toFixed(2),
         courseProfit: platformCourseProfit.toFixed(2),
         transactions,
-        revenue: totalRevenue,
+        cap: cap.toFixed(2),
+        car: car.toFixed(2),
+        cae: cae.toFixed(2),
         completedSubOrders,
         pendingSubOrders,
         returnedSubOrders,
         paidSubOrders,
+        cancelledSubOrders,
+        pendingRevenue: pendingRevenue.toFixed(2),
+        cancelledRevenue: cancelledRevenue.toFixed(2),
+        returnedRevenue: returnedRevenue.toFixed(2),
         sellers,
         suppliers,
         products,
         monthlyProfit: monthlyData,
         dailyProfit: dailyData,
-        topFiveProducts,
-        topFiveSellers,
+        topFiftyProducts,
+        topFiftySellers,
       },
     };
   } catch (error) {
@@ -744,11 +808,11 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
   try {
     await roleGuard(UserRole.SELLER);
     const user = await currentUser();
-    const [counts, monthlyData, dailyData, topFiveProducts, subOrders, orders] = await Promise.all([
+    const [counts, monthlyData, dailyData, topFiftyProducts, subOrders, orders] = await Promise.all([
       fetchBasicSellerCounts(user?.id!, from, to),
       calculateSellerMonthlyProfitAndSubOrders(user?.id!),
       calculateSellerDailyProfitAndSubOrders(user?.id!, startOfDay(subDays(new Date(), 10)), endOfDay(new Date())),
-      fetchSellerTopTenProducts(user?.id!, from, to),
+      fetchSellertopFiftyProducts(user?.id!, from, to),
       db.subOrder.findMany({
         where: {
           order: {
@@ -770,7 +834,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
     const [transactions, products, pickups] = counts;
 
     const completedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '23'),
+      subOrder.statusHistory.some((history) => history.status === '7'),
     ).length;
     const paidSubOrders = subOrders.filter((subOrder) =>
       ['23', 'EC02'].every((status) => subOrder.statusHistory.some((history) => history.status === status)),
@@ -784,7 +848,13 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
       return total + order.subOrders.reduce((subTotal, subOrder) => subTotal + (subOrder.sellerProfit || 0), 0);
     }, 0);
 
-    const pendingSubOrders = subOrders.length - (completedSubOrders + returnedSubOrders);
+    const pendingSubOrders = subOrders.filter(
+      (subOrder) =>
+        !subOrder.statusHistory.some((history) =>
+          ['7', '25', 'EC01', '16', '21', '22', '23', '26', '28', '27', '28', 'EC02', 'EC03'].includes(history.status),
+        ),
+    ).length;
+
     return {
       success: 'stats-fetch-success',
       data: {
@@ -799,7 +869,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
         paidSubOrders,
         monthlyProfitAndSubOrders: monthlyData,
         dailyProfitAndSubOrders: dailyData,
-        topFiveProducts,
+        topFiftyProducts,
       },
     };
   } catch (error) {
@@ -816,11 +886,11 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
     await roleGuard(UserRole.SUPPLIER);
 
     const user = await currentUser();
-    const [counts, monthlyData, dailyData, topFiveProducts, subOrders, orders] = await Promise.all([
+    const [counts, monthlyData, dailyData, topFiftyProducts, subOrders, orders] = await Promise.all([
       fetchBasicSupplierCounts(user?.id!, from, to),
       calculateSupplierMonthlyProfitAndSubOrders(user?.id!),
       calculateSupplierDailyProfitAndSubOrders(user?.id!, startOfDay(subDays(new Date(), 10)), endOfDay(new Date())),
-      fetchSupplierTopTenProducts(user?.id!, from, to),
+      fetchSuppliertopFiftyProducts(user?.id!, from, to),
       db.subOrder.findMany({
         where: {
           order: {
@@ -868,7 +938,7 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
     const [transactions, products, pickups] = counts;
 
     const completedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '23'),
+      subOrder.statusHistory.some((history) => history.status === '7'),
     ).length;
 
     const paidSubOrders = subOrders.filter((subOrder) =>
@@ -891,7 +961,13 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
       );
     }, 0);
 
-    const pendingSubOrders = subOrders.length - (completedSubOrders + returnedSubOrders);
+    const pendingSubOrders = subOrders.filter(
+      (subOrder) =>
+        !subOrder.statusHistory.some((history) =>
+          ['7', '25', 'EC01', '16', '21', '22', '23', '26', '28', '27', '28', 'EC02', 'EC03'].includes(history.status),
+        ),
+    ).length;
+
     return {
       success: 'stats-fetch-success',
       data: {
@@ -906,7 +982,7 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
         paidSubOrders,
         monthlyProfitAndSubOrders: monthlyData,
         dailyProfitAndSubOrders: dailyData,
-        topFiveProducts,
+        topFiftyProducts,
       },
     };
   } catch (error) {

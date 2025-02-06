@@ -84,14 +84,15 @@ export const SellerOrderColumns: ColumnDef<
     accessorFn: (row: any) => row.createdAt,
     cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
     filterFn: (row, columnId, filterValue) => {
+      if (!filterValue?.from || !filterValue?.to) return true;
+
       const rawDateValue = row.getValue(columnId);
       const dateValue = new Date(rawDateValue as string | number | Date);
-      const filterDate = new Date(filterValue);
-      return (
-        dateValue.getFullYear() === filterDate.getFullYear() &&
-        dateValue.getMonth() === filterDate.getMonth() &&
-        dateValue.getDate() === filterDate.getDate()
-      );
+
+      const fromDate = new Date(filterValue.from);
+      const toDate = new Date(filterValue.to);
+
+      return dateValue >= fromDate && dateValue <= toDate;
     },
   },
   {
@@ -238,14 +239,15 @@ export const SupplierOrderColumns: ColumnDef<
     accessorFn: (row: any) => row.createdAt,
     cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
     filterFn: (row, columnId, filterValue) => {
+      if (!filterValue?.from || !filterValue?.to) return true;
+
       const rawDateValue = row.getValue(columnId);
       const dateValue = new Date(rawDateValue as string | number | Date);
-      const filterDate = new Date(filterValue);
-      return (
-        dateValue.getFullYear() === filterDate.getFullYear() &&
-        dateValue.getMonth() === filterDate.getMonth() &&
-        dateValue.getDate() === filterDate.getDate()
-      );
+
+      const fromDate = new Date(filterValue.from);
+      const toDate = new Date(filterValue.to);
+
+      return dateValue >= fromDate && dateValue <= toDate;
     },
   },
   {
@@ -363,14 +365,15 @@ export const AdminOrderColumns: ColumnDef<
     accessorFn: (row: any) => row.createdAt,
     cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
     filterFn: (row, columnId, filterValue) => {
+      if (!filterValue?.from || !filterValue?.to) return true;
+
       const rawDateValue = row.getValue(columnId);
       const dateValue = new Date(rawDateValue as string | number | Date);
-      const filterDate = new Date(filterValue);
-      return (
-        dateValue.getFullYear() === filterDate.getFullYear() &&
-        dateValue.getMonth() === filterDate.getMonth() &&
-        dateValue.getDate() === filterDate.getDate()
-      );
+
+      const fromDate = new Date(filterValue.from);
+      const toDate = new Date(filterValue.to);
+
+      return dateValue >= fromDate && dateValue <= toDate;
     },
   },
   {

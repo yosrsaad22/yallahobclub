@@ -43,9 +43,7 @@ export function MobileSidebar({ className }: SidebarProps) {
             <MenuIcon className="h-[1.4rem] w-[1.4rem]" />
           </Button>
         </SheetTrigger>
-        <SheetContent
-          side="left"
-          className="bg-gradient-to-b from-primary via-primary/90 to-secondary/80 !px-0 text-white">
+        <SheetContent side="left" className="bg-sidebar !px-0 text-white">
           <div className="">
             <div className="px-4">
               <h2 className="mb-8  text-lg font-semibold tracking-tight">Navigation</h2>
