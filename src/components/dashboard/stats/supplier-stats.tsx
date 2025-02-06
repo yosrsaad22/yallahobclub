@@ -27,7 +27,7 @@ import { ReturnRate } from './return-rate';
 import { useTranslations } from 'next-intl';
 import { DailyProfitAndSubOrdersChart } from './daily-profit-sub-orders';
 import { MonthlyProfitAndSubOrdersChart } from './monthly-profit-sub-orders';
-import { TopTen } from './top-ten';
+import { TopFifty } from './top-fifty';
 
 interface SupplierStatsProps extends React.HTMLAttributes<HTMLDivElement> {
   initialStats?: SupplierStats;
@@ -35,9 +35,10 @@ interface SupplierStatsProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStatsProps) {
+  const today = new Date();
   const defaultDateRange: DateRange = {
-    from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-    to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+    from: new Date(today.setHours(0, 0, 0, 0)),
+    to: null,
   };
   const tStats = useTranslations('dashboard.stats');
 
@@ -64,7 +65,7 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-end gap-3">
-        <DateRangePicker onChange={(range) => setDateRange(range)} />
+        <DateRangePicker defaultDateRange={defaultDateRange} onChange={(range) => setDateRange(range)} />
         <Button disabled={isFetching} className="px-4" onClick={() => handleRefetch()} variant={'outline'}>
           {isFetching ? <IconLoader2 className="mr-2 h-5 w-5 animate-spin" /> : <IconCheck className="mr-2 h-5 w-5" />}
           Apply
@@ -190,18 +191,18 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
         <Card className="col-span-1  p-3 md:col-span-3 md:p-3">
-          <TopTen
-            data={stats?.topFiveProducts || []}
-            dateRange={dateRange!}
+          <TopFifty
+            data={stats?.topFiftyProducts || []}
+            dateRange={dateRange ?? defaultDateRange}
             isFetching={isFetching}
-            title={tStats('seller-top-ten-products-title')}
-            description={tStats('seller-top-ten-products-description')}
+            title={tStats('seller-top-fifty-products-title')}
+            description={tStats('seller-top-fifty-products-description')}
             noDataMessage={tStats('no-data')}
           />{' '}
         </Card>
         <Card className="col-span-1 p-3 md:col-span-2 md:p-3">
           <ReturnRate
-            date={dateRange!}
+            date={dateRange ?? defaultDateRange}
             loading={isFetching}
             data={[
               { name: 'Delivered', value: stats?.completedSubOrders || 0 },

@@ -324,7 +324,8 @@ export function DataTableToolbar<TData extends { id: string }>({
                 onClick={() => {
                   toggleFilters();
                 }}>
-                <IconFilter className="h-5 w-5" />
+                <IconFilter className="mr-0 h-5 w-5 md:mr-2" />
+                <p className="hidden md:flex">{t('filter')}</p>
               </Button>
             )}
           </div>

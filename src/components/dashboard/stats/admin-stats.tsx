@@ -5,15 +5,20 @@ import {
   IconBuildingWarehouse,
   IconCheck,
   IconCircleDashedCheck,
+  IconClockDollar,
+  IconCoinOff,
   IconCurrencyDollar,
   IconHourglassHigh,
   IconLoader2,
   IconPackage,
   IconPackageImport,
   IconSearch,
+  IconShoppingCartDiscount,
+  IconTransactionDollar,
   IconTruckDelivery,
   IconUserQuestion,
   IconUsers,
+  IconX,
 } from '@tabler/icons-react';
 import { GraphIllustration1 } from '@/components/illustrations/graph1';
 import { GraphIllustration2 } from '@/components/illustrations/graph2';
@@ -28,12 +33,12 @@ import { ReturnRate } from './return-rate';
 import { useTranslations } from 'next-intl';
 import { DailyProfitAndSubOrdersChart } from './daily-profit-sub-orders';
 import { MonthlyProfitAndSubOrdersChart } from './monthly-profit-sub-orders';
-import { TopTen } from './top-ten';
 import { MonthlyProfitChart } from './monthly-profit';
 import { DailyProfitChart } from './daily-profit';
 import { MonthlySubOrdersAndCoursesChart } from './monthly-sub-orders-courses';
 import { DailySubOrdersAndCoursesChart } from './daily-sub-orders-courses';
 import { Badge } from '@/components/ui/badge';
+import { TopFifty } from './top-fifty';
 
 interface AdminStatsProps extends React.HTMLAttributes<HTMLDivElement> {
   initialStats?: AdminStats;
@@ -41,10 +46,12 @@ interface AdminStatsProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps) {
+  const today = new Date();
   const defaultDateRange: DateRange = {
-    from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-    to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+    from: new Date(today.setHours(0, 0, 0, 0)),
+    to: null,
   };
+
   const tStats = useTranslations('dashboard.stats');
 
   const [stats, setStats] = useState<AdminStats | null>(initialStats || null);
@@ -70,7 +77,7 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row flex-wrap items-center  justify-end gap-3">
-        <DateRangePicker onChange={(range) => setDateRange(range)} />
+        <DateRangePicker defaultDateRange={defaultDateRange} onChange={(range) => setDateRange(range)} />
         <Button disabled={isFetching} className="px-4" onClick={() => handleRefetch()} variant={'outline'}>
           {isFetching ? (
             <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -84,34 +91,12 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
         {/* first row */}
         <Card className="relative max-h-[7rem] flex-col overflow-hidden">
           <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
-            {tStats('estimated')}
+            {tStats('total')}
           </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
-            <CardTitle className="text-sm font-medium">{tStats('revenue')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{tStats('sub-orders')}</CardTitle>
             <div className="text-lg font-bold">
-              {isFetching ? (
-                <IconLoader2 className="animate-spin text-muted-foreground" />
-              ) : (
-                `${stats?.revenue.toFixed(1) || 0} TND`
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="mt-0 px-0 md:-mt-4">
-            <GraphIllustration4 />
-          </CardContent>
-        </Card>
-        <Card className="relative flex max-h-[7rem] flex-col overflow-hidden">
-          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
-            {tStats('estimated')}
-          </div>
-          <CardHeader className="flex flex-col flex-wrap items-start   justify-start gap-0 space-y-0 pb-2  md:flex-row md:flex-nowrap md:items-center md:justify-between">
-            <CardTitle className="text-sm font-medium">{tStats('platform-revenue')}</CardTitle>
-            <div className="text-lg font-bold">
-              {isFetching ? (
-                <IconLoader2 className="animate-spin text-muted-foreground" />
-              ) : (
-                `${stats?.platformProfit || 0} TND`
-              )}
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.subOrders || 0}
             </div>
           </CardHeader>
           <CardContent className="mt-0 px-0 md:-mt-4">
@@ -120,27 +105,40 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
         </Card>
         <Card className="relative max-h-[7rem] flex-col overflow-hidden">
           <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
-            {tStats('estimated')}
+            CAP
           </div>
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
-            <CardTitle className="text-sm font-medium">{tStats('course-revenue')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{tStats('cap')}</CardTitle>
             <div className="text-lg font-bold">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.courseProfit || 0}
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : `${stats?.cap || 0} TND`}
+            </div>
+          </CardHeader>
+          <CardContent className="mt-0 px-0 md:-mt-4">
+            <GraphIllustration4 />
+          </CardContent>
+        </Card>
+        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+          <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
+            CAR
+          </div>
+          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
+            <CardTitle className="text-sm font-medium">{tStats('car')}</CardTitle>
+            <div className="text-lg font-bold">
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : `${stats?.car || 0} TND`}
             </div>
           </CardHeader>
           <CardContent className="mt-0 px-0 md:-mt-4">
             <GraphIllustration2 />
           </CardContent>
         </Card>
-
-        <Card className="relative max-h-[7rem] flex-col overflow-hidden">
+        <Card className="relative flex max-h-[7rem] flex-col overflow-hidden">
           <div className="absolute bottom-1 right-2 w-fit rounded-full border border-foreground px-2 text-xs text-foreground">
-            {tStats('estimated')}
+            CAE
           </div>
-          <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
-            <CardTitle className="text-sm font-medium">{tStats('sub-orders')}</CardTitle>
+          <CardHeader className="flex flex-col flex-wrap items-start   justify-start gap-0 space-y-0 pb-2  md:flex-row md:flex-nowrap md:items-center md:justify-between">
+            <CardTitle className="text-sm font-medium">{tStats('cae')}</CardTitle>
             <div className="text-lg font-bold">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.subOrders || 0}
+              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : `${stats?.cae || 0} TND`}
             </div>
           </CardHeader>
           <CardContent className="mt-0 px-0 md:-mt-4">
@@ -164,17 +162,6 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
             </div>
           </CardContent>
         </Card>
-        <Card className="max-h-[7rem] ">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{tStats('paid-sub-orders')}</CardTitle>
-            <IconCurrencyDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="mt-0 text-xl font-bold md:-mt-5">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.paidSubOrders || 0}
-            </div>
-          </CardContent>
-        </Card>
 
         <Card className="max-h-[7rem]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -187,6 +174,21 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
                 <IconLoader2 className="animate-spin text-muted-foreground" />
               ) : (
                 stats?.pendingSubOrders || 0
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="max-h-[7rem] ">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('cancelled-sub-orders')}</CardTitle>
+            <IconX className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0 text-xl font-bold md:-mt-5">
+              {isFetching ? (
+                <IconLoader2 className="animate-spin text-muted-foreground" />
+              ) : (
+                stats?.cancelledSubOrders || 0
               )}
             </div>
           </CardContent>
@@ -208,6 +210,72 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
         </Card>
 
         {/* third row */}
+
+        <Card className="max-h-[7rem]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('average-cart')}</CardTitle>
+            <IconShoppingCartDiscount className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0 text-xl font-bold md:-mt-5 ">
+              {isFetching ? (
+                <IconLoader2 className="animate-spin text-muted-foreground" />
+              ) : stats?.car && stats?.completedSubOrders ? (
+                (stats.car / stats.completedSubOrders).toFixed(2) + ' TND'
+              ) : (
+                0 + ' TND'
+              )}{' '}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="max-h-[7rem]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('pending-revenue')}</CardTitle>
+            <IconClockDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0 text-xl font-bold md:-mt-5">
+              {isFetching ? (
+                <IconLoader2 className="animate-spin text-muted-foreground" />
+              ) : (
+                `${stats?.pendingRevenue || 0} TND`
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="max-h-[7rem] ">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('cancelled-revenue')}</CardTitle>
+            <IconCoinOff className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0 text-xl font-bold md:-mt-5">
+              {isFetching ? (
+                <IconLoader2 className="animate-spin text-muted-foreground" />
+              ) : (
+                `${stats?.cancelledRevenue || 0} TND`
+              )}{' '}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="max-h-[7rem]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{tStats('returned-revenue')}</CardTitle>
+            <IconTransactionDollar className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="mt-0  text-xl font-bold md:-mt-5">
+              {isFetching ? (
+                <IconLoader2 className="animate-spin text-muted-foreground" />
+              ) : (
+                `${stats?.returnedRevenue || 0} TND`
+              )}{' '}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* fourth row */}
 
         <Card className="max-h-[7rem]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -246,31 +314,34 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
           </CardContent>
         </Card>
       </div>
+
+      {/* fifth and sixth row */}
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
         <Card className="col-span-1  p-3 md:col-span-2 md:p-3">
-          <TopTen
-            data={stats?.topFiveProducts || []}
-            dateRange={dateRange!}
+          <TopFifty
+            data={stats?.topFiftyProducts || []}
+            dateRange={dateRange ?? defaultDateRange}
             isFetching={isFetching}
-            title={tStats('top-ten-products-title')}
-            description={tStats('top-ten-products-description')}
+            title={tStats('top-fifty-products-title')}
+            description={tStats('top-fifty-products-description')}
             noDataMessage={tStats('no-data')}
           />{' '}
         </Card>
         <Card className="col-span-1  p-3 md:col-span-2 md:p-3">
-          <TopTen
-            data={stats?.topFiveSellers || []}
-            dateRange={dateRange!}
+          <TopFifty
+            data={stats?.topFiftySellers || []}
+            dateRange={dateRange ?? defaultDateRange}
             isFetching={isFetching}
-            title={tStats('top-ten-sellers-title')}
-            description={tStats('top-ten-sellers-description')}
+            title={tStats('top-fifty-sellers-title')}
+            description={tStats('top-fifty-sellers-description')}
             noDataMessage={tStats('no-data')}
             useAvatars
           />{' '}
         </Card>
         <Card className="col-span-1 p-3 md:col-span-2 md:p-3">
           <ReturnRate
-            date={dateRange!}
+            date={dateRange ?? defaultDateRange}
             loading={isFetching}
             data={[
               { name: 'Delivered', value: stats?.completedSubOrders || 0 },

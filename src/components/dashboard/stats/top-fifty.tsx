@@ -5,12 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { MEDIA_HOSTNAME } from '@/lib/constants';
 import { formatDate } from '@/lib/utils';
 import Image from 'next/image';
-import { DateRange, TopTenItem } from '@/types';
+import { DateRange, TopFiftyItem } from '@/types';
 import { IconCalendar, IconLoader2, IconUser } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
-interface TopTenProps {
-  data: TopTenItem[];
+interface TopFiftyProps {
+  data: TopFiftyItem[];
   dateRange: DateRange;
   isFetching: boolean;
   title: string;
@@ -19,7 +19,7 @@ interface TopTenProps {
   useAvatars?: boolean;
 }
 
-export function TopTen({
+export function TopFifty({
   data,
   dateRange,
   isFetching,
@@ -27,7 +27,7 @@ export function TopTen({
   description,
   noDataMessage,
   useAvatars = false,
-}: TopTenProps) {
+}: TopFiftyProps) {
   return (
     <Card className="h-full ">
       <CardHeader className="p-3">

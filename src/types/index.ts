@@ -120,7 +120,7 @@ export type MonthlyProfit = {
   soldCourses: number;
 };
 
-export type TopTenItem = {
+export type TopFiftyItem = {
   id: string;
   name: string;
   media: string;
@@ -136,16 +136,22 @@ export type AdminStats = {
   sellers: number;
   suppliers: number;
   products: number;
-  revenue: number;
+  cap: number;
+  car: number;
+  cae: number;
   pickups: number;
   completedSubOrders: number;
   pendingSubOrders: number;
   returnedSubOrders: number;
   paidSubOrders: number;
+  cancelledSubOrders: number;
+  pendingRevenue: number;
+  cancelledRevenue: number;
+  returnedRevenue: number;
   monthlyProfit: MonthlyProfit[];
   dailyProfit: DailyProfit[];
-  topFiveProducts: TopTenItem[];
-  topFiveSellers: TopTenItem[];
+  topFiftyProducts: TopFiftyItem[];
+  topFiftySellers: TopFiftyItem[];
 };
 
 export type SellerStats = {
@@ -160,7 +166,7 @@ export type SellerStats = {
   paidSubOrders: number;
   monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
   dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
-  topFiveProducts: TopTenItem[];
+  topFiftyProducts: TopFiftyItem[];
 };
 
 export type SupplierStats = {
@@ -175,5 +181,5 @@ export type SupplierStats = {
   paidSubOrders: number;
   monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
   dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
-  topFiveProducts: TopTenItem[];
+  topFiftyProducts: TopFiftyItem[];
 };

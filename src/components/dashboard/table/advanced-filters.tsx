@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
 import { orderStatuses, roleOptions } from '@/lib/constants';
-import { DataTableUser, MediaType } from '@/types';
+import { DataTableUser, DateRange, MediaType } from '@/types';
 import { IconFilter, IconFilterOff } from '@tabler/icons-react';
 import { Table } from '@tanstack/react-table';
 import { useTranslations } from 'next-intl';
@@ -15,6 +15,8 @@ import { translateColumnHeader } from '@/lib/utils';
 import { DatePicker } from '@/components/ui/date-picker';
 import { useCurrentRole } from '@/hooks/use-current-role';
 import { ca } from 'date-fns/locale';
+import { DateRangePicker } from '../stats/date-range-picker';
+import { endOfDay, startOfDay } from 'date-fns';
 
 interface AdvancedFiltersProps<TData> {
   tag: string;
@@ -138,7 +140,10 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
     setSelectedSuppliers([]);
     setSelectedSellers([]);
     setSelectedProducts([]);
-    setSelectedDate(undefined);
+    setResetDateRange(true);
+    setTimeout(() => setResetDateRange(false), 0);
+    setDateRange(undefined);
+
     columns.forEach((column) => {
       if (!column.getIsVisible()) {
         column.toggleVisibility(true);
@@ -165,18 +170,32 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
     }
   };
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [resetDateRange, setResetDateRange] = useState(false);
 
-  const handleDateChange = (date: Date | undefined) => {
-    setSelectedDate(date);
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    if (!range?.from) return;
+
+    let from = new Date(range.from.getTime() + 60 * 60 * 1000);
+    let to = range.to ? new Date(range.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
+
+    if (dateRange?.from?.getTime() === from.getTime() && dateRange?.to?.getTime() === to.getTime()) {
+      return;
+    }
+
+    setDateRange({ from, to });
+
     const columnFilters = table.getState().columnFilters || [];
-    const updatedFilters = columnFilters
-      .filter((filter) => filter.id !== 'createdAt')
-      .concat(date ? { id: 'createdAt', value: date.toISOString() } : []);
+
+    const updatedFilters = columnFilters.filter((filter) => filter.id !== 'createdAt');
+
+    updatedFilters.push({
+      id: 'createdAt',
+      value: { from: from.toISOString(), to: to.toISOString() },
+    });
 
     table.setColumnFilters(updatedFilters);
   };
-
   return (
     <div className="flex w-full flex-col gap-4 rounded-md border border-border bg-background p-4">
       <div className="flex w-full items-start justify-between">
@@ -286,8 +305,10 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
             </div>
 
             <div className={`flex flex-col gap-1 md:col-span-1 `}>
-              <DatePicker selectedDate={selectedDate} onDateChange={handleDateChange} />
-              {selectedDate && <p className="pl-2 text-xs text-muted-foreground">1 {t('applied-filters')}</p>}
+              <DateRangePicker onChange={handleDateRangeChange} reset={resetDateRange} />
+              {table.getState().columnFilters.some((filter) => filter.id === 'createdAt') && (
+                <p className="pl-2 text-xs text-muted-foreground">1 {t('applied-filters')}</p>
+              )}{' '}
             </div>
           </>
         )}

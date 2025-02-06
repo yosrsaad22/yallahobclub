@@ -55,7 +55,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
 
   const subOrderStatuses = order.subOrders.map((subOrder) => subOrder.status);
 
-  const isOrderCancellable = subOrderStatuses.every((status) => status === 'EC00');
+  const isOrderCancellable = role === roleOptions.ADMIN ? true : subOrderStatuses.every((status) => status === 'EC00');
 
   const subOrders =
     role === roleOptions.SUPPLIER
@@ -318,7 +318,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                               <span className="font-medium text-muted-foreground">
                                 {tFields('product-wholesale-price')} :{' '}
                                 <span className="text-foreground">
-                                  {orderProduct.product.wholesalePrice.toFixed(2)} TND
+                                  {orderProduct.product.wholesalePrice?.toFixed(2)} TND
                                 </span>
                               </span>
                               {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
@@ -331,7 +331,8 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('seller-profit-unit')} :{' '}
                                   <span className="text-foreground">
-                                    {(orderProduct.detailPrice - orderProduct.product.wholesalePrice).toFixed(2)} TND
+                                    {(orderProduct.detailPrice - (orderProduct.product.wholesalePrice ?? 0)).toFixed(2)}{' '}
+                                    TND
                                   </span>
                                 </span>
                               )}
@@ -339,7 +340,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('supplier-profit-unit')} :{' '}
                                   <span className="text-foreground">
-                                    {orderProduct.product.wholesalePrice.toFixed(2)} TND
+                                    {orderProduct.product.wholesalePrice?.toFixed(2)} TND
                                   </span>
                                 </span>
                               )}
