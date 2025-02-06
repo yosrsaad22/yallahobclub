@@ -65,7 +65,7 @@ export default function Header() {
             {(user?.role === roleOptions.SELLER || user?.role === roleOptions.SUPPLIER) && (
               <div className="hidden flex-row gap-x-4 rounded-md border border-muted p-2 lg:flex">
                 <IconCoins />
-                <p className="font-semibold">{user?.balance} TND</p>
+                <p className="font-semibold">{user?.balance.toFixed(2)} TND</p>
               </div>
             )}
             <LanguageToggle />
