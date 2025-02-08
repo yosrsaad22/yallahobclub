@@ -659,7 +659,7 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     const [leads, transactions, products, suppliers, sellers] = counts;
 
     const completedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '23'),
+      subOrder.statusHistory.some((history) => ['7', '23'].includes(history.status)),
     ).length;
 
     const cancelledSubOrders = subOrders.filter((subOrder) =>
@@ -674,16 +674,14 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     ).length;
 
     const platformOrderProfit = orders.reduce((total, order) => {
-      const deliveredProfit = order.subOrders.reduce((subTotal, subOrder) => {
-        const hasDeliveredStatus = subOrder.statusHistory?.some((history) => history.status === '23');
-        return hasDeliveredStatus ? subTotal + (subOrder.platformProfit || 0) : subTotal;
+      const deliveredOrReturnedProfit = order.subOrders.reduce((subTotal, subOrder) => {
+        const hasDeliveredOrReturnedStatus = subOrder.statusHistory?.some((history) =>
+          ['7', '23', '25'].includes(history.status),
+        );
+        return hasDeliveredOrReturnedStatus ? subTotal + (subOrder.platformProfit || 0) : subTotal;
       }, 0);
 
-      const returnedCount = order.subOrders.filter((subOrder) =>
-        subOrder.statusHistory?.some((history) => history.status === '25'),
-      ).length;
-
-      return total + deliveredProfit + returnedCount * 2.5;
+      return total + deliveredOrReturnedProfit;
     }, 0);
 
     const soldCourses = db.billing.findMany({
@@ -719,13 +717,15 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
 
     const car = orders.reduce((total, order) => {
       const delivered = order.subOrders.some((subOrder) =>
-        subOrder.statusHistory?.some((history) => history.status === '23'),
+        subOrder.statusHistory?.some((history) => ['7', '23'].includes(history.status)),
       );
       return delivered ? total + order.total : total;
     }, 0);
     const cae = orders.reduce((total, order) => {
       const deliveredProfit = order.subOrders.reduce((subTotal, subOrder) => {
-        const hasDeliveredStatus = subOrder.statusHistory?.some((history) => history.status === '23');
+        const hasDeliveredStatus = subOrder.statusHistory?.some((history) =>
+          ['7', '23', '25'].includes(history.status),
+        );
         return hasDeliveredStatus ? subTotal + (subOrder.platformProfit || 0) : subTotal;
       }, 0);
 
@@ -849,10 +849,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
     const cap = orders.reduce((total, order) => {
       const subOrdersTotal = order.subOrders.reduce((subTotal, subOrder) => {
         const deliveredProfit = subOrder.products.reduce((productTotal, product) => {
-          return (
-            productTotal +
-            (Number(product.detailPrice) - (Number(product.product?.wholesalePrice) || 0)) * Number(product.quantity)
-          );
+          return productTotal + Number(product.detailPrice) * Number(product.quantity);
         }, 0);
         return subTotal + deliveredProfit;
       }, 0);
@@ -861,15 +858,12 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
 
     const car = orders.reduce((total, order) => {
       const hasDeliveredStatus = order.subOrders.some((subOrder) =>
-        subOrder.statusHistory.some((history) => history.status === '23'),
+        subOrder.statusHistory.some((history) => ['7', '23'].includes(history.status)),
       );
       if (hasDeliveredStatus) {
         const subOrdersTotal = order.subOrders.reduce((subTotal, subOrder) => {
           const deliveredProfit = subOrder.products.reduce((productTotal, product) => {
-            return (
-              productTotal +
-              (Number(product.detailPrice) - (Number(product.product?.wholesalePrice) || 0)) * Number(product.quantity)
-            );
+            return productTotal + Number(product.detailPrice) * Number(product.quantity);
           }, 0);
           return subTotal + deliveredProfit;
         }, 0);
@@ -883,10 +877,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
         const hasReturnedStatus = subOrder.statusHistory.some((history) => history.status === '25');
         if (hasReturnedStatus) {
           const productsTotal = subOrder.products.reduce((productTotal, product) => {
-            return (
-              productTotal +
-              (Number(product.detailPrice) - (Number(product.product?.wholesalePrice) || 0)) * Number(product.quantity)
-            );
+            return productTotal + Number(product.detailPrice) * Number(product.quantity);
           }, 0);
           return subTotal + productsTotal;
         }
@@ -912,10 +903,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
         const hasReturnedStatus = subOrder.statusHistory.some((history) => history.status === 'EC01');
         if (hasReturnedStatus) {
           const productsTotal = subOrder.products.reduce((productTotal, product) => {
-            return (
-              productTotal +
-              (Number(product.detailPrice) - (Number(product.product?.wholesalePrice) || 0)) * Number(product.quantity)
-            );
+            return productTotal + Number(product.detailPrice) * Number(product.quantity);
           }, 0);
           return subTotal + productsTotal;
         }
@@ -924,8 +912,10 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
       return total + subOrdersTotal;
     }, 0);
 
+    // p
+
     const completedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '23'),
+      subOrder.statusHistory.some((history) => ['7', '23'].includes(history.status)),
     ).length;
 
     const paidSubOrders = subOrders.filter((subOrder) =>
@@ -940,8 +930,10 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
       return (
         total +
         order.subOrders.reduce((subTotal, subOrder) => {
-          const hasDeliveredStatus = subOrder.statusHistory.some((history) => history.status === '23');
-          return hasDeliveredStatus ? subTotal + (subOrder.sellerProfit || 0) : subTotal;
+          const hasDeliveredOrReturnedStatus = subOrder.statusHistory.some((history) =>
+            ['25', '23', '7'].includes(history.status),
+          );
+          return hasDeliveredOrReturnedStatus ? subTotal + (subOrder.sellerProfit || 0) : subTotal;
         }, 0)
       );
     }, 0);
@@ -958,7 +950,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
     ).length;
 
     const deliveredNotPaidProfit = subOrders.reduce((total, subOrder) => {
-      const hasDeliveredStatus = subOrder.status === '23';
+      const hasDeliveredStatus = subOrder.status && ['23', '7'].includes(subOrder.status);
       return hasDeliveredStatus ? total + (subOrder.sellerProfit || 0) : total;
     }, 0);
 
@@ -970,7 +962,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
           subOrder.products.reduce((productTotal, product) => {
             return (
               productTotal +
-              (Number(product.detailPrice) - (Number(product.product?.wholesalePrice) || 0)) * Number(product.quantity)
+              (Number(product.detailPrice) - Number(product.wholesalePrice || 0) * Number(product.quantity))
             );
           }, 0)
         );
@@ -1069,7 +1061,7 @@ export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResp
     const [transactions, products, pickups] = counts;
 
     const completedSubOrders = subOrders.filter((subOrder) =>
-      subOrder.statusHistory.some((history) => history.status === '23'),
+      subOrder.statusHistory.some((history) => ['7', '23'].includes(history.status)),
     ).length;
 
     const paidSubOrders = subOrders.filter((subOrder) =>

@@ -390,6 +390,8 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
             detailPrice: parseFloat(item.detailPrice),
             size: item.size as SizeType,
             color: item.color as ColorType,
+            platformProfit: productsList.find((product) => product.id === item.productId)?.platformProfit,
+            wholesalePrice: productsList.find((product) => product.id === item.productId)?.wholesalePrice,
             supplierProfit: item.supplierProfit,
             product: { connect: { id: item.productId } },
             subOrder: { connect: { id: subOrder.id } },

@@ -772,7 +772,10 @@
       "transactions": "Transactions",
       "orders": "Commandes",
       "pickups": "Pickups",
-      "settings": "Paramètres"
+      "integrations": "Integrations",
+      "settings": "Paramètres",
+      "coming-soon": "Bientôt",
+      "new": "Nouveau"
     },
     "notifications": {
       "menu-title": "Notifications",
@@ -820,7 +823,8 @@
       "order-details": "Détails de la Commande",
       "pickups": "Pickups",
       "pickup-details": "Détails du pickup",
-      "transactions": "Transactions"
+      "transactions": "Transactions",
+      "integrations": "Integrations"
     },
     "paywall": {
       "title": "Accès Refusé",
@@ -1013,7 +1017,7 @@
       "top-fifty-sellers-description": "Voici les 50 meilleurs vendeurs sur la plateforme pour la période sélectionnée",
       "total": "TOTAL",
       "total-sub-orders": "Total de commandes",
-      "profit-loss": "Perte de profit",
+      "profit-loss": "Manque à gagner",
       "not-paid-sub-orders": "livrés non payés",
       "last-6-months": "6 DERNIERS MOIS",
       "last-10-days": "10 DERNIERS JOURS",
@@ -1099,7 +1103,11 @@
       "try-again": "Réessayer",
       "not-started": "Non commencé",
       "documents-uploaded": "Documents téléchargés, en attente d'approbation",
-      "on-boarding-completed": "On boarding terminée"
+      "on-boarding-completed": "On boarding terminée",
+      "integrations-info": "Intégrez Ecomness avec des créateurs de sites web populaires comme Tiktak Pro, Converty et WooCommerce pour synchroniser facilement votre boutique en ligne. Cette intégration vous fait gagner du temps et des efforts en automatisant votre processus de travail.",
+      "configure": "Configurer",
+      "integration-description": "Intégrez avec votre site web {subject}",
+      "coming-soon": "Bientôt"
     },
     "transaction-types": {
       "admin-transaction": "Transaction administrateur",

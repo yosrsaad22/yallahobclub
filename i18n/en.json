@@ -770,7 +770,10 @@
       "my-products": "My Products",
       "orders": "Orders",
       "pickups": "Pickups",
-      "settings": "Settings"
+      "integrations": "Integrations",
+      "settings": "Settings",
+      "coming-soon": "Soon",
+      "new": "New"
     },
     "notifications": {
       "menu-title": "Notifications",
@@ -818,7 +821,8 @@
       "order-details": "Order Details",
       "pickups": "Pickups",
       "pickup-details": "Pickup Details",
-      "transactions": "Transactions"
+      "transactions": "Transactions",
+      "integrations": "Integrations"
     },
     "stats": {
       "no-data": "No data is currently available",
@@ -1098,7 +1102,11 @@
       "try-again": "Try Again",
       "not-started": "Not started",
       "documents-uploaded": "Documents uploaded, awaiting approval",
-      "on-boarding-completed": "On boarding completed"
+      "on-boarding-completed": "On boarding completed",
+      "integrations-info": "Integrate Ecomness with popular website builders like Tiktak Pro, Converty, and WooCommerce to seamlessly syncronize your online store. This integration saves you time and effort by automating your work process.",
+      "configure": "Configure",
+      "integration-description": "Integrate with your {subject} website",
+      "coming-soon": "Coming Soon"
     },
     "course": {
       "image": "Course Thumbnail",

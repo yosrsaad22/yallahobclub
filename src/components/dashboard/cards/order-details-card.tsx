@@ -318,7 +318,9 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                               <span className="font-medium text-muted-foreground">
                                 {tFields('product-wholesale-price')} :{' '}
                                 <span className="text-foreground">
-                                  {orderProduct.product.wholesalePrice?.toFixed(2)} TND
+                                  {orderProduct.wholesalePrice?.toFixed(2) ??
+                                    orderProduct.product.wholesalePrice.toFixed(2)}{' '}
+                                  TND
                                 </span>
                               </span>
                               {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
@@ -331,7 +333,10 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('seller-profit-unit')} :{' '}
                                   <span className="text-foreground">
-                                    {(orderProduct.detailPrice - (orderProduct.product.wholesalePrice ?? 0)).toFixed(2)}{' '}
+                                    {(
+                                      orderProduct.detailPrice -
+                                      (orderProduct.wholesalePrice ?? orderProduct.product.wholesalePrice)
+                                    ).toFixed(2)}{' '}
                                     TND
                                   </span>
                                 </span>
@@ -340,7 +345,11 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                                 <span className="font-medium text-muted-foreground">
                                   {tFields('supplier-profit-unit')} :{' '}
                                   <span className="text-foreground">
-                                    {orderProduct.product.wholesalePrice?.toFixed(2)} TND
+                                    {(orderProduct.wholesalePrice
+                                      ? orderProduct.wholesalePrice - (orderProduct.platformProfit ?? 0)
+                                      : orderProduct.product.wholesalePrice - (orderProduct.product.platformProfit ?? 0)
+                                    ).toFixed(2)}
+                                    TND
                                   </span>
                                 </span>
                               )}
@@ -423,7 +432,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
 
                 <div className="flex w-full items-center justify-between font-semibold">
                   <p>{tFields('platform-profit')} (10%)</p>
-                  <p>{platformProfit.toFixed(2)} TND</p>
+                  <p>{platformProfit < 0 ? 3 : platformProfit.toFixed(2)} TND</p>
                 </div>
 
                 {role === roleOptions.SUPPLIER && (

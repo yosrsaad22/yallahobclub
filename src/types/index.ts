@@ -12,6 +12,8 @@ export type NavItem = {
   href?: string;
   icon?: React.ReactNode;
   notificationsCount?: number;
+  comingSoon?: boolean;
+  new?: boolean;
 };
 
 export type NavItemWithChildren = NavItem & {
