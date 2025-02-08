@@ -100,6 +100,20 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                               {item.notificationsCount}
                             </Badge>
                           )}
+                          {item.comingSoon && (
+                            <Badge
+                              variant={'outline'}
+                              className="animate-pulse border-2 border-secondary text-xs  font-normal text-secondary">
+                              {t('coming-soon')}
+                            </Badge>
+                          )}
+                          {item.new && (
+                            <Badge
+                              variant={'outline'}
+                              className="animate-pulse border-2 border-secondary text-xs  font-normal text-secondary">
+                              {t('new')}
+                            </Badge>
+                          )}
                         </div>
                       ) : null}
                     </Link>

@@ -25,6 +25,7 @@ import {
   IconClockDollar,
   IconId,
   IconFileCheck,
+  IconAffiliate,
 } from '@tabler/icons-react';
 
 export enum packOptions {
@@ -134,6 +135,12 @@ export const sellerNavItems: NavItem[] = [
     title: 'transactions',
     href: '/dashboard/seller/transactions',
     icon: <IconReceipt2 />,
+  },
+  {
+    title: 'integrations',
+    href: '/dashboard/seller/integrations',
+    icon: <IconAffiliate />,
+    comingSoon: true,
   },
   {
     title: 'settings',

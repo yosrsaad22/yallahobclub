@@ -67,7 +67,7 @@ export function UserNav() {
                   <DropdownMenuShortcut>
                     <div className="flex flex-row items-center gap-x-1 font-semibold">
                       <IconCoins className={cn('h-[1rem] w-[1rem]')} />
-                      <p className="text-foreground">{user.balance} TND</p>
+                      <p className="text-foreground">{user.balance.toFixed(2)} TND</p>
                     </div>
                   </DropdownMenuShortcut>
                 </DropdownMenuItem>
