@@ -34,7 +34,7 @@ export default async function Orders() {
             <h1 className="text-sm text-muted-foreground">{t('text.integrations-info')} </h1>
           </div>
           <div className="grid h-full w-full grid-cols-2 gap-8 md:grid-cols-3 ">
-            <div className="flex h-full w-full flex-col  rounded-md border border-border bg-background p-2 duration-300 ease-in-out ">
+            <div className="flex h-full w-full flex-col  rounded-md border border-border  bg-background p-2 duration-300  ease-in-out hover:scale-105 ">
               <div className="flex h-[150px] w-full items-center justify-center rounded-md border border-border bg-gray-100 dark:bg-[#525256]">
                 <Image src={'/img/woocommerce.png'} height={130} width={130} alt="wordpress" />
               </div>

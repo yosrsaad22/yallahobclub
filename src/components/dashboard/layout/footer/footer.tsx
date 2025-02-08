@@ -145,7 +145,7 @@ export default function Footer() {
       </div>
       <div className="z-[20] flex h-16 w-full flex-row items-center justify-between rounded-b-md border-b border-border bg-primary px-4 text-sm text-white">
         © 2024 Copyright ECOMNESS GROUP
-        <p className="text-sm text-white"> v 1.2.8-beta</p>
+        <p className="text-sm text-white"> v 1.2.9-beta</p>
       </div>
       <Globe className="absolute right-0 top-0 hidden md:flex" />
     </div>
