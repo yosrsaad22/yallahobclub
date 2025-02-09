@@ -145,7 +145,8 @@
     "order-full-name": "Full Name",
     "order-email": "E-mail",
     "order-comment": "Comment",
-    "order-openable": "Shipment Openable",
+    "order-openable": "Openable Shipment",
+    "order-fragile": "Fragile Shipment",
     "order-total": "Total",
     "order-state": "State",
     "order-city": "City",
@@ -884,7 +885,8 @@
       "average-cart": "Average Cart",
       "pending-revenue": "Pending Revenue",
       "cancelled-revenue": "Cancelled Revenue",
-      "returned-revenue": "Returned Revenue"
+      "returned-revenue": "Returned Revenue",
+      "withdrawn-amount": "Withdrawn Amount"
     },
     "paywall": {
       "title": "Access Denied",
@@ -1037,6 +1039,7 @@
       "chapters": "Chapters",
       "email-note": "Requires verifying the new E-mail",
       "openable-note": "The final client can open the shipment",
+      "fragile-note": "The shipment is fragile should be handled with care",
       "company-information": "Company Information",
       "change-password": "Change Password",
       "password-note": "Default password will be set to",

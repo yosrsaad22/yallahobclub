@@ -343,6 +343,7 @@ model Order {
   address   String
   comment   String?
   openable  Boolean @default(false)
+  fragile   Boolean @default(false)
 
   seller       User?         @relation("SellerOrders", fields: [sellerId], references: [id], onDelete: Cascade)
   sellerId     String?

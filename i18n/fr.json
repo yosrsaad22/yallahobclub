@@ -148,6 +148,7 @@
     "order-email": "E-mail",
     "order-comment": "Commentaire",
     "order-openable": "Colis ouvrable",
+    "order-fragile": "Colis fragile",
     "order-code": "Code",
     "order-delivery": "Livraison",
     "order-exchange": "Echange",
@@ -1024,7 +1025,8 @@
       "average-cart": "Panier Moyen",
       "pending-revenue": "C.A En Cours",
       "cancelled-revenue": "C.A Annulé",
-      "returned-revenue": "C.A retour"
+      "returned-revenue": "C.A retour",
+      "withdrawn-amount": "Montant retiré"
     },
     "text": {
       "image-button": "Changer l'image",
@@ -1039,6 +1041,7 @@
       "chapters": "Chapitres",
       "email-note": "Nécessite la vérification du nouvel E-mail",
       "openable-note": "Le client final peut ouvrir le colis",
+      "fragile-note": "Le colis est fragile et doit être manipulé avec soin",
       "company-information": "Informations Entreprise",
       "change-password": "Changer le Mot de Passe",
       "password-note": "Le mot de passe par défaut sera défini sur",

@@ -180,16 +180,24 @@ export type SellerStats = {
 };
 
 export type SupplierStats = {
+  cap: number;
+  car: number;
+  returnedRevenue: number;
+  cancelledRevenue: number;
+  pendingRevenue: number;
   subOrders: number;
-  transactions: number;
   products: number;
-  sellersProfit: number;
+  supplierProfit: number;
   pickups: number;
   completedSubOrders: number;
   pendingSubOrders: number;
+  cancelledSubOrders: number;
   returnedSubOrders: number;
   paidSubOrders: number;
+  paidOrdersProfit: number;
+  deliveredNotPaidProfit: number;
   monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];
   dailyProfitAndSubOrders: DailyProfitAndSubOrders[];
   topFiftyProducts: TopFiftyItem[];
+  withdrawnAmount: number;
 };

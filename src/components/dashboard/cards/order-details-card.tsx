@@ -206,6 +206,10 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                 <p className="text-muted-foreground">{tFields('order-openable')} :</p>
                 <p>{order?.openable ? t('yes') : t('no')}</p>
               </div>
+              <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
+                <p className="text-muted-foreground">{tFields('order-fragile')} :</p>
+                <p>{order?.fragile ? t('yes') : t('no')}</p>
+              </div>
               {role === roleOptions.ADMIN && (
                 <>
                   <div className="flex w-full items-center justify-start gap-2 text-sm font-medium">
