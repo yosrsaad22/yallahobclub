@@ -294,6 +294,7 @@ export const OrderSchema = z.object({
   total: z.number(),
   comment: z.string().optional(),
   openable: z.boolean(),
+  fragile: z.boolean(),
   products: z.array(OrderProductSchema),
   sellerId: z.string(),
 });

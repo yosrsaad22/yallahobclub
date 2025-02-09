@@ -204,7 +204,7 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
           name: subOrder.order?.fullName!,
           pickupId: parseInt(subOrder.products[0].product?.supplier?.pickupId!),
           openParcel: subOrder.order.openable ? '1' : '0',
-          fragile: '0',
+          fragile: subOrder.order.fragile ? '1' : '0',
           exchangeContent: '',
         });
 
@@ -360,7 +360,7 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
           name: subOrder.order?.fullName!,
           pickupId: parseInt(subOrder.products[0].product?.supplier?.pickupId!),
           openParcel: subOrder.order?.openable ? '1' : '0',
-          fragile: '0',
+          fragile: subOrder.order?.fragile ? '1' : '0',
           exchangeContent: '',
         });
         const url = process.env.MASSAR_URL;

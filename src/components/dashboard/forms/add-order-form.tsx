@@ -70,6 +70,7 @@ export function AddOrderForm({}: AddOrderFormProps) {
     sellerId: role === roleOptions.SELLER ? userId : undefined,
     state: state,
     openable: false,
+    fragile: false,
   };
 
   const {
@@ -469,6 +470,19 @@ export function AddOrderForm({}: AddOrderFormProps) {
                     defaultChecked={false}
                     onCheckedChange={(checked) => setValue('openable', checked)}
                     id="openable"
+                  />
+                </div>
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="fragile">{tFields('order-fragile')}</Label>
+                <div className="flex h-11 w-full flex-row items-center justify-between rounded-md border border-input bg-background px-3 py-4 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                  <div className="font-normal leading-none text-muted-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    {t('fragile-note')}
+                  </div>
+                  <Switch
+                    defaultChecked={false}
+                    onCheckedChange={(checked) => setValue('fragile', checked)}
+                    id="fragile"
                   />
                 </div>
               </LabelInputContainer>

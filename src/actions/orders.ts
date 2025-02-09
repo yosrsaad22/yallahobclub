@@ -319,6 +319,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
         number: values.number,
         comment: values.comment,
         openable: values.openable,
+        fragile: values.fragile,
         city: values.city,
         state: values.state,
         address: values.address,
@@ -694,6 +695,7 @@ export const printLabel = async (id: string): Promise<ActionResponse> => {
       ...subOrder,
       comment: subOrder.order?.comment,
       openable: subOrder.order?.openable,
+      fragile: subOrder.order?.fragile,
     };
 
     const response = await fetch(url, {
