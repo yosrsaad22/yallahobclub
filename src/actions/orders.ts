@@ -220,7 +220,7 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
           if (product) {
             await db.product.update({
               where: { id: orderProduct.productId },
-              data: { stock: product.stock ?? 0 + parseInt(orderProduct.quantity) },
+              data: { stock: product.stock + parseInt(orderProduct.quantity) },
             });
           }
         }
@@ -410,7 +410,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
 
         await db.product.update({
           where: { id: item.productId },
-          data: { stock: product.stock ?? 0 - parseInt(item.quantity, 10) },
+          data: { stock: product.stock - parseInt(item.quantity, 10) },
         });
 
         if (product.sellers && product.sellers.length > 0) {
@@ -851,7 +851,7 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
               if (product) {
                 await db.product.update({
                   where: { id: orderProduct.productId },
-                  data: { stock: product.stock ?? 0 + parseInt(orderProduct.quantity) },
+                  data: { stock: product.stock + parseInt(orderProduct.quantity) },
                 });
               }
             }
