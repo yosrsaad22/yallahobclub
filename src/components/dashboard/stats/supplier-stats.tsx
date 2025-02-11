@@ -78,9 +78,16 @@ export function SupplierStatsComponent({ initialStats, onRefetch }: SupplierStat
         {/* first row */}
         <Card className="relative max-h-[7rem] flex-col overflow-hidden">
           <CardHeader className="flex flex-col flex-wrap   items-start justify-start gap-0 space-y-0 pb-2 md:flex-row md:flex-nowrap md:items-center md:justify-between">
-            <CardTitle className="text-sm font-medium">{tStats('total-sub-orders')}</CardTitle>
+            <CardTitle className="flex flex-col text-sm font-medium">
+              {tStats('total-sub-orders')}
+              <p className="text-xs text-muted-foreground">{tStats('excluding-cancelled')}</p>
+            </CardTitle>
             <div className="text-lg font-bold">
-              {isFetching ? <IconLoader2 className="animate-spin text-muted-foreground" /> : stats?.subOrders || 0}
+              {isFetching ? (
+                <IconLoader2 className="animate-spin text-muted-foreground" />
+              ) : (
+                (stats?.subOrders ?? 0) - (stats?.cancelledSubOrders ?? 0)
+              )}
             </div>
           </CardHeader>
           <CardContent className="mt-0 px-0 md:-mt-4">

@@ -180,6 +180,7 @@ export const getOrderById = async (id: string): Promise<ActionResponse> => {
 export const cancelOrder = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard([UserRole.SELLER, UserRole.ADMIN]);
+    const role = await currentRole();
 
     const order = await userGetOrderById(id);
 
@@ -190,8 +191,8 @@ export const cancelOrder = async (id: string): Promise<ActionResponse> => {
     // Check if all subOrders have status 'awaiting-packaging-EC00'
     const allSubOrdersAwaiting = order.subOrders.every((subOrder) => subOrder.status === 'EC00');
 
-    if (!allSubOrdersAwaiting) {
-      return { error: 'oorder-cancel-error' };
+    if (role === roleOptions.SELLER && !allSubOrdersAwaiting) {
+      return { error: 'order-cancel-error' };
     }
 
     // Proceed to cancel each subOrder

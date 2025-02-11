@@ -98,6 +98,7 @@
     "product-admin": "Admin",
     "product-description": "Déscription du produit",
     "product-delivery": "Détails de livraison",
+    "product-minimum-detail-price": "Prix minimum de détail",
     "product-profit-margin": "Marge recommandée (%)",
     "product-minimum-profit": "Profit recommandée",
     "product-supplier-code": "Code fournisseur",
@@ -294,6 +295,7 @@
     "product-name-error": "Le nom du produit est requis",
     "product-description-error": "La description du produit est requise",
     "product-wholesale-price-error": "Le prix de gros du produit est requis et doit être un nombre valide",
+    "product-minimum-detail-price-error": "Le prix minimum de détail du produit doit être un nombre valide",
     "product-platform-profit-error": "Le profit de la palteforme du produit est requis et doit être un nombre valide",
     "product-delivery-error": "Les détails de livraison du produit sont requis",
     "product-profit-margin-error": "La marge de profit du produit est requise et doit être un pourcentage",
@@ -339,6 +341,7 @@
     "order-color-error": "Veuillez spécifier la couleur pour le produit {name}",
     "order-quantity-error": "La quantité du produit doit être supérieure à 0",
     "order-detail-price-error": "Le prix de vente doit être supérieur au prix de gros",
+    "order-minimum-detail-price-error": "Le prix de vente pour {name} doit être supérieur à {minimumPrice}",
     "order-invalid-detail-price": "Le prix de vente doit être supérieur au prix de gros",
     "order-uncancelable": "La commande ne peut pas être annulée car elle a déjà été traitée",
     "pickup-fetch-success": "Pickup récupéré avec succès",
@@ -938,7 +941,9 @@
       "TURQUOISE": "Turquoise",
       "BEIGE": "Beige",
       "BROWN": "Marron",
-      "GRAY": "Gris"
+      "GRAY": "Gris",
+      "GOLD": "Doré",
+      "BRONZE": "Bronze"
     },
     "tables": {
       "search": "Rechercher...",
@@ -1018,6 +1023,7 @@
       "top-fifty-sellers-description": "Voici les 50 meilleurs vendeurs sur la plateforme pour la période sélectionnée",
       "total": "TOTAL",
       "total-sub-orders": "Total de commandes",
+      "excluding-cancelled": "Sans inclure les annulés",
       "profit-loss": "Manque à gagner",
       "not-paid-sub-orders": "livrés non payés",
       "last-6-months": "6 DERNIERS MOIS",
