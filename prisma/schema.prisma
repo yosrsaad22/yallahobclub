@@ -264,6 +264,8 @@ enum ColorType {
   BEIGE
   BROWN
   GRAY
+  GOLD
+  BRONZE
 }
 
 model Media {
@@ -275,22 +277,23 @@ model Media {
 }
 
 model Product {
-  id             String              @id @default(cuid())
-  code           String              @unique
-  name           String
-  description    String
-  delivery       String
-  media          Media[]
-  wholesalePrice Float
-  profitMargin   Float
-  platformProfit Float?              @default(0)
-  featured       Boolean             @default(false)
-  category       ProductCategoryType
-  stock          Int                 @default(0)
-  sizes          SizeType[]
-  colors         ColorType[]
-  orders         OrderProduct[]
-  admin          String?
+  id                 String              @id @default(cuid())
+  code               String              @unique
+  name               String
+  description        String
+  delivery           String
+  media              Media[]
+  wholesalePrice     Float
+  profitMargin       Float
+  minimumDetailPrice Float?
+  platformProfit     Float?              @default(0)
+  featured           Boolean             @default(false)
+  category           ProductCategoryType
+  stock              Int                 @default(0)
+  sizes              SizeType[]
+  colors             ColorType[]
+  orders             OrderProduct[]
+  admin              String?
 
   supplier   User?   @relation("SuppliedProducts", fields: [supplierId], references: [id], onDelete: Cascade)
   supplierId String?

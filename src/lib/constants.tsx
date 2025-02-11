@@ -337,6 +337,8 @@ export enum colorOptions {
   BEIGE = 'BEIGE',
   BROWN = 'BROWN',
   GRAY = 'GRAY',
+  GOLD = 'GOLD',
+  BRONZE = 'BRONZE',
 }
 
 export const colorHexMap: { [key in colorOptions]: string } = {
@@ -356,6 +358,8 @@ export const colorHexMap: { [key in colorOptions]: string } = {
   [colorOptions.BEIGE]: '#F5F5DC',
   [colorOptions.BROWN]: '#A52A2A',
   [colorOptions.GRAY]: '#808080',
+  [colorOptions.GOLD]: '#FFD700',
+  [colorOptions.BRONZE]: '#CD7F32',
 };
 
 export const orderStatuses = [

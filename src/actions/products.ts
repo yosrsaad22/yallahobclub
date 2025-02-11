@@ -206,6 +206,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>): Promise
         platformProfit: parseFloat(values.platformProfit),
         stock: parseFloat(values.stock),
         category: values.category,
+        minimumDetailPrice: values.minimumDetailPrice ? parseFloat(values.minimumDetailPrice) : null,
         published: values.published,
         admin: user?.name!,
         media: {
@@ -275,6 +276,7 @@ export const editProduct = async (id: string, values: z.infer<typeof ProductSche
         platformProfit: parseFloat(values.platformProfit),
         featured: values.featured,
         stock: parseFloat(values.stock),
+        minimumDetailPrice: values.minimumDetailPrice ? parseFloat(values.minimumDetailPrice) : null,
         admin: user?.name!,
         category: values.category,
         media: {

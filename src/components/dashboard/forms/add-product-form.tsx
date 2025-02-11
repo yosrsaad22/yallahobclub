@@ -266,6 +266,21 @@ export function AddProductForm({}: AddProductFormProps) {
               </LabelInputContainer>
               {role === roleOptions.ADMIN && (
                 <LabelInputContainer>
+                  <Label htmlFor="minimumDetailPrice">{tFields('product-minimum-detail-price')}</Label>
+                  <Input
+                    {...register('minimumDetailPrice')}
+                    disabled={isLoading}
+                    id="minimumDetailPrice"
+                    placeholder={tFields('product-minimum-detail-price')}
+                    type="text"
+                  />
+                  {errors.minimumDetailPrice && (
+                    <span className="text-xs text-red-400">{tValidation('product-minimum-detail-price-error')}</span>
+                  )}
+                </LabelInputContainer>
+              )}
+              {role === roleOptions.ADMIN && (
+                <LabelInputContainer>
                   <Label htmlFor="platformProfit">{tFields('product-platform-profit')} (TND)</Label>
                   <Input
                     {...register('platformProfit')}

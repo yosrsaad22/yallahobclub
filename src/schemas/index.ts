@@ -260,6 +260,11 @@ export const ProductSchema = z.object({
   supplierId: z.string(),
   colors: z.array(z.nativeEnum(colorOptions)).optional(),
   sizes: z.array(z.nativeEnum(sizeOptions)).optional(),
+  minimumDetailPrice: z
+    .string()
+    .regex(/^\d{1,}(\.\d{1,})?$/)
+    .or(z.string().max(0))
+    .optional(),
   media: z
     .array(
       z.object({

@@ -94,6 +94,7 @@
     "chapter-video": "Chapter Video",
     "product-select": "",
     "product-media": "",
+    "product-minimum-detail-price": "Minimum Detail Price",
     "product-name": "Name",
     "product-description": "Description",
     "product-delivery": "Delivery Details",
@@ -294,6 +295,7 @@
     "product-name-error": "Product name is required",
     "product-description-error": "Product descripton is required",
     "product-wholesale-price-error": "Product wholesale price is required and must be a valid number",
+    "product-minimum-detail-price-error": "Product minimum detail price must be a valid number",
     "product-platform-profit-error": "Product platform profit is required and must be a valid number",
     "product-delivery-error": "Product delivery details is required",
     "product-profit-margin-error": "Product profit margin is required and must be a percentage",
@@ -340,6 +342,7 @@
     "order-cancel-success": "Order has been cancelled successfully",
     "order-cancel-error": "Error while cancelling order",
     "order-invalid-detail-price": "Selling price for {name} must be greater than the wholesale price",
+    "order-minimum-detail-price-error": "Selling price for {name} must be greater than {minimumPrice}",
     "order-uncancelable": "Order cannot be cancelled since its already been processed",
     "pickup-fetch-success": "Pickup fetched successfully",
     "pickup-fetch-error": "Error while fetching pickup",
@@ -840,6 +843,7 @@
       "supplier-profit": "Profit",
       "sub-orders": "Orders",
       "total-sub-orders": "Total Orders",
+      "excluding-cancelled": "Excluding Cancelled",
       "transactions": "Transactions",
       "delivered-sub-orders": "Delivered",
       "pending-sub-orders": "Pending",
@@ -999,7 +1003,9 @@
       "TURQUOISE": "Turquoise",
       "BEIGE": "Beige",
       "BROWN": "Brown",
-      "GRAY": "Gray"
+      "GRAY": "Gray",
+      "GOLD": "Gold",
+      "BRONZE": "Bronze"
     },
     "tables": {
       "search": "Search...",

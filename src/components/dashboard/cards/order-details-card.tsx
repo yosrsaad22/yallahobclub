@@ -113,6 +113,7 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
             description: tValidation(res.error),
           });
         }
+        router.refresh();
       } else {
         setCancelDialogOpen(false);
         toast({

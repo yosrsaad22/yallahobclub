@@ -114,6 +114,19 @@ export function AddOrderForm({}: AddOrderFormProps) {
         return false;
       }
 
+      // Check if detail price is below minimum detail price
+      if (product.minimumDetailPrice && parseFloat(selectedProduct.detailPrice) < product.minimumDetailPrice) {
+        toast({
+          variant: 'destructive',
+          title: tValidation('error-title'),
+          description: tValidation('order-minimum-detail-price-error', {
+            name: product.name,
+            minimumPrice: product.minimumDetailPrice.toFixed(2),
+          }),
+        });
+        return false;
+      }
+
       // Check if size is required but missing
       if (product.sizes.length > 0 && !selectedProduct.size) {
         toast({
