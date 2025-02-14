@@ -931,7 +931,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
         total +
         order.subOrders.reduce((subTotal, subOrder) => {
           const hasDeliveredOrReturnedStatus = subOrder.statusHistory.some((history) =>
-            ['25', '23', '7'].includes(history.status),
+            ['EC02', 'EC03'].includes(history.status),
           );
           return hasDeliveredOrReturnedStatus ? subTotal + (subOrder.sellerProfit || 0) : subTotal;
         }, 0)
@@ -953,6 +953,17 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
       const hasDeliveredStatus = subOrder.status && ['23', '7'].includes(subOrder.status);
       return hasDeliveredStatus ? total + (subOrder.sellerProfit || 0) : total;
     }, 0);
+
+    const pendingProfit = subOrders
+      .filter(
+        (subOrder) =>
+          !subOrder.statusHistory.some((history) =>
+            ['7', '25', 'EC01', '16', '21', '22', '23', '26', '28', '27', '28', 'EC02', 'EC03'].includes(
+              history.status,
+            ),
+          ),
+      )
+      .reduce((total, subOrder) => total + (subOrder.sellerProfit || 0), 0);
 
     let loss = subOrders
       .filter((subOrder) => subOrder.statusHistory.some((history) => ['EC01', '25'].includes(history.status)))
@@ -988,6 +999,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
         returnedSubOrders,
         paidSubOrders,
         paidOrdersProfit: paidOrdersProfit.toFixed(2),
+        pendingProfit: pendingProfit.toFixed(2),
         deliveredNotPaidProfit: deliveredNotPaidProfit.toFixed(2),
         loss: loss.toFixed(2),
         monthlyProfitAndSubOrders: monthlyData,

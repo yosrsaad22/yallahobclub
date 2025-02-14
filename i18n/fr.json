@@ -987,6 +987,8 @@
       "transactions": "Transactions",
       "delivered-sub-orders": "Livrés",
       "pending-sub-orders": "En cours",
+      "pending-profit": "Profit en cours",
+      "return-penalties": "Pénalités de retour",
       "returned-sub-orders": "Retournés",
       "cancelled-sub-orders": "Annulés",
       "paid-sub-orders": "Livrés payée",
