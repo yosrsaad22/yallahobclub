@@ -284,22 +284,28 @@ export function AdminStatsComponent({ initialStats, onRefetch }: AdminStatsProps
 
         {/* fourth row */}
 
-        <Card className="max-h-[7rem]">
+        <Card className="relative max-h-[7rem]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{tStats('sellers')}</CardTitle>
             <IconUsers className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
             <div className="mt-0 text-xl font-bold md:-mt-5 ">{stats?.sellers || 0}</div>
+            <div className="absolute bottom-2 right-2 w-fit rounded-full border-2 border-success px-2 text-sm font-semibold text-success">
+              {stats?.sellersBalance.toFixed(2) || 0} TND
+            </div>
           </CardContent>
         </Card>
-        <Card className="max-h-[7rem]">
+        <Card className="relative max-h-[7rem]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{tStats('suppliers')}</CardTitle>
             <IconBuildingWarehouse className="h-10 w-10 rounded-full bg-accent p-2 text-foreground" />
           </CardHeader>
           <CardContent>
             <div className="mt-0  text-xl font-bold md:-mt-5">{stats?.suppliers || 0}</div>
+            <div className="absolute bottom-2 right-2 w-fit rounded-full border-2 border-success px-2 text-sm font-semibold text-success">
+              {stats?.suppliersBalance.toFixed(2) || 0} TND
+            </div>
           </CardContent>
         </Card>
         <Card className="max-h-[7rem]">

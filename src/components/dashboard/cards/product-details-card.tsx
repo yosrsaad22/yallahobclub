@@ -22,6 +22,7 @@ import {
   IconShoppingCartPlus,
   IconShoppingCart,
   IconTruckLoading,
+  IconScan,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { startTransition, useEffect, useState, useTransition } from 'react';
@@ -47,6 +48,7 @@ interface ProductDetailsProps {
   stock: number;
   wholesalePrice: number;
   supplierId: string;
+  supplierCode: string;
   sellers: any[];
   profitMargin: number;
   colors: ColorType[];
@@ -305,6 +307,11 @@ export default function ProductDetailsCard(product: ProductDetailsProps) {
           <div className="flex flex-col gap-2">
             <h3 className="text-lg font-semibold">{t('product-information')}</h3>
             <ul className="flex flex-col  gap-2 text-sm">
+              <li className="flex items-center gap-2">
+                <IconScan className="" />
+                <span className="font-semibold">{tFields('product-supplier')}</span>
+                <span className="font-medium text-muted-foreground">{product.supplierCode}</span>
+              </li>
               <li className="flex items-center gap-2">
                 <IconCategory2 className="" />
                 <span className="font-semibold">{tFields('product-category')}</span>

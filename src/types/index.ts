@@ -154,6 +154,8 @@ export type AdminStats = {
   dailyProfit: DailyProfit[];
   topFiftyProducts: TopFiftyItem[];
   topFiftySellers: TopFiftyItem[];
+  sellersBalance: number;
+  suppliersBalance: number;
 };
 
 export type SellerStats = {
