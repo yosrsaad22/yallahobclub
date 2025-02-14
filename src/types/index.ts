@@ -172,6 +172,7 @@ export type SellerStats = {
   returnedSubOrders: number;
   paidSubOrders: number;
   paidOrdersProfit: number;
+  pendingProfit: number;
   deliveredNotPaidProfit: number;
   loss: number;
   monthlyProfitAndSubOrders: MonthlyProfitAndSubOrders[];

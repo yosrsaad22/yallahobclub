@@ -847,6 +847,8 @@
       "transactions": "Transactions",
       "delivered-sub-orders": "Delivered",
       "pending-sub-orders": "Pending",
+      "pending-profit": "Pending Profit",
+      "return-penalties": "Return Penalties",
       "cancelled-sub-orders": "Cancelled",
       "returned-sub-orders": "Returned",
       "paid-sub-orders": "Delivered Paid",
