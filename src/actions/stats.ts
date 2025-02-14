@@ -4,7 +4,7 @@ import { currentUser, roleGuard } from '@/lib/auth';
 import { ActionResponse, DailyProfit, DailyProfitAndSubOrders, DateRange, MonthlyProfitAndSubOrders } from '@/types';
 import { UserRole } from '@prisma/client';
 import { endOfDay, endOfMonth, startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
-import { packOptions } from '@/lib/constants';
+import { packOptions, roleOptions } from '@/lib/constants';
 
 async function fetchBasicCounts(from: Date, to: Date) {
   return Promise.all([
@@ -638,23 +638,25 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
   try {
     await roleGuard(UserRole.ADMIN);
 
-    const [counts, monthlyData, dailyData, topFiftyProducts, topFiftySellers, subOrders, orders] = await Promise.all([
-      fetchBasicCounts(from, to),
-      calculateMonthlyProfit(),
-      calculateDailyProfit(),
-      fetchtopFiftyProducts(from, to),
-      fetchtopFiftySellers(from, to),
-      db.subOrder.findMany({
-        where: {
-          order: { createdAt: { gte: from, lte: to } },
-        },
-        include: { statusHistory: true },
-      }),
-      db.order.findMany({
-        where: { createdAt: { gte: from, lte: to } },
-        include: { subOrders: { include: { statusHistory: true } } },
-      }),
-    ]);
+    const [counts, monthlyData, dailyData, topFiftyProducts, topFiftySellers, subOrders, orders, users] =
+      await Promise.all([
+        fetchBasicCounts(from, to),
+        calculateMonthlyProfit(),
+        calculateDailyProfit(),
+        fetchtopFiftyProducts(from, to),
+        fetchtopFiftySellers(from, to),
+        db.subOrder.findMany({
+          where: {
+            order: { createdAt: { gte: from, lte: to } },
+          },
+          include: { statusHistory: true },
+        }),
+        db.order.findMany({
+          where: { createdAt: { gte: from, lte: to } },
+          include: { subOrders: { include: { statusHistory: true } } },
+        }),
+        db.user.findMany(),
+      ]);
 
     const [leads, transactions, products, suppliers, sellers] = counts;
 
@@ -762,6 +764,14 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
       .filter((subOrder) => subOrder.statusHistory.some((history) => ['25'].includes(history.status)))
       .reduce((total, subOrder) => total + (subOrder.total || 0), 0);
 
+    const sellersBalance = users.reduce((total, user) => {
+      return user.role === roleOptions.SELLER ? total + (user.balance || 0) : total;
+    }, 0);
+
+    const suppliersBalance = users.reduce((total, user) => {
+      return user.role === roleOptions.SUPPLIER ? total + (user.balance || 0) : total;
+    }, 0);
+
     return {
       success: 'stats-fetch-success',
       data: {
@@ -788,6 +798,8 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
         dailyProfit: dailyData,
         topFiftyProducts,
         topFiftySellers,
+        sellersBalance,
+        suppliersBalance,
       },
     };
   } catch (error) {

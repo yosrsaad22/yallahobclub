@@ -851,6 +851,8 @@
       "return-penalties": "Return Penalties",
       "cancelled-sub-orders": "Cancelled",
       "returned-sub-orders": "Returned",
+      "total-sellers-balance": "Total Sellers Balance",
+      "total-suppliers-balance": "Total Suppliers Balance",
       "paid-sub-orders": "Delivered Paid",
       "not-paid-sub-orders": "Delivered Not Paid",
       "profit-loss": "Profit Loss",

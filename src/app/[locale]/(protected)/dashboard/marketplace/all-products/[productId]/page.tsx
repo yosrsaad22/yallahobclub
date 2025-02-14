@@ -59,6 +59,7 @@ export default async function Product({ params }: ProductProps) {
           name={productData.name}
           supplierId={productData.supplierId}
           description={productData.description}
+          supplierCode={productData.supplier.code}
           sizes={productData.sizes}
           delivery={productData.delivery}
           category={productData.category}
