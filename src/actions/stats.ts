@@ -637,6 +637,9 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
     ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
     : addHours(endOfDay(from), 1);
 
+  console.log(from);
+  console.log(to);
+
   try {
     await roleGuard(UserRole.ADMIN);
 
