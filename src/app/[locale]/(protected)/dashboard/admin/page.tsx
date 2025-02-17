@@ -6,14 +6,8 @@ import { getTranslations } from 'next-intl/server';
 
 export default async function AdminHome() {
   const t = await getTranslations('dashboard');
-  const today = new Date();
 
-  const defaultDateRange: DateRange = {
-    from: new Date(today.setHours(0, 0, 0, 0)),
-    to: null,
-  };
-
-  const res: ActionResponse = await adminGetStats(defaultDateRange);
+  const res: ActionResponse = await adminGetStats();
   const statsData = res.error ? [] : res.data;
   const handleRefetch = async (range: DateRange) => {
     'use server';

@@ -631,9 +631,14 @@ async function fetchtopFiftySellers(from: Date, to: Date) {
   );
 }
 
-export const adminGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to
+export const adminGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
+  const today = new Date();
+
+  const from = dateRange?.from
+    ? new Date(dateRange.from.getTime() + 60 * 60 * 1000)
+    : new Date(today.setHours(0, 0, 0, 0) + 60 * 60 * 1000);
+
+  const to = dateRange?.to
     ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
     : addHours(endOfDay(from), 1);
 
@@ -810,9 +815,14 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
   }
 };
 
-export const sellerGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to
+export const sellerGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
+  const today = new Date();
+
+  const from = dateRange?.from
+    ? new Date(dateRange.from.getTime() + 60 * 60 * 1000)
+    : new Date(today.setHours(0, 0, 0, 0) + 60 * 60 * 1000);
+
+  const to = dateRange?.to
     ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
     : addHours(endOfDay(from), 1);
 
@@ -1029,9 +1039,14 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
   }
 };
 
-export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
-  const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to
+export const supplierGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
+  const today = new Date();
+
+  const from = dateRange?.from
+    ? new Date(dateRange.from.getTime() + 60 * 60 * 1000)
+    : new Date(today.setHours(0, 0, 0, 0) + 60 * 60 * 1000);
+
+  const to = dateRange?.to
     ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
     : addHours(endOfDay(from), 1);
 
