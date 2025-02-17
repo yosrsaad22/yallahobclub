@@ -9,6 +9,7 @@ export default async function AdminHome() {
 
   const res: ActionResponse = await adminGetStats();
   const statsData = res.error ? [] : res.data;
+
   const handleRefetch = async (range: DateRange) => {
     'use server';
     const res = await adminGetStats({

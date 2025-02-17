@@ -634,13 +634,9 @@ async function fetchtopFiftySellers(from: Date, to: Date) {
 export const adminGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
   const today = new Date();
 
-  const from = dateRange?.from
-    ? new Date(dateRange.from.getTime() + 60 * 60 * 1000)
-    : new Date(today.setHours(0, 0, 0, 0) + 60 * 60 * 1000);
+  const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
 
-  const to = dateRange?.to
-    ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
-    : addHours(endOfDay(from), 1);
+  const to = dateRange?.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000) : addHours(endOfDay(from), 1);
 
   try {
     await roleGuard(UserRole.ADMIN);
@@ -818,13 +814,9 @@ export const adminGetStats = async (dateRange?: DateRange): Promise<ActionRespon
 export const sellerGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
   const today = new Date();
 
-  const from = dateRange?.from
-    ? new Date(dateRange.from.getTime() + 60 * 60 * 1000)
-    : new Date(today.setHours(0, 0, 0, 0) + 60 * 60 * 1000);
+  const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
 
-  const to = dateRange?.to
-    ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
-    : addHours(endOfDay(from), 1);
+  const to = dateRange?.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000) : addHours(endOfDay(from), 1);
 
   try {
     await roleGuard(UserRole.SELLER);
@@ -1042,13 +1034,9 @@ export const sellerGetStats = async (dateRange?: DateRange): Promise<ActionRespo
 export const supplierGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
   const today = new Date();
 
-  const from = dateRange?.from
-    ? new Date(dateRange.from.getTime() + 60 * 60 * 1000)
-    : new Date(today.setHours(0, 0, 0, 0) + 60 * 60 * 1000);
+  const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
 
-  const to = dateRange?.to
-    ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
-    : addHours(endOfDay(from), 1);
+  const to = dateRange?.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000) : addHours(endOfDay(from), 1);
 
   try {
     await roleGuard(UserRole.SUPPLIER);
