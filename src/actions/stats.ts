@@ -810,7 +810,7 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
 
 export const sellerGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
   const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to || endOfDay(from);
+  const to = dateRange.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
 
   try {
     await roleGuard(UserRole.SELLER);
@@ -1027,7 +1027,7 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
 
 export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
   const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to || endOfDay(from);
+  const to = dateRange.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
 
   try {
     await roleGuard(UserRole.SUPPLIER);
