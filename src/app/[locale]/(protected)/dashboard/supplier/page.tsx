@@ -8,14 +8,7 @@ import { getTranslations } from 'next-intl/server';
 export default async function SupplierHome() {
   const t = await getTranslations('dashboard');
 
-  const today = new Date();
-
-  const defaultDateRange: DateRange = {
-    from: new Date(today.setHours(0, 0, 0, 0)),
-    to: null,
-  };
-
-  const res: ActionResponse = await supplierGetStats(defaultDateRange);
+  const res: ActionResponse = await supplierGetStats();
   const statsData = res.error ? [] : res.data;
 
   const handleRefetch = async (range: DateRange) => {
