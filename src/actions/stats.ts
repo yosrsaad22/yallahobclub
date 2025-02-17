@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { currentUser, roleGuard } from '@/lib/auth';
 import { ActionResponse, DailyProfit, DailyProfitAndSubOrders, DateRange, MonthlyProfitAndSubOrders } from '@/types';
 import { UserRole } from '@prisma/client';
-import { endOfDay, endOfMonth, startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
+import { addHours, endOfDay, endOfMonth, startOfDay, startOfMonth, subDays, subMonths } from 'date-fns';
 import { packOptions, roleOptions } from '@/lib/constants';
 
 async function fetchBasicCounts(from: Date, to: Date) {
@@ -633,7 +633,9 @@ async function fetchtopFiftySellers(from: Date, to: Date) {
 
 export const adminGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
   const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
+  const to = dateRange.to
+    ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
+    : addHours(endOfDay(from), 1);
 
   try {
     await roleGuard(UserRole.ADMIN);
@@ -810,7 +812,9 @@ export const adminGetStats = async (dateRange: DateRange): Promise<ActionRespons
 
 export const sellerGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
   const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
+  const to = dateRange.to
+    ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
+    : addHours(endOfDay(from), 1);
 
   try {
     await roleGuard(UserRole.SELLER);
@@ -1027,7 +1031,9 @@ export const sellerGetStats = async (dateRange: DateRange): Promise<ActionRespon
 
 export const supplierGetStats = async (dateRange: DateRange): Promise<ActionResponse> => {
   const from = new Date(dateRange.from!.getTime() + 60 * 60 * 1000);
-  const to = dateRange.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000) : endOfDay(from);
+  const to = dateRange.to
+    ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000 + 59 * 60 * 1000)
+    : addHours(endOfDay(from), 1);
 
   try {
     await roleGuard(UserRole.SUPPLIER);
