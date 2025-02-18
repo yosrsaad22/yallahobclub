@@ -290,27 +290,26 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
             )}
           </div>
         )}
+        {(tag === 'orders' || tag === 'products') && (
+          <div className="flex flex-col gap-1">
+            <Combobox
+              items={columns}
+              selectedItems={visibleColumns}
+              multiSelect
+              onSelect={(column) => handleColumnVisibilityChange(column.id)}
+              placeholder={t('select-column')}
+              displayValue={(column) => tFields(column.translatedName)}
+              itemKey={(column) => column.id}
+            />
+          </div>
+        )}
         {tag === 'orders' && (
-          <>
-            <div className="flex flex-col gap-1">
-              <Combobox
-                items={columns}
-                selectedItems={visibleColumns}
-                multiSelect
-                onSelect={(column) => handleColumnVisibilityChange(column.id)}
-                placeholder={t('select-column')}
-                displayValue={(column) => tFields(column.translatedName)}
-                itemKey={(column) => column.id}
-              />
-            </div>
-
-            <div className={`flex flex-col gap-1 md:col-span-1 `}>
-              <DateRangePicker onChange={handleDateRangeChange} reset={resetDateRange} />
-              {table.getState().columnFilters.some((filter) => filter.id === 'createdAt') && (
-                <p className="pl-2 text-xs text-muted-foreground">1 {t('applied-filters')}</p>
-              )}{' '}
-            </div>
-          </>
+          <div className={`flex flex-col gap-1 md:col-span-1 `}>
+            <DateRangePicker onChange={handleDateRangeChange} reset={resetDateRange} />
+            {table.getState().columnFilters.some((filter) => filter.id === 'createdAt') && (
+              <p className="pl-2 text-xs text-muted-foreground">1 {t('applied-filters')}</p>
+            )}{' '}
+          </div>
         )}
       </div>
     </div>
