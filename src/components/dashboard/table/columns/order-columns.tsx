@@ -83,15 +83,18 @@ export const SellerOrderColumns: ColumnDef<
     },
     accessorFn: (row: any) => row.createdAt,
     cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
+
     filterFn: (row, columnId, filterValue) => {
-      if (!filterValue?.from || !filterValue?.to) return true;
+      if (!filterValue?.from) return true;
 
       const rawDateValue = row.getValue(columnId);
       const dateValue = new Date(rawDateValue as string | number | Date);
 
       const fromDate = new Date(filterValue.from);
-      const toDate = new Date(filterValue.to);
+      fromDate.setHours(0, 0, 0, 0);
 
+      const toDate = filterValue.to ? new Date(filterValue.to) : new Date(fromDate);
+      toDate.setHours(23, 59, 59, 999);
       return dateValue >= fromDate && dateValue <= toDate;
     },
   },
@@ -238,15 +241,18 @@ export const SupplierOrderColumns: ColumnDef<
     },
     accessorFn: (row: any) => row.createdAt,
     cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
+
     filterFn: (row, columnId, filterValue) => {
-      if (!filterValue?.from || !filterValue?.to) return true;
+      if (!filterValue?.from) return true;
 
       const rawDateValue = row.getValue(columnId);
       const dateValue = new Date(rawDateValue as string | number | Date);
 
       const fromDate = new Date(filterValue.from);
-      const toDate = new Date(filterValue.to);
+      fromDate.setHours(0, 0, 0, 0);
 
+      const toDate = filterValue.to ? new Date(filterValue.to) : new Date(fromDate);
+      toDate.setHours(23, 59, 59, 999);
       return dateValue >= fromDate && dateValue <= toDate;
     },
   },
@@ -364,18 +370,22 @@ export const AdminOrderColumns: ColumnDef<
     },
     accessorFn: (row: any) => row.createdAt,
     cell: ({ getValue }) => formatDate(new Date(getValue() as string | number | Date)),
+
     filterFn: (row, columnId, filterValue) => {
-      if (!filterValue?.from || !filterValue?.to) return true;
+      if (!filterValue?.from) return true;
 
       const rawDateValue = row.getValue(columnId);
       const dateValue = new Date(rawDateValue as string | number | Date);
 
       const fromDate = new Date(filterValue.from);
-      const toDate = new Date(filterValue.to);
+      fromDate.setHours(0, 0, 0, 0);
 
+      const toDate = filterValue.to ? new Date(filterValue.to) : new Date(fromDate);
+      toDate.setHours(23, 59, 59, 999);
       return dateValue >= fromDate && dateValue <= toDate;
     },
   },
+
   {
     accessorKey: 'code',
     meta: {

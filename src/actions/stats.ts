@@ -636,7 +636,9 @@ export const adminGetStats = async (dateRange?: DateRange): Promise<ActionRespon
 
   const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
 
-  const to = dateRange?.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000) : addHours(endOfDay(from), 1);
+  const to = dateRange?.to
+    ? new Date(dateRange.to.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000)
+    : new Date(from.getTime() + 24 * 60 * 60 * 1000 - 1000);
 
   try {
     await roleGuard(UserRole.ADMIN);
@@ -816,7 +818,9 @@ export const sellerGetStats = async (dateRange?: DateRange): Promise<ActionRespo
 
   const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
 
-  const to = dateRange?.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000) : addHours(endOfDay(from), 1);
+  const to = dateRange?.to
+    ? new Date(dateRange.to.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000)
+    : new Date(from.getTime() + 24 * 60 * 60 * 1000 - 1000);
 
   try {
     await roleGuard(UserRole.SELLER);
@@ -1036,7 +1040,9 @@ export const supplierGetStats = async (dateRange?: DateRange): Promise<ActionRes
 
   const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
 
-  const to = dateRange?.to ? new Date(dateRange.to.getTime() + 24 * 60 * 60 * 1000) : addHours(endOfDay(from), 1);
+  const to = dateRange?.to
+    ? new Date(dateRange.to.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000)
+    : new Date(from.getTime() + 24 * 60 * 60 * 1000 - 1000);
 
   try {
     await roleGuard(UserRole.SUPPLIER);

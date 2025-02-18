@@ -290,7 +290,7 @@ export function AdvancedFilters<TData extends { id: string }>({ tag, prefix, tab
             )}
           </div>
         )}
-        {(tag === 'orders' || (tag === 'products' && role === roleOptions.ADMIN)) && (
+        {tag === 'orders' && (
           <>
             <div className="flex flex-col gap-1">
               <Combobox

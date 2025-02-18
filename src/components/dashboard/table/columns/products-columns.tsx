@@ -74,17 +74,6 @@ export const AdminProductColumns: ColumnDef<Product & { media: MediaType[]; supp
     enableHiding: true,
     enableSorting: false,
     cell: undefined,
-    filterFn: (row, columnId, filterValue) => {
-      const rawDateValue = row.getValue(columnId);
-      const dateValue = new Date(rawDateValue as string | number | Date);
-      const filterDate = new Date(filterValue);
-
-      return (
-        dateValue.getFullYear() === filterDate.getFullYear() &&
-        dateValue.getMonth() === filterDate.getMonth() &&
-        dateValue.getDate() === filterDate.getDate()
-      );
-    },
   },
   {
     accessorKey: 'media',
