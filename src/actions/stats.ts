@@ -818,7 +818,9 @@ export const adminGetStats = async (dateRange?: DateRange): Promise<ActionRespon
 export const sellerGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
   const today = new Date();
 
-  const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
+  const from = dateRange?.from
+    ? new Date(dateRange.from.getTime())
+    : new Date(today.setHours(0, 0, 0, 0) - 60 * 60 * 1000);
 
   const to = dateRange?.to
     ? new Date(dateRange.to.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000)
@@ -1040,7 +1042,9 @@ export const sellerGetStats = async (dateRange?: DateRange): Promise<ActionRespo
 export const supplierGetStats = async (dateRange?: DateRange): Promise<ActionResponse> => {
   const today = new Date();
 
-  const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
+  const from = dateRange?.from
+    ? new Date(dateRange.from.getTime())
+    : new Date(today.setHours(0, 0, 0, 0) - 60 * 60 * 1000);
 
   const to = dateRange?.to
     ? new Date(dateRange.to.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000)
