@@ -636,9 +636,13 @@ export const adminGetStats = async (dateRange?: DateRange): Promise<ActionRespon
 
   const from = dateRange?.from ? new Date(dateRange.from.getTime()) : new Date(today.setHours(0, 0, 0, 0));
 
+  console.log('From', from);
+
   const to = dateRange?.to
     ? new Date(dateRange.to.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000)
     : new Date(from.getTime() + 24 * 60 * 60 * 1000 - 1000);
+
+  console.log('To', to);
 
   try {
     await roleGuard(UserRole.ADMIN);
@@ -664,6 +668,8 @@ export const adminGetStats = async (dateRange?: DateRange): Promise<ActionRespon
       ]);
 
     const [leads, transactions, products, suppliers, sellers] = counts;
+
+    console.log('SubOrders', subOrders.length);
 
     const completedSubOrders = subOrders.filter((subOrder) =>
       subOrder.statusHistory.some((history) => ['7', '23'].includes(history.status)),
