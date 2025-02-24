@@ -173,23 +173,8 @@ export const adminRequestPickup = async (orderIds: string[]): Promise<ActionResp
 
       // Process subOrders sequentially to ensure proper linking
       for (const subOrder of subOrdersForSupplier) {
-        let ref1;
-        if (subOrder.order.subOrders.length > 1) {
-          ref1 =
-            'Sous commande : ' +
-            subOrder.code +
-            ' ' +
-            subOrdersForSupplier.indexOf(subOrder) +
-            '/' +
-            subOrder.order.subOrders.length +
-            ' de ' +
-            subOrder.order.code;
-        } else {
-          ref1 = 'Commande ' + subOrder.order.code;
-        }
-
         const shipment = createShipment({
-          ref1: subOrder.order.comment ? subOrder.order.comment : '',
+          ref1: (subOrder.order?.seller?.storeName ?? '') + ' - ' + (subOrder.order?.comment ?? ''),
           products: subOrder.products
             .map(
               (item: any) =>
@@ -330,22 +315,8 @@ export const requestPickup = async (orderIds: string[]): Promise<ActionResponse>
       if (subOrder.status === 'EC01') {
         return { error: 'pickup-request-order-cancelled-error' };
       } else if (subOrder.status === 'EC00') {
-        let ref1;
-        if (subOrder!.order!.subOrders.length > 1) {
-          ref1 =
-            'Sous commande ' +
-            subOrder.code +
-            ' ' +
-            (subOrder!.order!.subOrders.findIndex((element: any) => element.deliveryId === subOrder.deliveryId) + 1) +
-            '/' +
-            subOrder!.order!.subOrders.length +
-            ' de ' +
-            subOrder!.order!.code;
-        } else {
-          ref1 = 'Commande' + subOrder!.order!.code;
-        }
         const shipment = createShipment({
-          ref1: subOrder.order?.comment ? subOrder.order?.comment : '',
+          ref1: (subOrder.order?.seller?.storeName ?? '') + ' - ' + (subOrder.order?.comment ?? ''),
           products: subOrder.products
             .map(
               (item) =>
