@@ -156,11 +156,6 @@ export const supplierNavItems: NavItem[] = [
     icon: <IconLayoutDashboard />,
   },
   {
-    title: 'marketplace',
-    href: '/dashboard/marketplace',
-    icon: <IconBuildingStore />,
-  },
-  {
     title: 'products',
     href: '/dashboard/supplier/products',
     icon: <IconBoxSeam />,

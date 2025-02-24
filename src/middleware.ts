@@ -36,6 +36,11 @@ const authMiddleware = auth(async (req: any) => {
 
   const role = auth?.user?.role;
 
+  // Prevent suppliers from accessing marketplace
+  if (isMarketplaceRoute && role === UserRole.SUPPLIER) {
+    return NextResponse.redirect(new URL(SUPPLIER_LOGIN_REDIRECT, nextUrl));
+  }
+
   if (!isAuthRoute && !isPublicRoute && !isMarketplaceRoute && !isNotificationsRoute && isLoggedIn) {
     switch (role) {
       case UserRole.ADMIN:
