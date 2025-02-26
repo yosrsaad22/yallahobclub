@@ -18,7 +18,7 @@ import { ProductCard } from '../cards/product-card';
 import { DataTableUser, MediaType } from '@/types';
 
 interface MarketplaceHomeProps {
-  products: (Product & { media: MediaType[]; sellers: DataTableUser[] })[];
+  products: (Product & { media: MediaType[]; sellers: DataTableUser[]; supplierCode: string })[];
 }
 
 export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) => {

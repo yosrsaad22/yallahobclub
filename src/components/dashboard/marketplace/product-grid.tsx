@@ -390,23 +390,25 @@ export default function ProductGrid() {
               <IconLoader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : currentItems.length > 0 ? (
-            currentItems.map((product: Product & { media: MediaType[]; sellers: DataTableUser[] }) => (
-              <ProductCard
-                id={product.id}
-                imageHeight={180}
-                imageWidth={180}
-                profitMargin={product.profitMargin}
-                key={product.code}
-                sellers={product.sellers}
-                image={product.media[0].key}
-                name={product.name}
-                wholesalePrice={product.wholesalePrice}
-                category={product.category as productCategoryOptions}
-                stock={product.stock}
-                colors={product.colors}
-                supplierCode={product.supplierCode}
-              />
-            ))
+            currentItems.map(
+              (product: Product & { media: MediaType[]; sellers: DataTableUser[]; supplierCode: string }) => (
+                <ProductCard
+                  id={product.id}
+                  imageHeight={180}
+                  imageWidth={180}
+                  profitMargin={product.profitMargin}
+                  key={product.code}
+                  sellers={product.sellers}
+                  image={product.media[0].key}
+                  name={product.name}
+                  wholesalePrice={product.wholesalePrice}
+                  category={product.category as productCategoryOptions}
+                  stock={product.stock}
+                  colors={product.colors}
+                  supplierCode={product.supplierCode}
+                />
+              ),
+            )
           ) : (
             <p className="col-span-2 h-full py-24 text-center text-sm text-muted-foreground md:col-span-4">
               {tMarketplace('no-results')}
