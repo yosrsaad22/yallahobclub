@@ -134,7 +134,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         <h1 className="text-md max-w-full truncate font-medium">{name}</h1>
         <p className="flex w-full justify-between text-sm font-normal">
-          {tFields('product-supplier-code') + ' : '}
+          {tFields('product-supplier') + ' : '}
           <span className="font-medium"> {supplierCode}</span>
         </p>
         <p className="flex w-full justify-between text-sm font-normal">
