@@ -273,6 +273,7 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 stock={product.stock}
                 wholesalePrice={product.wholesalePrice}
                 colors={product.colors}
+                supplierCode={product.supplierCode}
               />
             ))
           ) : (
@@ -309,6 +310,7 @@ export const MarketplaceHome: React.FC<MarketplaceHomeProps> = ({ products }) =>
                 stock={product.stock}
                 wholesalePrice={product.wholesalePrice}
                 colors={product.colors}
+                supplierCode={product.supplierCode}
               />
             ))
           ) : (

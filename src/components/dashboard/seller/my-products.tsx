@@ -137,6 +137,7 @@ export function MyProducts({ className }: MyProductsFormProps) {
                   category={product.category as productCategoryOptions}
                   stock={product.stock}
                   colors={product.colors}
+                  supplierCode={product.supplierCode}
                   showDeleteIcon={true}
                   onClickNavigate={false}
                   onDelete={() => confirmDelete(product.id)}

@@ -67,7 +67,8 @@ export default function ProductGrid() {
       if (res.error) throw new Error(res.error);
       if (res.success)
         return res.data.filter(
-          (product: Product & { media: MediaType[]; sellers: DataTableUser[] }) => product.published,
+          (product: Product & { media: MediaType[]; sellers: DataTableUser[]; supplierCode: string }) =>
+            product.published,
         );
     },
   });
@@ -145,7 +146,11 @@ export default function ProductGrid() {
       }
 
       if (search) {
-        result = result.filter((product: Product) => product.name.toLowerCase().includes(search.toLowerCase()));
+        result = result.filter(
+          (product: Product & { supplierCode: string }) =>
+            product.name.toLowerCase().includes(search.toLowerCase()) ||
+            product.supplierCode.toLowerCase().includes(search.toLowerCase()),
+        );
       }
 
       if (stockFilter === 'in') {
@@ -399,6 +404,7 @@ export default function ProductGrid() {
                 category={product.category as productCategoryOptions}
                 stock={product.stock}
                 colors={product.colors}
+                supplierCode={product.supplierCode}
               />
             ))
           ) : (

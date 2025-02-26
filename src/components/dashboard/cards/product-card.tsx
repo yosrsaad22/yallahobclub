@@ -24,6 +24,7 @@ interface ProductCardProps {
   profitMargin: number;
   sellers: DataTableUser[];
   colors: ColorType[];
+  supplierCode: string;
   imageHeight: number;
   imageWidth: number;
   showDeleteIcon?: boolean;
@@ -40,6 +41,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   wholesalePrice,
   profitMargin,
   colors,
+  supplierCode,
   sellers,
   imageHeight,
   imageWidth,
@@ -131,6 +133,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <p className="text-sm font-normal text-muted-foreground">{tFields(`category-${category.toLowerCase()}`)}</p>
 
         <h1 className="text-md max-w-full truncate font-medium">{name}</h1>
+        <p className="flex w-full justify-between text-sm font-normal">
+          {tFields('product-supplier-code') + ' : '}
+          <span className="font-medium"> {supplierCode}</span>
+        </p>
         <p className="flex w-full justify-between text-sm font-normal">
           {tFields('product-minimum-profit') + ' : '}
           <span className="font-semibold text-primary"> {(wholesalePrice * (profitMargin / 100)).toFixed(2)} TND</span>

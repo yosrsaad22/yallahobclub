@@ -27,7 +27,8 @@ export default async function AllProducts() {
       if (res.error) throw new Error(res.error);
       if (res.success)
         return res.data.filter(
-          (product: Product & { media: MediaType[]; sellers: DataTableUser[] }) => product.published,
+          (product: Product & { media: MediaType[]; sellers: DataTableUser[]; supplierCode: string }) =>
+            product.published,
         );
     },
   });
