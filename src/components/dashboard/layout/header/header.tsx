@@ -8,7 +8,7 @@ import NotificationDropdown from './notification';
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/hooks/use-sidebar';
 import { useState } from 'react';
-import { IconChevronsLeft, IconCoins, IconHeadset, IconSchool, IconTruckDelivery } from '@tabler/icons-react';
+import { IconHeadset, IconTruckDelivery, IconSchool, IconChevronsLeft, IconCoins } from '@tabler/icons-react';
 import { LanguageToggle } from './language-toggle';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { roleOptions } from '@/lib/constants';
@@ -37,28 +37,36 @@ export default function Header() {
     { href: 'https://wa.me/21623032044', icon: <IconSchool className="mr-2 h-5 w-5" />, text: t('course-support') },
   ];
 
-  const links = linkItems.map((link, index) => (
-    <Link key={index} className="flex flex-row items-center justify-center px-4" href={link.href}>
-      {link.icon}
-      {link.text}
-    </Link>
-  ));
-
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-hidden">
+      {' '}
+      {/* Ensure no horizontal scroll */}
+      {/* Scrolling Banner */}
       <div className="relative w-full overflow-hidden bg-gradient-to-r from-secondary to-primary/80 py-1 text-sm tracking-wider text-white">
-        <div className="animate-infinite-scroll flex min-w-max gap-16 whitespace-nowrap">
-          {[...linkItems, ...linkItems, ...linkItems, ...linkItems].map((link, index) => (
-            <Link key={index} className="flex flex-row items-center justify-center px-4" href={link.href}>
-              {link.icon}
-              {link.text}
-            </Link>
-          ))}
+        <div className="relative flex w-full overflow-hidden">
+          {' '}
+          {/* Ensure no overflow here */}
+          <motion.div
+            className="flex min-w-full gap-8 whitespace-nowrap"
+            animate={{ x: ['0%', '-100%'] }}
+            transition={{
+              duration: 35,
+              ease: 'linear',
+              repeat: Infinity,
+              repeatDelay: 0.1,
+            }}>
+            {[...linkItems].map((link, index) => (
+              <Link key={index} className="flex shrink-0 flex-row items-center justify-center px-4" href={link.href}>
+                {link.icon}
+                {link.text}
+              </Link>
+            ))}
+          </motion.div>
         </div>
       </div>
-
-      <div className="flex h-16 items-center justify-between border-b bg-background">
-        <nav className="flex h-16 w-full items-center justify-between overflow-hidden px-3">
+      {/* Header Navigation */}
+      <div className="flex h-16 items-center border-b bg-background">
+        <nav className="flex h-16 w-full items-center justify-between px-3">
           <div className="flex items-center gap-x-3">
             <div className={cn('block lg:!hidden')}>
               <MobileSidebar />
@@ -68,7 +76,7 @@ export default function Header() {
               className={cn('hidden lg:flex', isMinimized ? 'rotate-180' : '')}
               variant={'outline'}
               size={'icon'}>
-              <IconChevronsLeft className=" h-[1.4rem] w-[1.4rem]" />
+              <IconChevronsLeft className="h-[1.4rem] w-[1.4rem]" />
             </Button>
             <Link href="/dashboard" passHref>
               <Image
@@ -83,7 +91,7 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="relative flex items-center gap-x-3">
+          <div className="flex items-center gap-x-3">
             {(user?.role === roleOptions.SELLER || user?.role === roleOptions.SUPPLIER) && (
               <div className="hidden flex-row gap-x-4 rounded-md border border-muted p-2 lg:flex">
                 <IconCoins />
