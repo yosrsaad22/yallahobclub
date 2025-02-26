@@ -8,7 +8,7 @@ import NotificationDropdown from './notification';
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/hooks/use-sidebar';
 import { useState } from 'react';
-import { IconBrandWhatsapp, IconChevronsLeft, IconCoins, IconShoppingCart } from '@tabler/icons-react';
+import { IconChevronsLeft, IconCoins, IconHeadset, IconSchool, IconTruckDelivery } from '@tabler/icons-react';
 import { LanguageToggle } from './language-toggle';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { roleOptions } from '@/lib/constants';
@@ -27,15 +27,37 @@ export default function Header() {
     setTimeout(() => setStatus(false), 500);
   };
 
+  const linkItems = [
+    { href: 'https://wa.me/21624002024', icon: <IconHeadset className="mr-2 h-5 w-5" />, text: t('tech-support') },
+    {
+      href: 'https://wa.me/21692541890',
+      icon: <IconTruckDelivery className="mr-2 h-5 w-5" />,
+      text: t('logistic-support'),
+    },
+    { href: 'https://wa.me/21623032044', icon: <IconSchool className="mr-2 h-5 w-5" />, text: t('course-support') },
+  ];
+
+  const links = linkItems.map((link, index) => (
+    <Link key={index} className="flex flex-row items-center justify-center px-4" href={link.href}>
+      {link.icon}
+      {link.text}
+    </Link>
+  ));
+
   return (
     <div className="flex flex-col">
-      <div className="relative flex w-full items-center justify-center overflow-hidden bg-gradient-to-r from-secondary to-primary/80 py-1 text-sm tracking-wider text-white">
-        <Link className="flex flex-row items-center justify-center " href="https://wa.me/21624002024">
-          <IconBrandWhatsapp className="mr-1 h-5 w-5" />
-          {t('annoucement')}
-        </Link>
+      <div className="relative w-full overflow-hidden bg-gradient-to-r from-secondary to-primary/80 py-1 text-sm tracking-wider text-white">
+        <div className="animate-infinite-scroll flex min-w-max gap-16 whitespace-nowrap">
+          {[...linkItems, ...linkItems, ...linkItems, ...linkItems].map((link, index) => (
+            <Link key={index} className="flex flex-row items-center justify-center px-4" href={link.href}>
+              {link.icon}
+              {link.text}
+            </Link>
+          ))}
+        </div>
       </div>
-      <div className="flex h-16  items-center justify-between border-b bg-background">
+
+      <div className="flex h-16 items-center justify-between border-b bg-background">
         <nav className="flex h-16 w-full items-center justify-between overflow-hidden px-3">
           <div className="flex items-center gap-x-3">
             <div className={cn('block lg:!hidden')}>

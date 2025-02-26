@@ -3,7 +3,7 @@
 import { Globe } from '@/components/ui/globe';
 import { useCurrentRole } from '@/hooks/use-current-role';
 import { Link, useRouter } from '@/navigation';
-import { IconMail, IconPhone } from '@tabler/icons-react';
+import { IconHeadset, IconMail, IconPhone, IconTruckDelivery, IconSchool } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -133,13 +133,38 @@ export default function Footer() {
         </div>
         <div className="flex flex-col space-y-3">
           <h2 className=" text-md pb-2  font-semibold text-foreground">Support</h2>
+
+          <div className="flex w-full flex-row items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex flex-row items-center gap-1">
+              <IconHeadset className="mr-1 h-5 w-5" />
+              <p className="">{tSidebar('tech-support')}</p>
+            </div>
+            <Link className="hover:text-primary" href="https://wa.me/21624002024">
+              (+216) 24 002 024
+            </Link>
+          </div>
+          <div className="flex w-full flex-row items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex flex-row items-center gap-1">
+              <IconTruckDelivery className="mr-1 h-5 w-5" />
+              <p className="">{tSidebar('logistic-support')}</p>
+            </div>
+            <Link className="hover:text-primary" href="https://wa.me/21692541890">
+              (+216) 92 541 890
+            </Link>
+          </div>
+
+          <div className="flex w-full flex-row items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex flex-row items-center gap-1">
+              <IconSchool className="mr-1 h-5 w-5" />
+              <p className="">{tSidebar('course-support')}</p>
+            </div>
+            <Link className="hover:text-primary" href="https://wa.me/21623032044">
+              (+216) 23 032 044
+            </Link>
+          </div>
           <p className="flex flex-row  items-center gap-x-2 text-sm font-normal text-muted-foreground">
             {' '}
             <IconMail className="h-5 w-5" /> support@ecomness.com{' '}
-          </p>
-          <p className="flex flex-row items-center gap-x-2 text-sm font-normal text-muted-foreground">
-            {' '}
-            <IconPhone className="h-5 w-5" /> (+216) 24 002 024
           </p>
         </div>
       </div>

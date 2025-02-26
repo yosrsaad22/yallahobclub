@@ -9,6 +9,7 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { useNotifications } from '@/hooks/use-notifications';
 import { useTranslations } from 'next-intl';
 import { Notification } from '@prisma/client';
+import { IconHeadset, IconSchool, IconTruckDelivery } from '@tabler/icons-react';
 
 interface DashboardNavProps {
   items: NavItem[];

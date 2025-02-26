@@ -779,7 +779,10 @@
       "integrations": "Integrations",
       "settings": "Paramètres",
       "coming-soon": "Bientôt",
-      "new": "Nouveau"
+      "new": "Nouveau",
+      "tech-support": "Technique",
+      "logistic-support": "Logistique",
+      "course-support": "Formation"
     },
     "notifications": {
       "menu-title": "Notifications",
@@ -1039,7 +1042,9 @@
     "text": {
       "image-button": "Changer l'image",
       "user-information": "Informations Utilisateur",
-      "annoucement": "Contactez le support sur (+216) 24 002 024",
+      "tech-support": "Support Technique (+216) 24 002 024",
+      "logistic-support": "Support Logistique (+216) 92 541 890 ",
+      "course-support": "Support Formation (+216) 23 032 044",
       "user-progress": "Avancement de la formation",
       "date-picker-placeholder": "Sélectionnez une date",
       "user-email-verified-note": "L'e-mail de l'utilisateur a été vérifié",

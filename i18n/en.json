@@ -777,7 +777,10 @@
       "integrations": "Integrations",
       "settings": "Settings",
       "coming-soon": "Soon",
-      "new": "New"
+      "new": "New",
+      "tech-support": "Technical",
+      "logistic-support": "Logistic",
+      "course-support": "Course"
     },
     "notifications": {
       "menu-title": "Notifications",
@@ -1041,7 +1044,9 @@
       "user-information": "User Information",
       "user-progress": "Course Progress",
       "date-picker-placeholder": "Select a date",
-      "annoucement": "Contact support on (+216) 24 002 024",
+      "tech-support": "Technical Support (+216) 24 002 024",
+      "logistic-support": "Logistic Support (+216) 92 541 890 ",
+      "course-support": "Course Support (+216) 23 032 044",
       "user-email-verified-note": "User E-mail has been verified",
       "user-store-name-note": "The name that will be displayed on the shipments, default is ECOMNESS",
       "user-active-note": "User account is activated",
