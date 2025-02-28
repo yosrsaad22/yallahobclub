@@ -1012,7 +1012,9 @@
       "BROWN": "Brown",
       "GRAY": "Gray",
       "GOLD": "Gold",
-      "BRONZE": "Bronze"
+      "BRONZE": "Bronze",
+      "SALMON_RED": "Salmon Red",
+      "BURGUNDY_RED": "Burgundy Red"
     },
     "tables": {
       "search": "Search...",

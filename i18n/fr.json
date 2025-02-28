@@ -946,7 +946,9 @@
       "BROWN": "Marron",
       "GRAY": "Gris",
       "GOLD": "Doré",
-      "BRONZE": "Bronze"
+      "BRONZE": "Bronze",
+      "SALMON_RED": "Rouge Saumon",
+      "BURGUNDY_RED": "Rouge Bordeaux"
     },
     "tables": {
       "search": "Rechercher...",

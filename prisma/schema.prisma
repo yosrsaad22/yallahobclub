@@ -266,6 +266,8 @@ enum ColorType {
   GRAY
   GOLD
   BRONZE
+  SALMON_RED
+  BURGUNDY_RED
 }
 
 model Media {
