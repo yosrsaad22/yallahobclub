@@ -334,6 +334,8 @@ export enum colorOptions {
   GRAY = 'GRAY',
   GOLD = 'GOLD',
   BRONZE = 'BRONZE',
+  SALMON_RED = 'SALMON_RED',
+  BURGUNDY_RED = 'BURGUNDY_RED',
 }
 
 export const colorHexMap: { [key in colorOptions]: string } = {
@@ -355,6 +357,8 @@ export const colorHexMap: { [key in colorOptions]: string } = {
   [colorOptions.GRAY]: '#808080',
   [colorOptions.GOLD]: '#FFD700',
   [colorOptions.BRONZE]: '#CD7F32',
+  [colorOptions.SALMON_RED]: '#FA8072',
+  [colorOptions.BURGUNDY_RED]: '#800020',
 };
 
 export const orderStatuses = [
