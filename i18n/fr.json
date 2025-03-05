@@ -1125,7 +1125,8 @@
       "integrations-info": "Intégrez Ecomness avec des créateurs de sites web populaires comme Tiktak Pro, Converty et WooCommerce pour synchroniser facilement votre boutique en ligne. Cette intégration vous fait gagner du temps et des efforts en automatisant votre processus de travail.",
       "configure": "Configurer",
       "integration-description": "Intégrez avec votre site web {subject}",
-      "coming-soon": "Bientôt"
+      "coming-soon": "Bientôt",
+      "check-stock": "Avant de lancer des campagnes publicitaires, veuillez confirmer la disponibilité du stock du produit avec l'équipe via WhatsApp"
     },
     "transaction-types": {
       "admin-transaction": "Transaction administrateur",

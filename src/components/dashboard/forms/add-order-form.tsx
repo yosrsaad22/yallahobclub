@@ -353,6 +353,10 @@ export function AddOrderForm({}: AddOrderFormProps) {
               </Avatar>
             </div>
           </div>
+          <div className="mb-5 flex w-full items-center space-x-4 rounded-md border border-border bg-background p-2 ">
+            <IconInfoCircleFilled className="h-10 w-10 flex-shrink-0  text-primary" />
+            <h1 className="text-sm text-muted-foreground">{t('check-stock')} </h1>
+          </div>
           <div className="flex flex-col">
             <h2 className=" text-lg font-semibold">{t('client-information')}</h2>
             <p className="pb-6 text-sm text-muted-foreground">{t('required-note')}</p>
