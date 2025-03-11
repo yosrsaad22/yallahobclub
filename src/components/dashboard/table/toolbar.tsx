@@ -483,7 +483,7 @@ export function DataTableToolbar<TData extends { id: string }>({
             {showExportButton && (
               <Button
                 onClick={handleExport}
-                variant=""
+                variant="default"
                 size="default"
                 disabled={isExportLoading}
                 className="ml-auto px-3 lg:flex">
