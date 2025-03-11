@@ -363,3 +363,79 @@ export const CompleteOnBoarding = async (values: z.infer<typeof OnBoardingSchema
     return { error: 'users-on-boarding-error' };
   }
 };
+
+export const exportSellers = async (): Promise<ActionResponse> => {
+  try {
+    await roleGuard(UserRole.ADMIN);
+
+    const sellers = await db.user.findMany({
+      where: {
+        role: UserRole.SELLER,
+      },
+      select: {
+        code: true,
+        email: true,
+        number: true,
+        fullName: true,
+        createdAt: true,
+        address: true,
+        state: true,
+        storeName: true,
+        boarded: true,
+        active: true,
+        emailVerified: true,
+        pack: true,
+        balance: true,
+        soldOrders: {
+          select: {
+            id: true,
+            subOrders: {
+              select: {
+                total: true,
+                sellerProfit: true,
+              },
+            },
+          },
+        },
+        withdrawRequests: {
+          where: {
+            status: 'approved',
+          },
+          select: {
+            amount: true,
+          },
+        },
+      },
+    });
+
+    const formattedSellers = sellers.map((seller) => ({
+      id: seller.code,
+      email: seller.email,
+      emailVerified: seller.emailVerified ? 'Yes' : 'No',
+      phoneNumber: seller.number,
+      storeName: seller.storeName,
+      name: seller.fullName,
+      city: seller.address,
+      state: seller.state,
+      pack: seller.pack,
+      boarded: seller.boarded,
+      active: seller.active ? 'Yes' : 'No',
+      createdAt: seller.createdAt,
+      ordersCount: seller.soldOrders.length,
+      totalRevenue: seller.soldOrders.reduce(
+        (sum, order) => sum + order.subOrders.reduce((subSum, subOrder) => subSum + (subOrder.total || 0), 0),
+        0,
+      ),
+      totalProfit: seller.soldOrders.reduce(
+        (sum, order) => sum + order.subOrders.reduce((subSum, subOrder) => subSum + (subOrder.sellerProfit || 0), 0),
+        0,
+      ),
+      currentBalance: seller.balance,
+      totalWithdrawn: seller.withdrawRequests.reduce((sum, request) => sum + request.amount, 0),
+    }));
+
+    return { success: 'export-success', data: formattedSellers };
+  } catch (error) {
+    return { error: 'export-error' };
+  }
+};

@@ -146,6 +146,7 @@
     "order-full-name": "Full Name",
     "order-email": "E-mail",
     "order-comment": "Comment",
+    "order-packaging-fees": "Packaging Fees",
     "order-openable": "Openable Shipment",
     "order-fragile": "Fragile Shipment",
     "order-total": "Total",
@@ -385,7 +386,9 @@
     "order-paid-success": "Order(s) marked as paid successfully",
     "order-paid-invalid-error": "Only orders with statuses 'Exchange Closed','Return Closed' or 'Delivery Completed' can be marked as paid",
     "user-on-boarding-success": "User onboarding has been completed successfully",
-    "user-on-boarding-error": "Error while completing user onboarding"
+    "user-on-boarding-error": "Error while completing user onboarding",
+    "export-success": "Export has been completed successfully",
+    "export-error": "Error while exporting"
   },
   "not-found": {
     "title": "Page Not Found",
@@ -1030,6 +1033,7 @@
       "mark-as-paid": "Pay",
       "print-pickup": "Print pickup",
       "print-labels": "Print labels",
+      "export": "Export",
       "no-result": "No results",
       "rows-selected": "row(s) selected",
       "rows-per-page": "Rows per page",

@@ -41,6 +41,7 @@ interface Product extends PrismaProduct {
 }
 import { UserCombobox } from '../comboboxes/user-combobox';
 import { Switch } from '@/components/ui/switch';
+import { isAfter } from 'date-fns';
 
 interface AddOrderFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -751,10 +752,15 @@ export function AddOrderForm({}: AddOrderFormProps) {
                       <p>{(sellerProfit / 9).toFixed(2)} TND</p>
                     </div>
                   )}
-
+                  {(role === roleOptions.SELLER || role === roleOptions.ADMIN) && (
+                    <div className="flex w-full items-center justify-between font-semibold">
+                      <p>{tFields('order-packaging-fees')}</p>
+                      <p>1 TND</p>
+                    </div>
+                  )}
                   <div className="flex w-full items-center justify-between font-semibold">
                     <p>{tFields('seller-profit')}</p>
-                    <p className="text-primary">{sellerProfit.toFixed(2)} TND</p>
+                    <p className="text-primary">{(sellerProfit - 1).toFixed(2)} TND</p>
                   </div>
                 </div>
               )}

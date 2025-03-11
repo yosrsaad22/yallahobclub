@@ -1,4 +1,4 @@
-import { bulkDeleteUsers, deleteUser, getSellers } from '@/actions/users';
+import { bulkDeleteUsers, deleteUser, exportSellers, getSellers } from '@/actions/users';
 import { DataTable } from '@/components/dashboard/table/data-table';
 import Breadcrumb from '@/components/ui/breadcrumb';
 import { ActionResponse, DataTableUser } from '@/types';
@@ -35,6 +35,12 @@ export default async function Sellers() {
     return res;
   };
 
+  const handleExport = async () => {
+    'use server';
+    const res = await exportSellers();
+    return res;
+  };
+
   return (
     <div className=" w-full">
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -48,6 +54,8 @@ export default async function Sellers() {
           translationPrefix="user"
           onDelete={handleDelete}
           onBulkDelete={handleBulkDelete}
+          showExportButton={true}
+          onExport={handleExport}
           columns={SellerColumns}
           data={sellersData}
         />

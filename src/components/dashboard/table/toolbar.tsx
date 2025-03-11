@@ -12,6 +12,7 @@ import {
   IconReceipt,
   IconReceipt2,
   IconRefresh,
+  IconTableExport,
   IconTicket,
   IconTransactionDollar,
   IconTrash,
@@ -41,6 +42,7 @@ interface DataTableToolbarProps<TData> {
   onMarkAsPaid: DataTableHandlers['onMarkAsPaid'] | undefined;
   onAddTransaction: DataTableHandlers['onAddTransaction'] | undefined;
   onPrintLabels: DataTableHandlers['onPrintLabels'] | undefined;
+  onExport: DataTableHandlers['onExport'] | undefined;
   showAddTransactionButton?: boolean;
   showAddButton: boolean;
   showBulkDeleteButton?: boolean;
@@ -48,6 +50,7 @@ interface DataTableToolbarProps<TData> {
   showPrintPickupsButton?: boolean;
   showMarkAsPaidButton?: boolean;
   showPrintLabelsButton: boolean;
+  showExportButton?: boolean;
 }
 
 export function DataTableToolbar<TData extends { id: string }>({
@@ -60,6 +63,7 @@ export function DataTableToolbar<TData extends { id: string }>({
   onAddTransaction,
   onMarkAsPaid,
   onPrintLabels,
+  onExport,
   showAddButton = true,
   showBulkDeleteButton = true,
   showCreatePickupButton = false,
@@ -67,6 +71,7 @@ export function DataTableToolbar<TData extends { id: string }>({
   showPrintPickupsButton = false,
   showAddTransactionButton = false,
   showPrintLabelsButton = false,
+  showExportButton = false,
 }: DataTableToolbarProps<TData>) {
   const t = useTranslations('dashboard.tables');
   const tValidation = useTranslations('validation');
@@ -77,6 +82,7 @@ export function DataTableToolbar<TData extends { id: string }>({
 
   const [isPrintPickupLoading, startPrintPickupTransition] = React.useTransition();
   const [isPrintLabelsLoading, startPrintLabelsTransition] = React.useTransition();
+  const [isExportLoading, startExportTransition] = React.useTransition();
   const [users, setUsers] = useState<DataTableUser[]>([]);
   const [usersLoading, setUsersLoading] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -249,6 +255,41 @@ export function DataTableToolbar<TData extends { id: string }>({
               description: tValidation(res.success),
             });
             router.refresh();
+          } else {
+            toast({
+              variant: 'destructive',
+              title: tValidation('error-title'),
+              description: tValidation(res.error),
+            });
+          }
+        });
+      }
+    });
+  };
+
+  const handleExport = async () => {
+    startExportTransition(() => {
+      if (onExport) {
+        onExport().then((res: ActionResponse) => {
+          if (res.success) {
+            const csvData = res.data.map((row: any) => Object.values(row).join(',')).join('\n');
+            const headers = Object.keys(res.data[0]).join(',');
+            const csvContent = `${headers}\n${csvData}`;
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'export.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast({
+              variant: 'success',
+              title: tValidation('success-title'),
+              description: tValidation(res.success),
+            });
           } else {
             toast({
               variant: 'destructive',
@@ -437,6 +478,21 @@ export function DataTableToolbar<TData extends { id: string }>({
                 className="ml-auto px-3  lg:flex">
                 <IconReceipt2 className="mr-0 h-5 w-5 md:mr-2" />
                 <p className="hidden md:flex">{t('add-transaction')}</p>
+              </Button>
+            )}
+            {showExportButton && (
+              <Button
+                onClick={handleExport}
+                variant=""
+                size="default"
+                disabled={isExportLoading}
+                className="ml-auto px-3 lg:flex">
+                {isExportLoading ? (
+                  <IconLoader2 className="mr-0 h-5 w-5 animate-spin md:mr-2" />
+                ) : (
+                  <IconTableExport className="mr-0 h-5 w-5 md:mr-2" />
+                )}
+                <p className="hidden md:flex">{t('export')}</p>
               </Button>
             )}
             {showPrintPickupsButton && (

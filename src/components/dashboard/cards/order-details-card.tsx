@@ -28,6 +28,7 @@ import { useRouter } from '@/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { StatusHistoryDialog } from '../dialogs/status-history-dialog';
+import { isAfter } from 'date-fns';
 
 interface OrderDetailsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   order: Order & {
@@ -439,6 +440,14 @@ export default function OrderDetailsCard({ order, onCancel, onPrintLabel }: Orde
                   <p>{tFields('platform-profit')} (10%)</p>
                   <p>{platformProfit < 0 ? 3 : platformProfit.toFixed(2)} TND</p>
                 </div>
+
+                {(role === roleOptions.SELLER || role === roleOptions.ADMIN) &&
+                  isAfter(order.createdAt, new Date('2025-03-10')) && (
+                    <div className="flex w-full items-center justify-between font-semibold">
+                      <p>{tFields('order-packaging-fees')}</p>
+                      <p>1 TND</p>
+                    </div>
+                  )}
 
                 {role === roleOptions.SUPPLIER && (
                   <div className="flex w-full items-center justify-between font-semibold">

@@ -156,6 +156,7 @@
     "order-total": "Total",
     "order-state": "Gouvernorat",
     "order-city": "Ville",
+    "order-packaging-fees": "Frais d'emballage",
     "user-city": "Ville",
     "user-state": "Gouvernorat",
     "order-address": "Adresse",
@@ -387,7 +388,9 @@
     "order-paid-success": "Commande(s) déclarée(s) comme payées avec succès",
     "order-paid-invalid-error": "Seules les commandes avec les statuts 'Clôture pour Echange', 'Clôture pour Retour' ou 'Livraison Terminée' peuvent être marquées comme payées",
     "user-on-boarding-success": "L'intégration de l'utilisateur a été complétée avec succès",
-    "user-on-boarding-error": "Erreur lors de l'intégration de l'utilisateur"
+    "user-on-boarding-error": "Erreur lors de l'intégration de l'utilisateur",
+    "export-success": "L'exportation a été complétée avec succès",
+    "export-error": "Erreur lors de l'exportation"
   },
   "not-found": {
     "title": "Page non trouvée",
@@ -955,6 +958,7 @@
       "elements": "élément(s)",
       "view": "Voir",
       "actions": "Actions",
+      "export": "Exporter",
       "add-transaction": "Ajouter transaction",
       "mark-as-paid": "Payer",
       "filter": "Filtrer",

@@ -365,11 +365,13 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
       let deliveryFee = Object.keys(supplierGroups).length > 1 ? 7 : 8;
 
       for (const item of products) {
+        // Removed 1 DT from the seller profit
         let sellerProfit =
           (parseFloat(item.detailPrice) -
             (productsList.find((product) => product.id === item.productId)?.wholesalePrice ?? 0)) *
-          parseInt(item.quantity, 10) *
-          0.9;
+            parseInt(item.quantity, 10) *
+            0.9 -
+          1;
         subOrderSellerProfit += sellerProfit;
         subOrderTotal += parseFloat(item.detailPrice) * parseInt(item.quantity, 10);
 
@@ -383,7 +385,8 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>): Promise<Act
           parseInt(item.quantity) *
           (productsList.find((product) => product.id === item.productId)?.platformProfit || 0);
 
-        subOrderPlatformProfit += platformProfitFromSeller + platformProfitFromSupplier;
+        // Added packaging fees for 1 DT
+        subOrderPlatformProfit += platformProfitFromSeller + platformProfitFromSupplier + 1;
 
         await db.orderProduct.create({
           data: {

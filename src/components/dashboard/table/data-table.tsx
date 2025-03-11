@@ -36,6 +36,7 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   onPrintPickups?: DataTableHandlers['onPrintPickups'] | undefined;
   onAddTransaction?: DataTableHandlers['onAddTransaction'] | undefined;
   onPrintLabels?: DataTableHandlers['onPrintLabels'] | undefined;
+  onExport?: DataTableHandlers['onExport'] | undefined;
   redirectToDetails?: boolean;
   showActions?: boolean;
   showAddButton?: boolean;
@@ -46,6 +47,7 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   showSelect?: boolean;
   showAddTransactionButton?: boolean;
   showPrintLabelsButton?: boolean;
+  showExportButton?: boolean;
 }
 
 export function DataTable<TData extends { id: string }, TValue>({
@@ -60,6 +62,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   onPrintPickups = undefined,
   onAddTransaction = undefined,
   onPrintLabels = undefined,
+  onExport = undefined,
   redirectToDetails = true,
   showActions = true,
   showAddButton = true,
@@ -68,6 +71,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   showBulkDeleteButton = true,
   showCreatePickupButton = false,
   showAddTransactionButton = false,
+  showExportButton = false,
   showMarkAsPaidButton = false,
   showPrintLabelsButton = false,
 }: DataTableProps<TData, TValue>) {
@@ -160,6 +164,7 @@ export function DataTable<TData extends { id: string }, TValue>({
         showAddTransactionButton={showAddTransactionButton}
         showMarkAsPaidButton={showMarkAsPaidButton}
         showPrintLabelsButton={showPrintLabelsButton}
+        showExportButton={showExportButton}
         tag={tag}
         table={table}
         onBulkDelete={onBulkDelete}
@@ -168,6 +173,7 @@ export function DataTable<TData extends { id: string }, TValue>({
         onAddTransaction={onAddTransaction}
         onMarkAsPaid={onMarkAsPaid}
         onPrintLabels={onPrintLabels}
+        onExport={onExport}
       />
       <div className="custom-scrollbar overflow-x-auto rounded-md border bg-background">
         <div className="inline-block min-w-full align-middle">
