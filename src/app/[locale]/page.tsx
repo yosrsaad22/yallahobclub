@@ -11,6 +11,7 @@ import { getTranslations } from 'next-intl/server';
 import { FAQ } from '@/components/home/faq/faq';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
+import VideoPopup from '@/components/ui/video-popup';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'home' });
@@ -28,6 +29,8 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
+        <VideoPopup videoUrl={process.env.WELCOME_VIDEO_KEY || ''} />
+
         <Partners />
         <div
           className={cn(

@@ -364,13 +364,14 @@ export const CompleteOnBoarding = async (values: z.infer<typeof OnBoardingSchema
   }
 };
 
-export const exportSellers = async (): Promise<ActionResponse> => {
+export const exportSellers = async (ids?: string[]): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
 
     const sellers = await db.user.findMany({
       where: {
         role: UserRole.SELLER,
+        ...(ids && ids.length > 0 ? { id: { in: ids } } : {}),
       },
       select: {
         code: true,
@@ -433,7 +434,7 @@ export const exportSellers = async (): Promise<ActionResponse> => {
       currentBalance: seller.balance,
       totalWithdrawn: seller.withdrawRequests.reduce((sum, request) => sum + request.amount, 0),
     }));
-
+    console.log(formattedSellers);
     return { success: 'export-success', data: formattedSellers };
   } catch (error) {
     return { error: 'export-error' };

@@ -35,9 +35,9 @@ export default async function Sellers() {
     return res;
   };
 
-  const handleExport = async () => {
+  const handleExport = async (ids?: string[]) => {
     'use server';
-    const res = await exportSellers();
+    const res = await exportSellers(ids);
     return res;
   };
 

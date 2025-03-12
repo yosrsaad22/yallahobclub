@@ -267,10 +267,10 @@ export function DataTableToolbar<TData extends { id: string }>({
     });
   };
 
-  const handleExport = async () => {
+  const handleExport = async (ids?: string[]) => {
     startExportTransition(() => {
       if (onExport) {
-        onExport().then((res: ActionResponse) => {
+        onExport(ids).then((res: ActionResponse) => {
           if (res.success) {
             const csvData = res.data.map((row: any) => Object.values(row).join(',')).join('\n');
             const headers = Object.keys(res.data[0]).join(',');
@@ -482,7 +482,15 @@ export function DataTableToolbar<TData extends { id: string }>({
             )}
             {showExportButton && (
               <Button
-                onClick={handleExport}
+                onClick={() => {
+                  const selectedRows = table.getSelectedRowModel().rows;
+                  if (selectedRows.length > 0) {
+                    const ids = selectedRows.map((row) => row.original.id);
+                    handleExport(ids);
+                  } else {
+                    handleExport();
+                  }
+                }}
                 variant="default"
                 size="default"
                 disabled={isExportLoading}
@@ -492,7 +500,11 @@ export function DataTableToolbar<TData extends { id: string }>({
                 ) : (
                   <IconTableExport className="mr-0 h-5 w-5 md:mr-2" />
                 )}
-                <p className="hidden md:flex">{t('export')}</p>
+                <p className="hidden md:flex">
+                  {t('export')}{' '}
+                  {table.getSelectedRowModel().flatRows.length > 0 &&
+                    `(${table.getSelectedRowModel().flatRows.length})`}
+                </p>
               </Button>
             )}
             {showPrintPickupsButton && (

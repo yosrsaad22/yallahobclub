@@ -67,7 +67,7 @@ export type DataTableHandlers = {
   onMarkAsPaid: (ids: string[]) => Promise<ActionResponse>;
   onPrintLabels: (ids: string[]) => Promise<ActionResponse>;
   onCustomRefresh: () => Promise<ActionResponse>;
-  onExport: () => Promise<ActionResponse>;
+  onExport: (ids?: string[]) => Promise<ActionResponse>;
 };
 
 export type MediaType = {

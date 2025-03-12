@@ -166,9 +166,10 @@ export default function ProductDetailsCard(product: ProductDetailsProps) {
   return (
     <div className="flex h-full w-full animate-fade-in flex-col items-start justify-start gap-8 bg-page  ">
       {/* First row: media and product info */}
-      <div className="flex w-full items-center space-x-4 rounded-md border border-border bg-background p-2 ">
-        <IconInfoCircleFilled className="h-10 w-10 flex-shrink-0  text-primary" />
-        <h1 className="text-sm text-muted-foreground">{t('check-stock')} </h1>
+
+      <div className=" flex w-full items-center space-x-4 rounded-md border border-border bg-gradient-to-r from-secondary/90  to-secondary/70 p-2 ">
+        <IconInfoCircleFilled className="h-8 w-8 flex-shrink-0  text-white" />
+        <h1 className="text-sm text-white">{t('check-stock')} </h1>
       </div>
       <div className="relative flex w-full flex-col items-start justify-center gap-8 rounded-md border border-border bg-background p-4 lg:flex-row   lg:justify-center lg:gap-16 lg:p-8">
         {/* media section */}
