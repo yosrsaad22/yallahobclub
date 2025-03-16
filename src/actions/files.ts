@@ -2,7 +2,9 @@ import { db } from '@/lib/db';
 import { UTApi } from 'uploadthing/server';
 
 const cleanOrphanFiles = async () => {
-  const videoKey = process.env.FREE_COURSE_KEY;
+  const freeCourseKey = process.env.FREE_COURSE_KEY;
+  const welcomeVideoKey = process.env.WELCOME_VIDEO_KEY;
+
   const [products, chapters, users, courses] = await Promise.all([
     db.product.findMany({
       select: {
@@ -47,8 +49,12 @@ const cleanOrphanFiles = async () => {
   courses.forEach((course) => {
     if (course.image) usedFiles.add(course.image);
   });
-  if (videoKey) {
-    usedFiles.add(videoKey);
+
+  if (freeCourseKey) {
+    usedFiles.add(freeCourseKey);
+  }
+  if (welcomeVideoKey) {
+    usedFiles.add(welcomeVideoKey);
   }
   const utapi = new UTApi();
 
