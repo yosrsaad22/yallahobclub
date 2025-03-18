@@ -3,7 +3,6 @@ import { UTApi } from 'uploadthing/server';
 
 const cleanOrphanFiles = async () => {
   const freeCourseKey = process.env.FREE_COURSE_KEY;
-  const welcomeVideoKey = process.env.WELCOME_VIDEO_KEY;
 
   const [products, chapters, users, courses] = await Promise.all([
     db.product.findMany({
@@ -53,9 +52,7 @@ const cleanOrphanFiles = async () => {
   if (freeCourseKey) {
     usedFiles.add(freeCourseKey);
   }
-  if (welcomeVideoKey) {
-    usedFiles.add(welcomeVideoKey);
-  }
+
   const utapi = new UTApi();
 
   const allFiles = (await utapi.listFiles()).files;

@@ -29,7 +29,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <VideoPopup videoUrl={process.env.WELCOME_VIDEO_KEY || ''} />
+        <VideoPopup videoUrl="/vid/welcome-video.mp4" />
 
         <Partners />
         <div

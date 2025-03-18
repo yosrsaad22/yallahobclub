@@ -40,14 +40,7 @@ const VideoPopup: React.FC<VideoPopupProps> = ({ videoUrl }) => {
             className="absolute -right-2 -top-2 z-10 rounded-full bg-primary p-1 text-primary-foreground hover:bg-primary/80 hover:text-white">
             <IconX className="h-4 w-4" />
           </button>
-          <ReactPlayer
-            url={`${MEDIA_HOSTNAME}${videoUrl}`}
-            playing={true}
-            muted={true}
-            controls
-            width="100%"
-            height="100%"
-          />
+          <ReactPlayer url={videoUrl} playing={true} muted={true} controls width="100%" height="100%" />
         </motion.div>
       )}
     </AnimatePresence>
