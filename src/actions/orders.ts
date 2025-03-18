@@ -21,6 +21,7 @@ import { notifyAllAdmins, notifyUser } from './notifications';
 import { admingGetOrderById, userGetOrderById } from '@/data/order';
 import { generateCode } from '@/lib/utils';
 import { createTransaction } from './transactions';
+import { getTranslations } from 'next-intl/server';
 
 export const sellerGetOrders = async (): Promise<ActionResponse> => {
   try {
@@ -894,5 +895,59 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
   } catch (error) {
     console.error(error);
     return { error: 'order-paid-error' };
+  }
+};
+
+export const exportOrders = async (ids?: string[]): Promise<ActionResponse> => {
+  try {
+    await roleGuard(UserRole.ADMIN);
+
+    const orders = await db.order.findMany({
+      where: {
+        ...(ids && ids.length > 0 ? { id: { in: ids } } : {}),
+      },
+      include: {
+        seller: true,
+        subOrders: {
+          include: {
+            statusHistory: true,
+            products: {
+              include: {
+                product: {
+                  include: {
+                    supplier: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const tStatuses = await getTranslations('dashboard.order-statuses');
+
+    const formattedOrders = orders.flatMap((order) => {
+      return order.subOrders.map((subOrder) => {
+        const products = subOrder.products.map((p) => `${p.quantity} x ${p.product?.name}`).join(' + ');
+        const supplierProfit = subOrder.products.reduce((total, p) => total + p.supplierProfit, 0);
+
+        return {
+          orderCode: order.code,
+          subOrderCode: subOrder.code,
+          products,
+          sellerName: order.seller?.fullName || '',
+          sellerProfit: subOrder.sellerProfit || 0,
+          platformProfit: subOrder.platformProfit || 0,
+          supplierProfit,
+          total: subOrder.total || 0,
+          createdAt: order.createdAt.toISOString(),
+          status: tStatuses(subOrder.status),
+        };
+      });
+    });
+    return { success: 'export-success', data: formattedOrders };
+  } catch (error) {
+    return { error: 'export-error' };
   }
 };

@@ -5,7 +5,14 @@ import { IconShoppingCart } from '@tabler/icons-react';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { AdminOrderColumns, SellerOrderColumns } from '@/components/dashboard/table/columns/order-columns';
-import { adminGetOrders, markOrdersAsPaid, printLabels, sellerGetOrders, trackOrders } from '@/actions/orders';
+import {
+  adminGetOrders,
+  exportOrders,
+  markOrdersAsPaid,
+  printLabels,
+  sellerGetOrders,
+  trackOrders,
+} from '@/actions/orders';
 import { Order } from '@prisma/client';
 import { adminRequestPickup, requestPickup } from '@/actions/pickups';
 
@@ -43,6 +50,12 @@ export default async function Orders() {
     return res;
   };
 
+  const handleExport = async (ids?: string[]) => {
+    'use server';
+    const res = await exportOrders(ids);
+    return res;
+  };
+
   return (
     <div className="w-full" suppressHydrationWarning={true}>
       <div className="w-full space-y-4 p-4 pt-6 md:p-6">
@@ -65,7 +78,9 @@ export default async function Orders() {
           showCreatePickupButton={true}
           showMarkAsPaidButton={true}
           showPrintLabelsButton={true}
+          showExportButton={true}
           onPrintLabels={handlePrintLabels}
+          onExport={handleExport}
         />
       </div>
     </div>
