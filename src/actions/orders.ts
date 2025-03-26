@@ -821,13 +821,13 @@ export const markOrdersAsPaid = async (ids: string[]): Promise<ActionResponse> =
           subOrder.status === '27' ||
           subOrder.status === '28'
         ) {
-          await createTransaction(order.sellerId!, 'order-transaction', -3, order.id);
+          await createTransaction(order.sellerId!, 'order-transaction', -4, order.id);
           await db.subOrder.update({
             where: { id: subOrder.id },
             data: {
               status: 'EC03',
-              platformProfit: 2.5,
-              sellerProfit: -3,
+              platformProfit: 3,
+              sellerProfit: -4,
               products: {
                 updateMany: {
                   where: { subOrderId: subOrder.id },
