@@ -1,23 +1,13 @@
 'use server';
-import { signIn } from '@/auth';
-import { getUserByEmail, getUserById, getUserByNumber } from '@/data/user';
+import { signIn, signOut } from '@/auth';
+import { getUserByEmail, getUserByNumber } from '@/data/user';
 import { db } from '@/lib/db';
-import { sendEmailVerificationEmail } from '@/lib/mail';
-import { generateEmailVerificationToken } from '@/lib/tokens';
-import { sendPasswordResetEmail } from '@/lib/mail';
-import { getEmailVerificationTokenbyToken } from '@/data/email-verification-token';
-import { generatePasswordResetToken } from '@/lib/tokens';
-import { getPasswordResetTokenbyToken } from '@/data/password-reset-token';
-import { LoginSchema, RegisterSchema, ForgotPasswordSchema, ResetPasswordSchema } from '@/schemas';
+import { LoginSchema, RegisterSchema } from '@/schemas';
 import { ActionResponse } from '@/types';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
-import { signOut } from '@/auth';
 import bcrypt from 'bcryptjs';
-import { notifyAllAdmins } from './notifications';
-import { NotificationType, UserRole } from '@prisma/client';
-import { revalidatePath } from 'next/cache';
-import { capitalizeWords, generateCode } from '@/lib/utils';
+import { capitalizeWords } from '@/lib/utils';
 
 export const register = async (values: z.infer<typeof RegisterSchema>): Promise<ActionResponse> => {
   const hashedPassword = await bcrypt.hash(values.password, 10);
@@ -26,41 +16,21 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
   const existingNumber = await getUserByNumber(values.number);
 
   if (existingEmail || existingNumber) {
-    return { error: 'existing-user-error' };
+    return { error: 'Un utilisateur existe déjà avec ces informations' };
   }
 
-  const newUser = await db.user.create({
+  await db.user.create({
     data: {
-      code: 'ENSE-' + generateCode(),
       fullName: capitalizeWords(values.fullName.trim()),
       email: values.email.trim().toLocaleLowerCase(),
       number: values.number,
       address: values.address.trim(),
-      state: values.state,
-      city: values.city,
       password: hashedPassword,
-      pack: values.pack,
       role: values.role,
     },
   });
 
-  const verificationToken = await generateEmailVerificationToken(values.email);
-
-  await sendEmailVerificationEmail(values.fullName, verificationToken.email, verificationToken.token);
-
-  if (values.role === UserRole.SELLER) {
-    await notifyAllAdmins(NotificationType.ADMIN_NEW_SELLER, `/dashboard/admin/sellers/${newUser.id}`, values.fullName);
-  } else {
-    await notifyAllAdmins(
-      NotificationType.ADMIN_NEW_SUPPLIER,
-      `/dashboard/admin/suppliers/${newUser.id}`,
-      values.fullName,
-    );
-  }
-
-  revalidatePath('/dashboard/admin/sellers');
-
-  return { success: 'register-success' };
+  return { success: 'Utilisateur enregistré avec succès' };
 };
 
 export const login = async (values: z.infer<typeof LoginSchema>): Promise<ActionResponse> => {
@@ -69,7 +39,7 @@ export const login = async (values: z.infer<typeof LoginSchema>): Promise<Action
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser) {
-    return { error: 'bad-credentials-error' };
+    return { error: 'Identifiants invalides' };
   }
 
   try {
@@ -84,15 +54,13 @@ export const login = async (values: z.infer<typeof LoginSchema>): Promise<Action
     if (error instanceof AuthError) {
       switch (error.message) {
         case 'bad-credentials-error':
-          return { error: 'bad-credentials-error' };
+          return { error: 'Identifiants invalides' };
         case 'email-not-verified-error':
-          const verificationToken = await generateEmailVerificationToken(values.email);
-          await sendEmailVerificationEmail(existingUser.fullName, verificationToken.email, verificationToken.token);
-          return { error: 'email-not-verified-error' };
+          return { error: 'Email non vérifié' };
         case 'user-not-active-error':
-          return { error: 'user-not-active-error' };
+          return { error: 'Utilisateur non actif' };
         default:
-          return { error: 'unknown-error' };
+          return { error: 'Une erreur est survenue' };
       }
     }
     throw error;
@@ -100,106 +68,5 @@ export const login = async (values: z.infer<typeof LoginSchema>): Promise<Action
 };
 
 export const logout = async () => {
-  await signOut({
-    redirect: false,
-  });
-};
-
-export const forgotPassword = async (values: z.infer<typeof ForgotPasswordSchema>): Promise<ActionResponse> => {
-  const email = values.email.trim().toLocaleLowerCase();
-
-  const existingUser = await getUserByEmail(email);
-  if (!existingUser) {
-    return { error: 'email-not-found-error' };
-  }
-
-  const passwordResetToken = await generatePasswordResetToken(email);
-
-  await sendPasswordResetEmail(existingUser.fullName, passwordResetToken.email, passwordResetToken.token);
-
-  return { success: 'forgot-password-email-successful' };
-};
-
-export const ResetPassword = async (
-  values: z.infer<typeof ResetPasswordSchema>,
-  token: string,
-): Promise<ActionResponse> => {
-  const existingToken = await getPasswordResetTokenbyToken(token);
-
-  if (!existingToken) {
-    return { error: 'password-reset-token-unexistant-error' };
-  }
-
-  const hasExpired = new Date(existingToken.expires) < new Date();
-
-  if (hasExpired) {
-    return { error: 'password-reset-token-expired-error' };
-  }
-
-  const existingUser = await getUserByEmail(existingToken.email);
-
-  if (!existingUser) {
-    return { error: 'password-reset-token-email-changed-error' };
-  }
-
-  const hashedPassword = await bcrypt.hash(values.password, 10);
-
-  await db.user.update({
-    where: {
-      id: existingUser.id,
-    },
-    data: {
-      password: hashedPassword,
-    },
-  });
-
-  await db.passwordResetToken.delete({
-    where: {
-      id: existingToken.id,
-    },
-  });
-
-  return {
-    success: 'password-reset-success',
-  };
-};
-
-export const EmailVerification = async (token: string): Promise<ActionResponse> => {
-  const existingToken = await getEmailVerificationTokenbyToken(token);
-
-  if (!existingToken) {
-    return { error: 'email-verification-token-unexistant-error' };
-  }
-
-  const hasExpired = new Date(existingToken.expires) < new Date();
-
-  if (hasExpired) {
-    return { error: 'email-verification-token-expired-error' };
-  }
-
-  const existingUser = await getUserByEmail(existingToken.email);
-
-  if (!existingUser) {
-    return { error: 'email-verification-token-email-changed-error' };
-  }
-
-  await db.user.update({
-    where: {
-      id: existingUser.id,
-    },
-    data: {
-      emailVerified: new Date(),
-      email: existingToken.email.toLocaleLowerCase(),
-    },
-  });
-
-  await db.emailVerificationToken.delete({
-    where: {
-      id: existingToken.id,
-    },
-  });
-
-  return {
-    success: 'email-verification-success',
-  };
+  await signOut();
 };

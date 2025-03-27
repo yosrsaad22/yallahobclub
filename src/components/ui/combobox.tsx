@@ -3,9 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { IconCaretUpDown, IconCheck } from '@tabler/icons-react';
-import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
-import { AceternityButton } from './aceternity-button';
 
 interface ComboboxProps<T> {
   items: T[];
@@ -33,7 +30,7 @@ export function Combobox<T>({
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [buttonWidth, setButtonWidth] = useState(0);
-  const t = useTranslations('dashboard.tables');
+
   useEffect(() => {
     if (buttonRef.current) {
       const width = buttonRef.current.getBoundingClientRect().width;
@@ -67,7 +64,7 @@ export function Combobox<T>({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         {isDark ? (
-          <AceternityButton
+          <Button
             ref={buttonRef}
             role="combobox"
             aria-expanded={open}
@@ -84,7 +81,7 @@ export function Combobox<T>({
               </div>
             )}
             <IconCaretUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50" />
-          </AceternityButton>
+          </Button>
         ) : (
           <Button
             ref={buttonRef}
@@ -111,8 +108,8 @@ export function Combobox<T>({
         style={{ width: buttonRef.current ? buttonRef.current.offsetWidth : 'auto' }}
         className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''} p-0`}>
         <Command className={`${isDark ? 'border-[#9ca3af] bg-[#1f2937] text-[#9ca3af]' : ''}`}>
-          {showSearch && <CommandInput placeholder={t('search')} className="h-9" />}
-          <CommandEmpty>{t('no-result')}</CommandEmpty>
+          {showSearch && <CommandInput placeholder="Rechercher" className="h-9" />}
+          <CommandEmpty>Pas de résultat</CommandEmpty>
           <CommandGroup className="overflow-y-auto">
             <CommandList className="custom-scrollbar max-h-64 overflow-y-auto">
               {items.length > 0 &&

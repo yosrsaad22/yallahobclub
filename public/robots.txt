@@ -1,1 +1,0 @@
-User-agent: * Disallow: /api/ Disallow: /dashboard/ Disallow: /register Disallow: /admin/ Disallow: /seller/ Disallow: /supplier/ Allow: / Allow: /login Allow: /register Allow: /free-course Sitemap: https://ecomness.com/sitemap.xml

@@ -2,9 +2,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/use-sidebar';
-import { MEDIA_HOSTNAME, adminNavItems, sellerNavItems, supplierNavItems } from '@/lib/constants';
+import { MEDIA_HOSTNAME, adminNavItems, userNavItems } from '@/lib/constants';
 import { DashboardNav } from '@/components/dashboard/layout/sidebar/dashboard-nav';
-import { useTranslations } from 'next-intl';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { NavItem } from '@/types';
 import { UserRole } from '@prisma/client';
@@ -17,28 +16,23 @@ type SidebarProps = {
 
 export default function Sidebar({ className }: SidebarProps) {
   const { isMinimized, toggle } = useSidebar();
-  const t = useTranslations('dashboard.sidebar');
-  let translatedNavItems: NavItem[] = [];
+  let navItems: NavItem[] = [];
   const user = useCurrentUser();
 
   switch (user?.role) {
     case UserRole.ADMIN:
-      translatedNavItems = adminNavItems;
+      navItems = adminNavItems;
       break;
 
-    case UserRole.SELLER:
-      translatedNavItems = sellerNavItems;
-      break;
-
-    case UserRole.SUPPLIER:
-      translatedNavItems = supplierNavItems;
+    case UserRole.USER:
+      navItems = userNavItems;
       break;
   }
 
   return (
     <nav
       className={cn(
-        `custom-scrollbar  relative hidden h-full overflow-y-auto ease-in-out lg:flex lg:flex-col`,
+        ` relative hidden h-full overflow-y-auto ease-in-out lg:flex lg:flex-col`,
         !isMinimized ? 'w-64' : 'w-[62px]',
         className,
       )}
@@ -63,12 +57,12 @@ export default function Sidebar({ className }: SidebarProps) {
 
                 <div className="flex flex-col items-center ">
                   <h1 className="text-center text-lg font-bold">{user?.name}</h1>
-                  <p className="text-sm font-medium text-white">{t(user?.role.toLocaleLowerCase())}</p>
+                  {user?.role === UserRole.ADMIN && <p className="text-sm font-medium text-white">{user?.role}</p>}
                 </div>
               </div>
             )}
 
-            <DashboardNav items={translatedNavItems} />
+            <DashboardNav items={navItems} />
           </div>
         </div>
       </div>

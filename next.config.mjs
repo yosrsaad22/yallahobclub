@@ -1,13 +1,10 @@
-import createNextIntlPlugin from 'next-intl/plugin';
-const withNextIntl = createNextIntlPlugin();
-
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
   env: {},
   experimental: {
     serverActions: {
-      allowedOrigins: ['ecomness.com', 'localhost:3000'],
+      allowedOrigins: ['localhost:3000'],
     },
   },
   images: {
@@ -39,4 +36,4 @@ const nextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;

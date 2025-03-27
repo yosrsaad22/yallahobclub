@@ -23,10 +23,6 @@ export default {
           const passwordMatch = await bcrypt.compare(password, user.password);
 
           if (passwordMatch) {
-            if (user.role !== UserRole.ADMIN) {
-              if (user.emailVerified === null) throw new EmailNotVerifiedError();
-              if (!user.active) throw new UserNotActiveError();
-            }
             return user;
           }
           throw new BadCredentialsError();
@@ -39,21 +35,12 @@ export default {
     async session({ session, token }) {
       if (session?.user && token.sub) {
         session.user.id = token.sub;
-        session.user.name = token.name;
         session.user.role = token.role as UserRole;
         session.user.image = token.image as string;
         session.user.number = token.number as string;
         session.user.address = token.address as string;
-        session.user.state = token.state as string;
-        session.user.city = token.city as string;
-        session.user.pack = token.pack as string;
-        session.user.active = token.active as boolean;
-        session.user.boarded = token.boarded as number;
-        session.user.paid = token.paid as boolean;
-        session.user.code = token.code as string;
-        session.user.rib = token.rib as string;
-        session.user.balance = token.balance as number;
-        session.user.storeName = token.storeName as string;
+        session.user.fullName = token.fullName as string;
+        session.user.onBoarding = token.onBoarding as number;
       }
 
       return session;
@@ -62,21 +49,12 @@ export default {
       if (!token.sub) return token;
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;
-      token.name = existingUser.fullName;
       token.role = existingUser.role;
       token.image = existingUser.image;
       token.number = existingUser.number;
       token.address = existingUser.address;
-      token.state = existingUser.state;
-      token.city = existingUser.city;
-      token.pack = existingUser.pack;
-      token.active = existingUser.active;
-      token.boarded = existingUser.boarded;
-      token.paid = existingUser.paid;
-      token.code = existingUser.code;
-      token.rib = existingUser.rib;
-      token.balance = existingUser.balance;
-      token.storName = existingUser.storeName;
+      token.fullName = existingUser.fullName;
+      token.onBoarding = existingUser.onBoarding;
 
       return token;
     },

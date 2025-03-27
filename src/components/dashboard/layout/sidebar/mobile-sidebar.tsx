@@ -2,36 +2,27 @@
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { MenuIcon } from 'lucide-react';
 import { useState } from 'react';
-import { adminNavItems, sellerNavItems, supplierNavItems } from '@/lib/constants';
+import { adminNavItems, userNavItems } from '@/lib/constants';
 import { DashboardNav } from '@/components/dashboard/layout/sidebar/dashboard-nav';
 import { Button } from '@/components/ui/button';
-import { useCurrentRole } from '@/hooks/use-current-role';
+import { useCurrentUser } from '@/hooks/use-current-user';
 import { UserRole } from '@prisma/client';
 import { NavItem } from '@/types';
-import { useTranslations } from 'next-intl';
-import { useNotifications } from '@/hooks/use-notifications';
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function MobileSidebar({ className }: SidebarProps) {
   const [open, setOpen] = useState(false);
-  let translatedNavItems: NavItem[] = [];
-  const t = useTranslations('dashboard.sidebar');
+  let navItems: NavItem[] = [];
+  const user = useCurrentUser();
 
-  const role = useCurrentRole();
-
-  switch (role) {
+  switch (user?.role) {
     case UserRole.ADMIN:
-    case UserRole.ADMIN:
-      translatedNavItems = adminNavItems;
+      navItems = adminNavItems;
       break;
 
-    case UserRole.SELLER:
-      translatedNavItems = sellerNavItems;
-      break;
-
-    case UserRole.SUPPLIER:
-      translatedNavItems = supplierNavItems;
+    case UserRole.USER:
+      navItems = userNavItems;
       break;
   }
 
@@ -48,7 +39,7 @@ export function MobileSidebar({ className }: SidebarProps) {
             <div className="px-4">
               <h2 className="mb-8  text-lg font-semibold tracking-tight">Navigation</h2>
               <div className="space-y-1">
-                <DashboardNav items={translatedNavItems} isMobileNav={true} setOpen={setOpen} />
+                <DashboardNav items={navItems} isMobileNav={true} setOpen={setOpen} />
               </div>
             </div>
           </div>

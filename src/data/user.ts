@@ -2,7 +2,7 @@ import { db } from '@/lib/db';
 
 export const getUserByEmail = async (email: string) => {
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({ where: { email: email.toLowerCase() } });
     return user;
   } catch {
     return null;
@@ -10,13 +10,13 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const getUserByNumber = async (number: string) => {
-    try {
-      const user = await db.user.findUnique({ where: { number } });
-      return user;
-    } catch {
-      return null;
-    }
-  };
+  try {
+    const user = await db.user.findUnique({ where: { number } });
+    return user;
+  } catch {
+    return null;
+  }
+};
 
 export const getUserById = async (id: string) => {
   try {

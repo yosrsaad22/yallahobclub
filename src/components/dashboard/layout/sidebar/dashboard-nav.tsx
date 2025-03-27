@@ -3,13 +3,9 @@ import { NavItem } from '@/types';
 import { Dispatch, SetStateAction } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useSidebar } from '@/hooks/use-sidebar';
-import { Link, usePathname } from '@/navigation';
-import { Badge } from '@/components/ui/badge';
 import { useCurrentUser } from '@/hooks/use-current-user';
-import { useNotifications } from '@/hooks/use-notifications';
-import { useTranslations } from 'next-intl';
-import { Notification } from '@prisma/client';
-import { IconHeadset, IconSchool, IconTruckDelivery } from '@tabler/icons-react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 interface DashboardNavProps {
   items: NavItem[];
@@ -20,36 +16,16 @@ interface DashboardNavProps {
 export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardNavProps) {
   const path = usePathname(); // Get current route
   const { isMinimized, toggle } = useSidebar();
-  const { notifications = [] } = useNotifications();
-  const t = useTranslations('dashboard.sidebar');
 
   if (!items?.length) {
     return null;
   }
 
-  // Updated logic for counting notifications that match the item's href
-  const navItems = items.map((item) => {
-    // Count the notifications whose `link` includes the item's href
-    const notificationsCount =
-      item.title === 'dashboard'
-        ? 0
-        : notifications.filter(
-            (notification: Notification) =>
-              notification.link && notification.link.includes(item.href!) && notification.read === false,
-          ).length;
-
-    return {
-      ...item,
-      title: t(item.title),
-      notificationsCount: notificationsCount,
-    };
-  });
-
   return (
     <nav className="flex flex-col justify-between">
       <TooltipProvider>
         <div className={cn('flex h-full flex-col justify-start py-2', isMinimized ? 'gap-3' : 'gap-1')}>
-          {navItems.map(
+          {items.map(
             (item, index) =>
               item.href && (
                 <Tooltip key={index}>
@@ -58,11 +34,9 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                       href={item.href}
                       className={cn(
                         'group relative flex items-center justify-center  gap-4 rounded-md px-[0.35rem] py-[0.35rem] text-sm font-medium hover:bg-white/95 hover:text-black/95 ',
-                        (path.split('/')[2] === 'marketplace' && items[index].title === 'marketplace') ||
-                          path.split('/')[3] === items[index].title ||
+                        path.split('/')[3] === items[index].title ||
                           (path.split('/')[1] === 'dashboard' &&
                             items[index].title === 'dashboard' &&
-                            path.split('/')[2] !== 'marketplace' &&
                             path.split('/')[3] === undefined)
                           ? 'bg-white/95   text-black/95'
                           : '',
@@ -73,11 +47,9 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                       }}>
                       <div
                         className={cn(
-                          (path.split('/')[2] === 'marketplace' && items[index].title === 'marketplace') ||
-                            path.split('/')[3] === items[index].title ||
+                          path.split('/')[3] === items[index].title ||
                             (path.split('/')[1] === 'dashboard' &&
                               items[index].title === 'dashboard' &&
-                              path.split('/')[2] !== 'marketplace' &&
                               path.split('/')[3] === undefined)
                             ? ' text-black/95'
                             : 'text-white',
@@ -85,36 +57,10 @@ export function DashboardNav({ items, setOpen, isMobileNav = false }: DashboardN
                         )}>
                         {item.icon}
                       </div>
-                      {isMinimized && item.notificationsCount > 0 && (
-                        <Badge
-                          variant={'secondary'}
-                          className="absolute right-0 top-0 h-5 w-5 rounded-full px-1 py-1 text-white">
-                          {item.notificationsCount}
-                        </Badge>
-                      )}
 
                       {isMobileNav || (!isMinimized && !isMobileNav) ? (
                         <div className="flex w-full flex-row justify-between">
                           <span className="mr-2 truncate">{item.title}</span>
-                          {!!item.notificationsCount && item.notificationsCount > 0 && (
-                            <Badge variant={'secondary'} className="h-5 w-5 rounded-full px-1 py-1 text-white">
-                              {item.notificationsCount}
-                            </Badge>
-                          )}
-                          {item.comingSoon && (
-                            <Badge
-                              variant={'outline'}
-                              className="animate-pulse border-2 border-secondary text-xs  font-normal text-secondary">
-                              {t('coming-soon')}
-                            </Badge>
-                          )}
-                          {item.new && (
-                            <Badge
-                              variant={'outline'}
-                              className="animate-pulse border-2 border-secondary text-xs  font-normal text-secondary">
-                              {t('new')}
-                            </Badge>
-                          )}
                         </div>
                       ) : null}
                     </Link>
