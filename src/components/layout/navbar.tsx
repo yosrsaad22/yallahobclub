@@ -40,27 +40,47 @@ export const Navbar = () => {
         />
       </Link>
       <div className="ml-6 flex flex-grow justify-start">
-        <nav className="top-navigation-height hidden h-[calc(100vh_-_var(--navigation-height))] items-center gap-8 text-sm font-normal text-foreground md:h-auto lg:flex">
-          <ul className="dark flex list-none items-center gap-8">
-            <li>
-              <Link passHref href="/" className="hover:text-red-500">
-                Accueil
-              </Link>
-            </li>
-          </ul>
-        </nav>
+      <nav className="top-navigation-height hidden h-[calc(100vh_-_var(--navigation-height))] items-center gap-8 text-sm font-normal text-foreground md:h-auto lg:flex">
+  <ul className="dark flex list-none items-center gap-8">
+    <li>
+      <Link passHref href="/" className="hover:text-red-600">
+        Accueil
+      </Link>
+    </li>
+    <li><a href="#qui-sommes-nous" className="hover:text-red-600">Qui sommes-nous</a></li>
+    <li><a href="#nos-produits" className="hover:text-red-600">Nos Produits</a></li>
+    <li><a href="#contact" className="hover:text-red-600">Contact</a></li>
+    {/* Liens nécessitant une connexion */}
+    <li>
+    <Link href="/vie-de-couple" className="text-red-600 hover:underline">
+  Vie de Couple
+</Link>
+    </li>
+    <li>
+      <Link passHref href="/login" className="hover:text-red-600">
+        Vie de famille
+      </Link>
+    </li>
+    <li>
+      <Link passHref href="/login" className="hover:text-red-600">
+        Profil
+      </Link>
+    </li>
+  </ul>
+</nav>
+
       </div>
       <div className="flex flex-row items-center justify-center  gap-x-3">
         <Link
           passHref
           href={'/login'}
-          className="relative hidden h-8 items-center justify-center overflow-hidden p-[1px] py-1 text-sm text-foreground hover:text-red-500 focus:outline-none active:text-red-500 md:inline-flex">
+          className="relative hidden h-8 items-center justify-center overflow-hidden p-[1px] py-1 text-sm text-foreground hover:text-red-600 focus:outline-none active:text-red-500 md:inline-flex">
           Se Connecter
         </Link>
         <Link
           passHref
           href={'/register'}
-          className="relative hidden h-8 items-center justify-center overflow-hidden p-[1px] py-1 text-sm text-foreground hover:text-red-500 focus:outline-none active:text-red-500 md:inline-flex">
+          className="relative hidden h-8 items-center justify-center overflow-hidden p-[1px] py-1 text-sm text-foreground hover:text-red-600 focus:outline-none active:text-red-500 md:inline-flex">
           S'inscrire
         </Link>
         <Sheet open={isSheetOpen && window.innerWidth < 1024} onOpenChange={setSheetOpen}>

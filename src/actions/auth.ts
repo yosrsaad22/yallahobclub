@@ -11,18 +11,17 @@ import { capitalizeWords } from '@/lib/utils';
 
 export const register = async (values: z.infer<typeof RegisterSchema>): Promise<ActionResponse> => {
   const hashedPassword = await bcrypt.hash(values.password, 10);
-  const existingEmail = await getUserByEmail(values.email.toLocaleLowerCase());
-
+  const existingEmail = await getUserByEmail(values.email.toLowerCase());
   const existingNumber = await getUserByNumber(values.number);
 
   if (existingEmail || existingNumber) {
     return { error: 'Un utilisateur existe déjà avec ces informations' };
   }
 
-  await db.user.create({
+  await db.User.create({  // Vérifie si User est bien défini avec une majuscule dans Prisma
     data: {
       fullName: capitalizeWords(values.fullName.trim()),
-      email: values.email.trim().toLocaleLowerCase(),
+      email: values.email.trim().toLowerCase(),
       number: values.number,
       address: values.address.trim(),
       password: hashedPassword,
@@ -35,7 +34,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
 
 export const login = async (values: z.infer<typeof LoginSchema>): Promise<ActionResponse> => {
   let { email, password } = values;
-  email = email.trim().toLocaleLowerCase();
+  email = email.trim().toLowerCase();
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser) {

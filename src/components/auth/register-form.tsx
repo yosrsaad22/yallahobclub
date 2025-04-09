@@ -15,6 +15,8 @@ import { register as signup } from '@/actions/auth';
 import { Button } from '../ui/button';
 import { ActionResponse } from '@/types';
 import { roleOptions } from '@/lib/constants';
+import { IconBrandGoogle } from '@tabler/icons-react';
+import { signIn } from 'next-auth/react'; // Import signIn from next-auth
 
 interface RegisterFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -52,8 +54,13 @@ export function RegisterForm({ className }: RegisterFormProps) {
     });
   };
 
+  const handleGoogleLogin = () => {
+    // Trigger Google login using NextAuth's signIn method
+    signIn('google');
+  };
+
   return (
-    <div className="flex  w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-center">
       <form className="flex w-full flex-col gap-0 md:gap-2">
         <div className="flex flex-col gap-0 md:flex-row md:gap-8">
           <div className="flex w-full flex-col items-center md:w-1/2">
@@ -137,9 +144,20 @@ export function RegisterForm({ className }: RegisterFormProps) {
           <Button
             disabled={isLoading}
             onClick={handleSubmit(onSubmit)}
-            className="w-full bg-red-500 text-white hover:bg-red-600 active:bg-red-600">
+            className="w-full bg-red-500 text-white hover:bg-red-600 active:bg-red-600"
+          >
             {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
             S'inscrire
+          </Button>
+
+          {/* Google Login Button */}
+          <Button
+            onClick={handleGoogleLogin}
+            type="button"
+            className="mt-4 w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <IconBrandGoogle className="h-5 w-5" />
+            Se connecter avec Google
           </Button>
         </div>
       </div>

@@ -1,13 +1,13 @@
-import { type NextAuthConfig } from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import { LoginSchema } from './schemas';
-import { getUserByEmail } from './data/user';
-import bcrypt from 'bcryptjs';
-import { BadCredentialsError, EmailNotVerifiedError, UserNotActiveError } from './lib/auth-error';
-import { getUserById } from './data/user';
-import { UserRole } from '@prisma/client';
-import { PrismaAdapter } from '@auth/prisma-adapter';
-import { db } from '@/lib/db';
+import { type NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import { LoginSchema } from "./schemas";
+import { getUserByEmail, getUserById } from "./data/user";
+import bcrypt from "bcryptjs";
+import { BadCredentialsError } from "./lib/auth-error";
+import { UserRole } from "@prisma/client";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { db } from "@/lib/db";
 
 export default {
   providers: [
@@ -21,7 +21,6 @@ export default {
           if (!user) return null;
 
           const passwordMatch = await bcrypt.compare(password, user.password);
-
           if (passwordMatch) {
             return user;
           }
@@ -29,6 +28,10 @@ export default {
         }
         return null;
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
@@ -60,7 +63,7 @@ export default {
     },
   },
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 24 * 60 * 60,
   },
   adapter: PrismaAdapter(db),

@@ -1,5 +1,5 @@
 import { NavItem } from '@/types';
-import { IconLayoutDashboard, IconUsers, IconSettings } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconUsers, IconSettings, IconHeart } from '@tabler/icons-react';
 
 export enum roleOptions {
   ADMIN = 'ADMIN',
@@ -18,10 +18,16 @@ export const adminNavItems: NavItem[] = [
     icon: <IconUsers />,
   },
   {
+    title: 'Vie de Couple',
+    href: '/dashboard/user/vie-de-couple',
+    icon: <IconHeart/>,
+  },
+  {
     title: 'Paramètres',
     href: '/dashboard/admin/settings',
     icon: <IconSettings />,
   },
+  
 ];
 
 export const userNavItems: NavItem[] = [

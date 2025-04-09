@@ -19,6 +19,7 @@ export default function Sidebar({ className }: SidebarProps) {
   let navItems: NavItem[] = [];
   const user = useCurrentUser();
 
+  // Détermine les items de navigation en fonction du rôle
   switch (user?.role) {
     case UserRole.ADMIN:
       navItems = adminNavItems;
@@ -32,14 +33,15 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <nav
       className={cn(
-        ` relative hidden h-full overflow-y-auto ease-in-out lg:flex lg:flex-col`,
+        `relative hidden h-full overflow-y-auto ease-in-out lg:flex lg:flex-col`,
         !isMinimized ? 'w-64' : 'w-[62px]',
-        className,
+        className
       )}
-      style={{ transition: 'width 0.2s' }}>
-      <div className={cn('h-full space-y-4 py-2  text-white')}>
-        <div className="h-full px-3 ">
-          <div className={cn(' h-full space-y-6', isMinimized ? 'flex flex-col justify-start' : 'relative ')}>
+      style={{ transition: 'width 0.2s' }}
+    >
+      <div className={cn('h-full space-y-4 py-2 text-white')}>
+        <div className="h-full px-3">
+          <div className={cn('h-full space-y-6', isMinimized ? 'flex flex-col justify-start' : 'relative')}>
             {!isMinimized && (
               <div className={'mb-5 flex flex-col items-center gap-3'}>
                 <div className="mt-8">
@@ -49,19 +51,20 @@ export default function Sidebar({ className }: SidebarProps) {
                       src={`${MEDIA_HOSTNAME}${user?.image}`}
                       alt={user?.name ?? ''}
                     />
-                    <AvatarFallback className=" bg-[#27272a]   text-xl text-gray-400">
+                    <AvatarFallback className="bg-[#27272a] text-xl text-gray-400">
                       <IconUser className="h-9 w-9" />
                     </AvatarFallback>
                   </Avatar>
                 </div>
 
-                <div className="flex flex-col items-center ">
+                <div className="flex flex-col items-center">
                   <h1 className="text-center text-lg font-bold">{user?.name}</h1>
                   {user?.role === UserRole.ADMIN && <p className="text-sm font-medium text-white">{user?.role}</p>}
                 </div>
               </div>
             )}
 
+            {/* Affiche les éléments de navigation */}
             <DashboardNav items={navItems} />
           </div>
         </div>
