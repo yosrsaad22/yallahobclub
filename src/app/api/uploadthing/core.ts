@@ -29,7 +29,7 @@ export const ourFileRouter = {
           if (existingUser.image) {
             await utapi.deleteFiles(existingUser.image);
           }
-          await db.user.update({
+          await db.User.update({
             where: {
               id: existingUser.id,
             },

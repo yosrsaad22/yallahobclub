@@ -1,48 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import authConfig from '@/auth.config';
 import NextAuth from 'next-auth';
-import { ADMIN_LOGIN_REDIRECT, USER_LOGIN_REDIRECT, authRoutes, publicRoutes } from './routes';
+import authConfig from '@/auth.config';
+import {
+  ADMIN_LOGIN_REDIRECT,
+  USER_LOGIN_REDIRECT,
+  authRoutes,
+  publicRoutes,
+} from './routes';
 import { UserRole } from '@prisma/client';
 
 const { auth } = NextAuth(authConfig);
 
-const authMiddleware = auth(async (req: any) => {
+const authMiddleware = auth(async (req) => {
   const { nextUrl, auth } = req;
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = !!auth?.user;
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-
   const role = auth?.user?.role;
 
-  if (!isAuthRoute && !isPublicRoute && isLoggedIn) {
-    switch (role) {
-      case UserRole.ADMIN:
-        if (!nextUrl.pathname.startsWith('/dashboard/admin')) {
-          return NextResponse.redirect(new URL(ADMIN_LOGIN_REDIRECT, nextUrl));
-        }
-        break;
-      case UserRole.USER:
-        if (!nextUrl.pathname.startsWith('/dashboard/user')) {
-          return NextResponse.redirect(new URL(USER_LOGIN_REDIRECT, nextUrl));
-        }
-        break;
-    }
+  // 🔁 Prevent redirect loop
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(
+      new URL(role === 'ADMIN' ? ADMIN_LOGIN_REDIRECT : USER_LOGIN_REDIRECT, nextUrl)
+    );
   }
 
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      switch (role) {
-        case UserRole.ADMIN:
-          return NextResponse.redirect(new URL(ADMIN_LOGIN_REDIRECT, nextUrl));
-        case UserRole.USER:
-          return NextResponse.redirect(new URL(USER_LOGIN_REDIRECT, nextUrl));
-      }
-    }
-    return NextResponse.next();
-  }
-
+  // 🔐 Block access to private pages if not logged in
   if (!isLoggedIn && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', nextUrl));
+  }
+
+  // 🔄 Role-based redirection
+  if (!isAuthRoute && !isPublicRoute && isLoggedIn) {
+    if (role === 'ADMIN' && !nextUrl.pathname.startsWith('/dashboard/admin')) {
+      return NextResponse.redirect(new URL(ADMIN_LOGIN_REDIRECT, nextUrl));
+    }
+    if (role === 'USER' && !nextUrl.pathname.startsWith('/dashboard/user')) {
+      return NextResponse.redirect(new URL(USER_LOGIN_REDIRECT, nextUrl));
+    }
   }
 
   return NextResponse.next();
@@ -51,15 +46,16 @@ const authMiddleware = auth(async (req: any) => {
 export default function middleware(req: NextRequest) {
   const publicPathnameRegex = new RegExp(
     `^(${publicRoutes.flatMap((p) => (p === '/' ? ['', '/'] : p)).join('|')})/?$`,
-    'i',
+    'i'
   );
+
   const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);
 
   if (isPublicPage) {
     return NextResponse.next();
-  } else {
-    return (authMiddleware as any)(req);
   }
+
+  return (authMiddleware as any)(req);
 }
 
 export const config = {

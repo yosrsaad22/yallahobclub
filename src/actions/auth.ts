@@ -1,4 +1,5 @@
 'use server';
+
 import { signIn, signOut } from '@/auth';
 import { getUserByEmail, getUserByNumber } from '@/data/user';
 import { db } from '@/lib/db';
@@ -18,7 +19,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
     return { error: 'Un utilisateur existe déjà avec ces informations' };
   }
 
-  await db.User.create({  // Vérifie si User est bien défini avec une majuscule dans Prisma
+  await db.User.create({
     data: {
       fullName: capitalizeWords(values.fullName.trim()),
       email: values.email.trim().toLowerCase(),
@@ -35,6 +36,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>): Promise<
 export const login = async (values: z.infer<typeof LoginSchema>): Promise<ActionResponse> => {
   let { email, password } = values;
   email = email.trim().toLowerCase();
+
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser) {
@@ -48,7 +50,11 @@ export const login = async (values: z.infer<typeof LoginSchema>): Promise<Action
       redirect: false,
     });
 
-    return { data: existingUser.role };
+    // ✅ Admin redirect
+    const isAdmin = email === 'yosrsaad367@gmail.com';
+    const redirectPath = isAdmin ? '/dashboard/admin' : '/dashboard';
+
+    return { data: redirectPath };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.message) {

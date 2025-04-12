@@ -10,9 +10,7 @@ import z from "zod";
 import { LabelInputContainer } from "@/components/ui/label-input-container";
 import { LoginSchema } from "@/schemas";
 import { FormError } from "@/components/ui/form-error";
-import { login } from "@/actions/auth";
 import { Button } from "../ui/button";
-import { ActionResponse } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconLoader2, IconBrandGoogle } from "@tabler/icons-react";
@@ -20,95 +18,127 @@ import { signIn } from "next-auth/react";
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+type LoginFormData = z.infer<typeof LoginSchema>;
+
 export function LoginForm({ className }: LoginFormProps) {
   const [isLoading, startTransition] = React.useTransition();
-  const [error, setError] = React.useState<string | undefined>("");
+  const [error, setError] = React.useState<string | undefined>();
   const router = useRouter();
-
-  type schemaType = z.infer<typeof LoginSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<schemaType>({ resolver: zodResolver(LoginSchema) });
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(LoginSchema),
+  });
 
-  const onSubmit: SubmitHandler<schemaType> = (data, event) => {
+  const onSubmit: SubmitHandler<LoginFormData> = async (data, event) => {
     event?.preventDefault();
-    setError("");
+    setError(undefined);
+
     startTransition(() => {
-      login(data).then((res: ActionResponse) => {
-        if (res.error) {
-          setError(res.error);
-        } else {
-          router.push(`/dashboard/${res.data}`);
-        }
-      });
+      signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      })
+        .then((res) => {
+          if (res?.error) {
+            setError("Email ou mot de passe invalide.");
+          } else {
+            router.push("/dashboard/admin");
+          }
+        })
+        .catch(() => setError("Une erreur est survenue. Veuillez réessayer."));
     });
   };
-
   const handleGoogleLogin = async () => {
-    await signIn("google", { callbackUrl: "/dashboard" });
+    try {
+      await signIn("google", { callbackUrl: "/dashboard" });
+    } catch (err) {
+      setError("Erreur de connexion avec Google.");
+    }
   };
 
   return (
     <div className={cn("mx-auto grid max-w-[25rem] gap-6", className)}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email</Label>
           <Input
             {...register("email")}
             id="email"
-            disabled={isLoading}
-            placeholder="Email@email.com"
             type="email"
+            placeholder="Email@email.com"
+            disabled={isLoading}
             className="text-foreground"
+            aria-invalid={!!errors.email}
           />
-          {errors.email && <span className="text-xs text-red-400">L'adresse email est invalide</span>}
+          {errors.email && (
+            <span className="text-xs text-red-400">
+              L'adresse email est invalide
+            </span>
+          )}
         </LabelInputContainer>
+
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password" className="flex items-end justify-between">
-            Mot de Passe
-            <Link href={"/forgot-password"}>
-              <span className="text-xs text-foreground underline hover:text-red-500">Mot de passe oublié?</span>
+            Mot de passe
+            <Link href="/forgot-password">
+              <span className="text-xs underline text-foreground hover:text-red-500">
+                Mot de passe oublié ?
+              </span>
             </Link>
           </Label>
           <Input
             {...register("password")}
             id="password"
-            disabled={isLoading}
-            placeholder="Mot de Passe"
             type="password"
+            placeholder="Mot de passe"
+            disabled={isLoading}
             className="text-foreground"
+            aria-invalid={!!errors.password}
           />
-          {errors.password && <span className="text-xs text-red-400">Le mot de passe est invalide</span>}
+          {errors.password && (
+            <span className="text-xs text-red-400">
+              Le mot de passe est invalide
+            </span>
+          )}
         </LabelInputContainer>
+
         <FormError message={error} />
+
         <div className="mt-10 text-center">
           <Button
-            disabled={isLoading}
             type="submit"
-            className="w-full bg-red-500 text-white hover:bg-red-600 active:bg-red-600"
+            disabled={isLoading}
+            className="w-full bg-red-500 text-white hover:bg-red-600"
           >
-            {isLoading && <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />}
-            Se Connecter
+            {isLoading && (
+              <IconLoader2 className="mr-2 h-5 w-5 animate-spin" />
+            )}
+            Se connecter
           </Button>
 
-          {/* Google Login Button */}
           <Button
-            onClick={handleGoogleLogin}
             type="button"
+            onClick={handleGoogleLogin}
             className="mt-4 w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600"
           >
             <IconBrandGoogle className="h-5 w-5" />
             Se connecter avec Google
           </Button>
 
-          <div className="relative mt-4 flex flex-row justify-center text-sm">
-            <Link href={"/register"}>
-              <span className="px-2 text-foreground underline hover:text-red-500">S'inscrire</span>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Vous n'avez pas de compte ?{" "}
+            <Link
+              href="/register"
+              className="text-foreground underline hover:text-red-500"
+            >
+              S'inscrire
             </Link>
-          </div>
+          </p>
         </div>
       </form>
     </div>

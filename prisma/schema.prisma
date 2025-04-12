@@ -52,6 +52,35 @@ model User {
   numberOfChildren    Int?
 
   accounts Account[]
+  
+  categories Category[]  // Added relationship with categories
 
   @@map("users")
+}
+
+// Category model to store card game categories
+model Category {
+  id          String     @id @default(cuid())
+  title       String
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions   Question[] 
+
+  createdAt   DateTime   @default(now())  // Add createdAt field
+  image       String?    // Add image field
+  backImage   String?    // Add backImage field
+  backColor   String?    // Add backColor field
+
+  @@map("categories")
+}
+
+
+// Question model to store card game questions
+model Question {
+  id          String     @id @default(cuid())
+  question    String
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade) // Linking to Category
+
+  @@map("questions")
 }

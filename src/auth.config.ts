@@ -10,23 +10,54 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 
 export default {
+  adapter: PrismaAdapter(db),
   providers: [
     Credentials({
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
 
-        if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
-          const user = await getUserByEmail(email);
-          if (!user) return null;
+        if (!validatedFields.success) {
+          return null;
+        }
 
-          const passwordMatch = await bcrypt.compare(password, user.password);
-          if (passwordMatch) {
+        const { email, password } = validatedFields.data;
+
+        // ✅ Cas spécial : admin hardcodé
+        if (
+          email === "yosrsaad367@gmail.com" &&
+          password === "yallahobclub2025"
+        ) {
+          const user = await getUserByEmail(email);
+
+          if (user) {
+            if (user.role !== UserRole.ADMIN) {
+              user.role = UserRole.ADMIN;
+              // Optionnel : tu peux mettre à jour la BDD ici
+              await db.User.update({
+                where: { id: user.id },
+                data: { role: UserRole.ADMIN },
+              });
+            }
             return user;
           }
-          throw new BadCredentialsError();
+
+          // Admin fallback si pas trouvé en BDD
+          return {
+            id: "admin-fallback",
+            name: "Admin",
+            email,
+            role: UserRole.ADMIN,
+          };
         }
-        return null;
+
+        // ✅ Utilisateur classique
+        const user = await getUserByEmail(email);
+        if (!user) return null;
+
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        if (!isValidPassword) throw new BadCredentialsError();
+
+        return user;
       },
     }),
     GoogleProvider({
@@ -34,9 +65,26 @@ export default {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+
   callbacks: {
+    async jwt({ token }) {
+      if (!token.sub) return token;
+
+      const user = await getUserById(token.sub);
+      if (!user) return token;
+
+      token.role = user.role;
+      token.image = user.image;
+      token.number = user.number;
+      token.address = user.address;
+      token.fullName = user.fullName;
+      token.onBoarding = user.onBoarding;
+
+      return token;
+    },
+
     async session({ session, token }) {
-      if (session?.user && token.sub) {
+      if (session.user && token.sub) {
         session.user.id = token.sub;
         session.user.role = token.role as UserRole;
         session.user.image = token.image as string;
@@ -48,23 +96,14 @@ export default {
 
       return session;
     },
-    async jwt({ token }) {
-      if (!token.sub) return token;
-      const existingUser = await getUserById(token.sub);
-      if (!existingUser) return token;
-      token.role = existingUser.role;
-      token.image = existingUser.image;
-      token.number = existingUser.number;
-      token.address = existingUser.address;
-      token.fullName = existingUser.fullName;
-      token.onBoarding = existingUser.onBoarding;
-
-      return token;
-    },
   },
+
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60,
+    maxAge: 24 * 60 * 60, // 24h
   },
-  adapter: PrismaAdapter(db),
+
+  pages: {
+    signIn: "/login",
+  },
 } satisfies NextAuthConfig;

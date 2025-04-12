@@ -51,7 +51,7 @@ export default function UserHome() {
             <p className="text-sm text-gray-600 mb-3">
               Des ressources pour un couple épanoui.
             </p>
-            <Link href="/articles-couple" className="text-red-600 text-sm hover:underline">
+            <Link href="/dashboard/user/Activites" className="text-red-600 text-sm hover:underline">
               En savoir plus
             </Link>
           </div>
