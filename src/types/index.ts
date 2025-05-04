@@ -6,6 +6,7 @@ export type ActionResponse = {
 
 export type NavItem = {
   title: string;
-  href?: string;
+  href: string;
   icon?: React.ReactNode;
+  children?: NavItem[];
 };

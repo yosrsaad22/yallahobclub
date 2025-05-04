@@ -52,7 +52,7 @@ export const Navbar = () => {
     <li><a href="#contact" className="hover:text-red-600">Contact</a></li>
     {/* Liens nécessitant une connexion */}
     <li>
-    <Link href="/vie-de-couple" className="text-red-600 hover:underline">
+    <Link passHref href="/vie-de-couple" className="hover:text-red-600">
   Vie de Couple
 </Link>
     </li>

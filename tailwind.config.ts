@@ -4,7 +4,12 @@ const { default: flattenColorPalette } = require('tailwindcss/lib/util/flattenCo
 
 const config = {
   darkMode: ['class'],
-  content: ['./pages/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
   prefix: '',
   theme: {
     container: {
@@ -69,7 +74,8 @@ const config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        din: ['"DIN Next Arabic"', 'sans-serif'],
+        din: ['"DIN Next Arabic"', 'sans-serif'],  // For paragraphs
+        heading: ['"Poppins"', 'sans-serif'],      // For headings
       },
     },
   },

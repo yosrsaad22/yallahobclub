@@ -1,124 +1,127 @@
-'use client';
-
-import { IconHeart, IconCalendarHeart, IconMessageHeart, IconCash } from '@tabler/icons-react';
+import { IconHeart, IconCalendarHeart, IconMessageHeart, IconCash, IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { IconLayoutDashboard } from '@tabler/icons-react';
+import Image from 'next/image';
 
 export default function UserHome() {
   return (
-    <div className="flex-1 space-y-6 p-4 pt-6 lg:p-6">
-      {/* Header Dashboard */}
-      <div className="flex items-center space-x-2 text-3xl font-bold text-gray-800">
-        <h2 className="tracking-tight text-red-600"> Vie de Couple </h2>
-      </div>
-
-      {/* Vie de Couple Section */}
-      <div className="bg-pink-50 rounded-xl p-6 shadow-md">
-        <p className="text-gray-700 mb-6">
-          Renforcez votre relation grâce à nos activités, jeux et ressources spécialement conçues pour les couples tunisiens.
-        </p>
-
-        {/* Cartes en ligne */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Carte 1 - Jeux de communication */}
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg text-center transition">
-            <IconMessageHeart className="mx-auto text-red-500 w-8 h-8 mb-2" />
-            <h4 className="font-semibold text-lg mb-1">Jeux de communication</h4>
-            <p className="text-sm text-gray-600 mb-3">
-              Apprenez à mieux vous connaître.
-            </p>
-            <Link href="/dashboard/user/jeux-couple" className="text-red-600 text-sm hover:underline">
-              En savoir plus
-            </Link>
-          </div>
-
-          {/* Carte 2 - Activités à deux */}
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg text-center transition">
-            <IconCalendarHeart className="mx-auto text-red-500 w-8 h-8 mb-2" />
-            <h4 className="font-semibold text-lg mb-1">Activités à deux</h4>
-            <p className="text-sm text-gray-600 mb-3">
-              Des idées pour raviver votre complicité.
-            </p>
-            <Link href="/dashboard/user/Activites" className="text-red-600 text-sm hover:underline">
-              En savoir plus
-            </Link>
-          </div>
-
-          {/* Carte 3 - Articles et Conseils */}
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg text-center transition">
-            <IconHeart className="mx-auto text-red-500 w-8 h-8 mb-2" />
-            <h4 className="font-semibold text-lg mb-1">Articles et Conseils</h4>
-            <p className="text-sm text-gray-600 mb-3">
-              Des ressources pour un couple épanoui.
-            </p>
-            <Link href="/dashboard/user/Activites" className="text-red-600 text-sm hover:underline">
-              En savoir plus
-            </Link>
-          </div>
-
-          {/* Carte 4 - Budget Planner */}
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg text-center transition">
-            <IconCash className="mx-auto text-red-500 w-8 h-8 mb-2" />
-            <h4 className="font-semibold text-lg mb-1">Planificateur de Budget</h4>
-            <p className="text-sm text-gray-600 mb-3">
-              Organisez vos finances de manière transparente et efficace.
-            </p>
-            <Link href="/budget-couple" className="text-red-600 text-sm hover:underline">
-              En savoir plus
-            </Link>
-          </div>
+    <div className="flex-1 bg-gray-50 p-6 md:p-8">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto">
+        {/* Welcome Section */}
+        <div className="mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+            Bienvenue sur <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-pink-600">Notre Plateforme</span>
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Des ressources et activités pour enrichir votre vie de couple 
+          </p>
         </div>
-      </div>
-
-      {/* Vie de Famille Section */}
-       {/* Header Dashboard */}
-       <div className="flex items-center space-x-2 text-3xl font-bold text-gray-800">
-        <h2 className="tracking-tight text-blue-600"> Vie de famille </h2>
-      </div>
-      <div className="bg-blue-50 rounded-xl p-6 shadow-md">
-        <p className="text-gray-700 mb-6">
-          Découvrez des ressources pour toute la famille, allant des conseils aux activités à réaliser en famille.
-        </p>
-
-        {/* Cartes en ligne pour Vie de Famille */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg text-center transition">
-            <IconHeart className="mx-auto text-blue-500 w-8 h-8 mb-2" />
-            <h4 className="font-semibold text-lg mb-1">jeux de communication</h4>
-            <h5 className="font-semibold text-lg mb-1">#Version_Famille</h5>
-            <p className="text-sm text-gray-600 mb-3">
-            Renforcez les liens familiaux .</p>
-            <Link href="/conseils-famille" className="text-blue-600 text-sm hover:underline">
-              En savoir plus
-            </Link>
+        
+        {/* Vie de Couple Section */}
+        <section className="mb-12">
+          <div className="flex items-center mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-red-400 to-pink-600 rounded mr-3"></div>
+            <h2 className="text-2xl font-bold text-gray-800">Vie de Couple</h2>
           </div>
-          {/* Carte 1 - Activités en famille */}
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg text-center transition">
-            <IconCalendarHeart className="mx-auto text-blue-500 w-8 h-8 mb-2" />
-            <h4 className="font-semibold text-lg mb-1">Activités en famille</h4>
-            <p className="text-sm text-gray-600 mb-3">
-              Des idées pour créez des souvenirs inoubliables .
-            </p>
-            <Link href="/activites-famille" className="text-blue-600 text-sm hover:underline">
-              En savoir plus
-            </Link>
-          </div>
-
-          {/* Carte 2 - Conseils familiaux */}
           
-
-          {/* Carte 3 - Articles familiaux */}
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-lg text-center transition">
-            <IconMessageHeart className="mx-auto text-blue-500 w-8 h-8 mb-2" />
-            <h4 className="font-semibold text-lg mb-1">Articles familiaux</h4>
-            <p className="text-sm text-gray-600 mb-3">
-              Des ressources pour toute la famille.
-            </p>
-            <Link href="/articles-famille" className="text-blue-600 text-sm hover:underline">
-              En savoir plus
-            </Link>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* Image Banner */}
+            <div className="relative h-48 md:h-64 w-full overflow-hidden">
+              <img
+                src="/img/couple.jpg"
+                alt="Couple à la plage au coucher du soleil"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end">
+                <div className="p-6 text-white max-w-2xl">
+                  <h3 className="text-xl md:text-2xl font-bold drop-shadow-sm mb-2">Enrichir votre relation</h3>
+                  <p className="text-sm md:text-base drop-shadow-sm">
+                    Renforcez votre relation grâce à nos activités, jeux et ressources spécialement conçues pour les couples tunisiens.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+              {/* Card 1 */}
+              <Link href="/dashboard/user/jeux-couple" className="block">
+                <div className="p-6 hover:bg-red-50 transition-colors cursor-pointer h-full">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="bg-red-100 p-3 rounded-full mb-4">
+                      <IconMessageHeart className="w-6 h-6 text-red-600" stroke={1.5} />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Jeux de communication</h3>
+                    <p className="text-gray-600 mb-4 text-sm">
+                      Apprenez à mieux vous connaître et renforcez votre complicité
+                    </p>
+                    <span className="text-red-600 font-medium text-sm flex items-center mt-auto">
+                      Découvrir
+                      <IconChevronRight className="w-4 h-4 ml-1" stroke={2} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+              
+              {/* Card 2 */}
+              <Link href="/dashboard/user/Activites" className="block">
+                <div className="p-6 hover:bg-red-50 transition-colors cursor-pointer h-full">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="bg-red-100 p-3 rounded-full mb-4">
+                      <IconCalendarHeart className="w-6 h-6 text-red-600" stroke={1.5} />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Activités à deux</h3>
+                    <p className="text-gray-600 mb-4 text-sm">
+                      Des idées inspirantes pour raviver votre complicité au quotidien
+                    </p>
+                    <span className="text-red-600 font-medium text-sm flex items-center mt-auto">
+                      Découvrir
+                      <IconChevronRight className="w-4 h-4 ml-1" stroke={2} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+              
+              {/* Card 3 */}
+              <Link href="/dashboard/user/Article" className="block">
+                <div className="p-6 hover:bg-red-50 transition-colors cursor-pointer h-full">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="bg-red-100 p-3 rounded-full mb-4">
+                      <IconHeart className="w-6 h-6 text-red-600" stroke={1.5} />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Articles et Conseils</h3>
+                    <p className="text-gray-600 mb-4 text-sm">
+                      Des ressources pratiques pour construire un couple épanoui
+                    </p>
+                    <span className="text-red-600 font-medium text-sm flex items-center mt-auto">
+                      Découvrir
+                      <IconChevronRight className="w-4 h-4 ml-1" stroke={2} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+              
+              {/* Card 4 */}
+              <Link href="/dashboard/user/budgetplanner" className="block">
+                <div className="p-6 hover:bg-red-50 transition-colors cursor-pointer h-full">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="bg-red-100 p-3 rounded-full mb-4">
+                      <IconCash className="w-6 h-6 text-red-600" stroke={1.5} />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Planificateur de Budget</h3>
+                    <p className="text-gray-600 mb-4 text-sm">
+                      Organisez vos finances de manière transparente et efficace
+                    </p>
+                    <span className="text-red-600 font-medium text-sm flex items-center mt-auto">
+                      Découvrir
+                      <IconChevronRight className="w-4 h-4 ml-1" stroke={2} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </div>
           </div>
-        </div>
+        </section>  
       </div>
     </div>
   );

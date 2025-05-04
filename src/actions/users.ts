@@ -16,7 +16,7 @@ export const getUsers = async (): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
 
-    const users = await db.user.findMany({
+    const users = await db.User.findMany({
       orderBy: { createdAt: 'desc' },
     });
     return { success: 'Utilisateurs récupérés avec succès', data: users };
@@ -29,9 +29,9 @@ export const getUser = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
 
-    const user = await getUserById(id);
-    if (!user) return { error: 'Utilisateur non trouvé' };
-    return { success: 'Utilisateur récupéré avec succès', data: user };
+    const User = await getUserById(id);
+    if (!User) return { error: 'Utilisateur non trouvé' };
+    return { success: 'Utilisateur récupéré avec succès', data: User };
   } catch (error) {
     return { error: "Erreur lors de la récupération de l'utilisateur" };
   }
@@ -50,7 +50,7 @@ export const addUser = async (values: z.infer<typeof UserSchema>): Promise<Actio
 
     const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD!, 10);
 
-    await db.user.create({
+    await db.User.create({
       data: {
         fullName: capitalizeWords(values.fullName),
         email: values.email.trim(),
@@ -91,7 +91,7 @@ export const editUser = async (id: string, values: z.infer<typeof UserSchema>): 
       }
     }
 
-    await db.user.update({
+    await db.User.update({
       where: { id: existingUser.id },
       data: {
         fullName: values.fullName,
@@ -112,7 +112,7 @@ export const deleteUser = async (id: string): Promise<ActionResponse> => {
   try {
     await roleGuard(UserRole.ADMIN);
 
-    await db.user.delete({
+    await db.User.delete({
       where: {
         id: id,
       },
@@ -134,7 +134,7 @@ export const updateOnBoardingOne = async (values: z.infer<typeof OnboardingOneSc
       return { error: 'Utilisateur non trouvé' };
     }
 
-    await db.user.update({
+    await db.User.update({
       where: { id: user.id },
       data: {
         onBoarding: 1,
@@ -159,7 +159,7 @@ export const updateOnBoardingTwo = async (values: z.infer<typeof OnboardingTwoSc
       return { error: 'Utilisateur non trouvé' };
     }
 
-    await db.user.update({
+    await db.User.update({
       where: { id: user.id },
       data: {
         onBoarding: 2,
@@ -184,7 +184,7 @@ export const updateOnBoardingThree = async (values: z.infer<typeof OnboardingThr
       return { error: 'Utilisateur non trouvé' };
     }
 
-    await db.user.update({
+    await db.User.update({
       where: { id: user.id },
       data: {
         onBoarding: 3,

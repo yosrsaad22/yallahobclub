@@ -24,6 +24,43 @@ export const ForgotPasswordSchema = z.object({
   email: z.string().email(),
 });
 
+export const CardSchema = z.object({
+  question: z.string().min(1, {
+    message: "La question est requise",
+  }),
+  category: z.string().min(1, {
+    message: "La catégorie est requise",
+  }),
+  typeId: z.string().min(1, {
+    message: "Le type est requis",
+  }),
+});
+export const ArticleSchema = z.object({
+  title: z.string().min(1, "Le titre est requis"),
+  description: z.string().min(1, "La description est requise"),
+  image: z.string().url("URL d'image invalide"),
+  categoryId: z.string().min(1, "La catégorie est requise"),
+  typeId: z.string().min(1, "Le type est requis"), // Use typeId, not type
+});
+export const ActivitySchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  location: z.string(),
+  ageRange: z.string(),
+  price: z.number(),
+  priceCategory: z.enum(['gratuit', 'abordable', 'modéré', 'coûteux']),
+  mood: z.enum(['amusant', 'éducatif', 'relaxant', 'aventureux', 'créatif']),
+  weather: z.enum(['intérieur', 'extérieur', 'les_deux']),
+  imageUrl: z.string(),
+  date: z.string().optional(),
+  typeId: z.string().min(1), 
+});
+
+export const BudgetSchema = z.object({
+  category: z.string().min(1),
+  limit: z.number().positive(),
+});
+
 export const ResetPasswordSchema = z
   .object({
     password: z.string().min(8),

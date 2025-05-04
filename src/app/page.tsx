@@ -1,22 +1,32 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/layout/navbar';
 import Image from 'next/image';
 import { Facebook, Instagram } from 'lucide-react';
 
-
 export default function Home() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <div className="relative w-full">
       {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 h-screen w-full object-cover z-0"
-      >
-        <source src="/video/ba.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      {isClient && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-screen w-full object-cover z-0"
+        >
+          <source src="/video/ba.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      )}
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-red-800 bg-opacity-10 z-0"></div>
